@@ -1,4 +1,8 @@
 import React, { Component } from 'react';
+import AceEditor from 'react-ace';
+import brace from 'brace';
+
+
 
 import Task from './Task.js';
 
@@ -28,6 +32,13 @@ export default class App extends Component {
                 <ul>
                     {this.renderTasks()}
                 </ul>
+
+                <AceEditor
+                    mode="java"
+                    theme="github"
+                    name="blah1"
+                    height="6em"
+                />
             </div>
         );
     }
