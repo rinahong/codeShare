@@ -13,7 +13,8 @@
     "meteor-node-stubs": "^0.4.1",
     "react": "^16.4.0",
     "react-ace": "^6.1.1",
-    "react-dom": "^16.4.0"
+    "react-dom": "^16.4.0",
+    "sharedb": "^1.0.0-beta.9"
   },
   "meteor": {
     "mainModule": {
