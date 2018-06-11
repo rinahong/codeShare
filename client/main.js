@@ -3,7 +3,6 @@ import { Meteor } from 'meteor/meteor';
 import { render } from 'react-dom';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
-import App from '../imports/ui/App.js';
 import Editor from '../imports/ui/Editor.js';
 import AccountsUIWrapper from '../imports/ui/AccountsUIWrapper.js';
 
