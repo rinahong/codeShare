@@ -4,8 +4,12 @@ import brace from 'brace';
 import AceEditor from 'react-ace';
 import { Redirect } from 'react-router-dom';
 
+import { withTracker } from 'meteor/react-meteor-data';
+// import { SavedText } from '../imports/api/savedText.js';
+
 import 'brace/mode/javascript';
 import 'brace/theme/monokai';
+import CustomOpenEdgeMode from '../imports/ui/CustomOpenEdgeMode.js';
 
 // Render editor
 export default class Editor extends Component {
@@ -44,6 +48,8 @@ export default class Editor extends Component {
 
     return (
       <AceEditor
+      name={id}
+      value={this.props.savedText}
       mode="javascript"
       theme="monokai"
       name="editor"
@@ -62,4 +68,10 @@ export default class Editor extends Component {
       }}/>
     );
   }
+
+  componentDidMount() {
+    const customMode = new CustomOpenEdgeMode();
+    this.refs.AceEditor.Editor.getSession().setMode(customMode);
+  }
 }
+
