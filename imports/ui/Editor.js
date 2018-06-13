@@ -5,7 +5,6 @@ import AceEditor from 'react-ace';
 import { Redirect } from 'react-router-dom';
 import { withTracker } from 'meteor/react-meteor-data';
 import { Tracker } from 'meteor/tracker'
-import _ from 'lodash';
 
 import { Documents } from '../api/documents.js';
 
@@ -13,7 +12,7 @@ import 'brace/mode/javascript';
 import 'brace/theme/monokai';
 
 // Render editor
-class Editor extends Component {
+export default class Editor extends Component {
 
   constructor(props) {
     super(props);
@@ -46,27 +45,24 @@ class Editor extends Component {
   }
 
   onLoad(editor) {
-    let document = Documents.findOne({id: this.state.id}, {sort: {createdAt: -1, limit: 1}});
-    if (document) {
-      editor.setValue(document.value);
-    }
-    /*
-    Tracker.autorun(() => {
-       let document = Documents.findOne({id: this.state.id}, {sort: {createdAt: -1, limit: 1}});
-       if (document) {
-         editor.setValue(document.value);
-       }
-    });
-    */
+
+      Tracker.autorun(() => {
+
+        let document = Documents.findOne({id: this.state.id}, {sort: {createdAt: -1, limit: 1}});
+        if (document) {
+          console.log(document);
+          let prevValue = editor.getValue();
+
+          if (prevValue === document.value) return;
+          editor.setValue(document.value,1);
+        }
+      });
   }
 
   render() {
-    console.log(this.props.document);
 
-    const {id} = this.props.match.params; //document ID
     const height = this.getHeight(); //window height
     const width = this.getWidth(); //window width
-    const value = this.props.document ? this.props.document.value : '';
 
     // check is user is logged in; if not, redirect to login page
     if (Meteor.userId() == null) {
@@ -80,22 +76,21 @@ class Editor extends Component {
         )
     }
 
-    const onChange = _.debounce((value, event) => {this.onChange(value, event)}, 3000);
-
     return (
       <AceEditor
       mode="javascript"
       theme="monokai"
       name="editor"
-      //onLoad={this.onLoad}
-      onChange={onChange}
+      onLoad={this.onLoad}
+      onChange={this.onChange}
       fontSize={14}
       showPrintMargin={false}
       showGutter={true}
       highlightActiveLine={true}
       height={height}
       width={width}
-      value={value}
+      debounceChangePeriod={1000}
+      editorProps={{$blockScrolling: Infinity}}
       setOptions={{
         enableBasicAutocompletion: true,
         enableLiveAutocompletion: true,
@@ -106,12 +101,3 @@ class Editor extends Component {
     );
   }
 }
-
-export default withTracker(() => {
-  if (this.state) {
-    return {
-      document: Documents.findOne({id: this.state.id}, {sort: {createdAt: -1, limit: 1}})
-    };
-  }
-  return {};
-})(Editor);
