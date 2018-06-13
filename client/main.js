@@ -8,6 +8,7 @@ import Editor from '../imports/ui/Editor.js';
 
 import {NavBar} from '../imports/ui/NavBar';
 import {SignIn} from '../imports/ui/SignIn';
+import NavBar2 from '../imports/ui/NavBar2';
 
 Meteor.startup(() => {
   // console.log(Meteor.userId());
@@ -15,6 +16,7 @@ Meteor.startup(() => {
   render(
       <BrowserRouter>
         <div>
+          <NavBar2 />
           <NavBar onSignOut={()=> Meteor.logout(function(err){
             console.log(err);
           })}/>

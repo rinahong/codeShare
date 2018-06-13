@@ -46,18 +46,19 @@ class Editor extends Component {
   }
 
   onLoad(editor) {
+    /*
     let document = Documents.findOne({id: this.state.id}, {sort: {createdAt: -1, limit: 1}});
     if (document) {
       editor.setValue(document.value);
-    }
-    /*
+    }*/
+    
     Tracker.autorun(() => {
        let document = Documents.findOne({id: this.state.id}, {sort: {createdAt: -1, limit: 1}});
        if (document) {
          editor.setValue(document.value);
        }
     });
-    */
+    
   }
 
   render() {
@@ -87,7 +88,7 @@ class Editor extends Component {
       mode="javascript"
       theme="monokai"
       name="editor"
-      //onLoad={this.onLoad}
+      onLoad={this.onLoad}
       onChange={onChange}
       fontSize={14}
       showPrintMargin={false}
