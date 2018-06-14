@@ -1,41 +1,30 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import StarIcon from '@material-ui/icons/Star';
+import { Redirect } from 'react-router-dom';
+import { Meteor } from 'meteor/meteor'
+import InsetList from '../imports/ui/InsetList';
 
-const styles = theme => ({
-  root: {
-    width: '100%',
-    maxWidth: 360,
-    backgroundColor: theme.palette.background.paper,
-  },
-});
+class Landing extends Component {
 
-function InsetList(props) {
-  const { classes } = props;
-  return (
-    <div className={classes.root}>
-      <List component="nav">
-        <ListItem button>
-          <ListItemIcon>
-            <StarIcon />
-          </ListItemIcon>
-          <ListItemText inset primary="Chelsea Otakan" />
-        </ListItem>
-        <ListItem button>
-          <ListItemText inset primary="Eric Hoffman" />
-        </ListItem>
-      </List>
-    </div>
-  );
+  render() {
+
+    // check is user is logged in; if not, redirect to login page
+    if (Meteor.userId() == null) {
+      return (
+        <Redirect
+            to={{
+              pathname: "/",
+              state: { from: this.props.location }
+            }}
+          />
+        )
+    }
+
+    return (
+      <div>
+        <InsetList />
+      </div>
+
+      
+    );
+  }
 }
-
-InsetList.propTypes = {
-  classes: PropTypes.object.isRequired,
-};
-
-export default withStyles(styles)(InsetList);
