@@ -4,7 +4,6 @@ import { render } from 'react-dom';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
 import Editor from '../imports/ui/Editor.js';
-import Chat from '../imports/ui/Chat.js';
 
 import {NavBar} from '../imports/ui/NavBar';
 import {SignIn} from '../imports/ui/SignIn';
@@ -21,7 +20,6 @@ Meteor.startup(() => {
           <Switch>
             <Route path="/document/:id/" component={Editor}/>
             <Route path="/signin/" component={SignIn}/>
-            <Route path="/chat/" component={Chat}/>
           </Switch>
         </div>
       </BrowserRouter>

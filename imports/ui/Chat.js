@@ -21,18 +21,19 @@ class Chat extends Component {
   }
 
   render() {
-    console.log(this.props.message);
 
     if (this.props.message && this.props.message.user != Meteor.userId()) {
       addResponseMessage(this.props.message.message);
     }
+
+    const subtitle = "Document " + this.props.id;
 
     return (
       <div className="App">
         <Widget
           handleNewUserMessage={this.handleNewUserMessage}
           title="Messenger"
-          subtitle="Document 1234"
+          subtitle={subtitle}
         />
       </div>
     );
