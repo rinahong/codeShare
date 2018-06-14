@@ -69,7 +69,7 @@ export default class Editor extends Component {
       return (
         <Redirect
             to={{
-              pathname: "/",
+              pathname: "/signin",
               state: { from: this.props.location }
             }}
           />
