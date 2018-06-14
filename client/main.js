@@ -8,9 +8,11 @@ import Editor from '../imports/ui/Editor.js';
 
 import {NavBar} from '../imports/ui/NavBar';
 import {SignIn} from '../imports/ui/SignIn';
+import {LandingPage} from '../imports/ui/LandingPage';
+import {Register} from '../imports/ui/Register';
 
 Meteor.startup(() => {
-  // console.log(Meteor.userId());
+  console.log(Meteor.userId());
   console.log();
   render(
       <BrowserRouter>
@@ -21,7 +23,8 @@ Meteor.startup(() => {
           <Switch>
             <Route path="/document/:id/" component={Editor}/>
             <Route path="/signin/" component={SignIn}/>
-            {/* <Route path="/" component={AccountsUIWrapper}/> */}
+            <Route path="/users/:id/" component={LandingPage}/>
+            <Route path="/register" component={Register}/>
           </Switch>
         </div>
       </BrowserRouter>
