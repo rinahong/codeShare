@@ -33,3 +33,13 @@
       <p><input type="submit" value="CreateDocument"></p>
     </form>
 </template>
+
+<template name="docLists">
+    <h2>Lists of Documents</h2>
+    {{> createDocument}}
+    <ul>
+        {{#each list}}
+            <li>{{createdAt}}</li>
+        {{/each}}
+    </ul>
+</template>

@@ -28,3 +28,9 @@ Template.createDocument.events({
     });
   }
 });
+
+Template.docLists.helpers({
+    'list': function(){
+        return Documents.find({}, {sort: {name: 1}});
+    }
+});
