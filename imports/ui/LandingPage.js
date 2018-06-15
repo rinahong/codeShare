@@ -31,6 +31,7 @@ Template.createDocument.events({
 
 Template.docLists.helpers({
     'list': function(){
-        return Documents.find({}, {sort: {name: 1}});
+        var currentUser = Meteor.userId();
+        return Documents.find({ createdBy: currentUser }, {sort: {createdAt: -1}});
     }
 });

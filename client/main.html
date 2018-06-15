@@ -35,11 +35,13 @@
 </template>
 
 <template name="docLists">
-    <h2>Lists of Documents</h2>
     {{> createDocument}}
+    <hr />
+    <h2>Lists of Documents</h2>
+
     <ul>
         {{#each list}}
-            <li>{{createdAt}}</li>
+            <li>{{createdBy}}</li>
         {{/each}}
     </ul>
 </template>

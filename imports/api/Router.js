@@ -10,14 +10,16 @@ Router.route('/register', {
     template: 'register'
 });
 
-
-
-
-
-
-
 Router.route('/users/:_id', {
-    template: 'docLists'
+    template: 'docLists',
+    onBeforeAction: function(){
+        var currentUser = Meteor.userId();
+        if(currentUser){
+            this.next();
+        } else {
+            this.render("login");
+        }
+    }
 });
 
 
