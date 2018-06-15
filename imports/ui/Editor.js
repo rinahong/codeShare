@@ -3,9 +3,9 @@ import { render } from 'react-dom';
 import brace from 'brace';
 import AceEditor from 'react-ace';
 import { Redirect } from 'react-router-dom';
-import { withTracker } from 'meteor/react-meteor-data';
 import { Tracker } from 'meteor/tracker'
 
+import Chat from './Chat.js';
 import { Documents } from '../api/documents.js';
 
 import 'brace/mode/javascript';
@@ -77,7 +77,9 @@ export default class Editor extends Component {
     }
 
     return (
+      [<Chat key="0" id={this.state.id}/>,
       <AceEditor
+      key="1"
       mode="javascript"
       theme="monokai"
       name="editor"
@@ -97,7 +99,7 @@ export default class Editor extends Component {
         enableSnippets: false,
         showLineNumbers: true,
         tabSize: 2,
-      }}/>
+      }}/>]
     );
   }
 }
