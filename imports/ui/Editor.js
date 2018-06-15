@@ -6,7 +6,7 @@ import { Redirect } from 'react-router-dom';
 import { Tracker } from 'meteor/tracker'
 
 import Chat from './Chat.js';
-import { Documents } from '../api/documents.js';
+import { DocumentContents} from '../api/DocumentContents.js';
 
 import 'brace/mode/javascript';
 import 'brace/theme/monokai';
@@ -37,24 +37,29 @@ export default class Editor extends Component {
   }
 
   onChange(value, event) {
-    Documents.insert({
-      id: this.state.id,
+    var currentUser = Meteor.userId();
+    DocumentContents.insert({
+      docId: this.state.id,
       value,
+      writtenBy: currentUser,
       createdAt: new Date(), // current time
+    }, function(error) {
+      if(error) {
+        console.log("Accounts.createUser Faild: ",error.reason);
+      }
     });
   }
 
   onLoad(editor) {
 
       Tracker.autorun(() => {
-
-        let document = Documents.findOne({id: this.state.id}, {sort: {createdAt: -1, limit: 1}});
-        if (document) {
-          console.log(document);
+        let content = DocumentContents.findOne({docId: this.state.id}, {sort: {createdAt: -1}});
+        if (content) {
+          console.log(content);
           let prevValue = editor.getValue();
 
-          if (prevValue === document.value) return;
-          editor.setValue(document.value,1);
+          if (prevValue === content.value) return;
+          editor.setValue(content.value,1);
         }
       });
   }

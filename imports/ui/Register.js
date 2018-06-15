@@ -13,6 +13,12 @@ Template.register.events({
               profile: {
                 username: username
               }
+          },function(error) {
+            if(error) {
+              console.log("Accounts.createUser Faild: ",error.reason);
+            } else {
+              Router.go('/documents');
+            }
           });
         } else {
           console.log("Password do not match.");

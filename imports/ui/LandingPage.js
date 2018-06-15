@@ -6,20 +6,19 @@ Template.createDocument.events({
     event.preventDefault();
     var currentUser = Meteor.userId();
     Documents.insert({
-      id: "3",
-      value: "",
+      title: "Untitled Document",
       createdAt: new Date(), // current time
       createdBy: currentUser
-    }, function(error){
+    }, function(error,results){
       if(error) {
-        console.log(error.reason);
+        console.log("Documents Insert Faild: ",error.reason);
       } else {
         UserDocuments.insert({
           userId: currentUser,
-          docId: 3
+          docId: results
         }, function(error, results){
           if(error) {
-            console.log(error.reason);
+            console.log("UserDocuments Insert Faild: ",error.reason);
           } else {
             console.log("No error!")
           }

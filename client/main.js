@@ -16,8 +16,10 @@ Meteor.startup(() => {
   render(
       <BrowserRouter>
         <div>
-          <NavBar onSignOut={()=> Meteor.logout(function(err){
-            console.log(err);
+          <NavBar onSignOut={()=> Meteor.logout(function(error){
+            if(!error) {
+              Router.go('/signin');
+            }
           })}/>
           <Switch>
             <Route path="/documents/:id/" component={Editor}/>
