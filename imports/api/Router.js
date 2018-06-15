@@ -10,7 +10,7 @@ Router.route('/register', {
     template: 'register'
 });
 
-Router.route('/users/:_id', {
+Router.route('/documents', {
     template: 'docLists',
     onBeforeAction: function(){
         var currentUser = Meteor.userId();

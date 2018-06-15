@@ -20,7 +20,7 @@ Meteor.startup(() => {
             console.log(err);
           })}/>
           <Switch>
-            <Route path="/document/:id/" component={Editor}/>
+            <Route path="/documents/:id/" component={Editor}/>
             {/* <Route path="/users/:id/" component={LandingPage}/> */}
             {/* <Route exact path="/" component={SignIn}/> */}
             {/* <Route path="/signin/" component={SignIn}/> */}
