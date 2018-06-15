@@ -15,8 +15,11 @@ const styles = theme => ({
   },
 });
 
+class InsetList extends Component {
 
-function InsetList(props) {
+
+
+ InsetList(props) {
   
   const { classes } = props;
   return (
@@ -31,6 +34,7 @@ function InsetList(props) {
       </List>
     </div>
   );
+}
 }
 
 InsetList.propTypes = {

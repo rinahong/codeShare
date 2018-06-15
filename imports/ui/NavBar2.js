@@ -33,12 +33,12 @@ function NavBar(props) {
     <div className={classes.root}>
       <AppBar position="static">
         <Toolbar>
-          <IconButton className={classes.menuButton} color="inherit" aria-label="Menu">
-            <MenuIcon />
-          </IconButton>
-
+          
           {
         Meteor.userId() ? ([  // Should be wrapped in the array
+          <IconButton className={classes.menuButton} color="inherit" aria-label="Menu">
+            <MenuIcon />
+          </IconButton>,
           <Typography variant="title" color="inherit" className={classes.flex} key='1' style={{marginRight: '20px'}}>Welcome to CodeShare, {Meteor.userId()}</Typography>,
           <Button color="inherit" component={EditorLink}>Editor</Button>,
           <Button color="inherit" key='2' href="/" onClick={onSignOut}>Sign Out </Button>

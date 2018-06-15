@@ -1,30 +1,44 @@
-import React from 'react';
-import { Redirect } from 'react-router-dom';
-import { Meteor } from 'meteor/meteor'
-import InsetList from '../imports/ui/InsetList';
+import React, {Component} from 'react';
+import ReactDOM from 'react-dom';
 
-class Landing extends Component {
+import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/core/styles';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import StarIcon from '@material-ui/icons/Star';
 
-  render() {
 
-    // check is user is logged in; if not, redirect to login page
-    if (Meteor.userId() == null) {
-      return (
-        <Redirect
-            to={{
-              pathname: "/",
-              state: { from: this.props.location }
-            }}
-          />
-        )
-    }
+const styles = theme => ({
+  root: {
+    width: '100%',
+    maxWidth: 360,
+    backgroundColor: theme.palette.background.paper,
+  },
+});
+
+export class Landing extends Component{
+  
+
+  render () {
 
     return (
-      <div>
-        <InsetList />
-      </div>
-
-      
+    <div >
+    <List component="nav">
+      <ListItem button>
+        <ListItemText inset primary="Blah.p" secondary="Last Edit: Jan 21, 2018 12:58"/>
+      </ListItem>
+      <ListItem button>
+        <ListItemText inset primary="untitleda.p" secondary="Last Edit: Jan 21, 2018 12:58" />
+      </ListItem>
+    </List>
+  </div>
     );
   }
+  
 }
+
+
+
+export default withStyles(styles)(Landing);
