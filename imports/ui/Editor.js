@@ -38,22 +38,26 @@ export default class Editor extends Component {
   }
 
   onChange(value, event) {
-    const {row} = event.start;
+    const row_start = event.start.row;
+    const row_end = event.end.row;
     const val_arr = value.split('\n');
-    const delta = val_arr[row];
-    var currentUser = Meteor.userId();
+    const currentUser = Meteor.userId();
 
-    DocumentContents.insert({
-      docId: this.state.id,
-      row: event.start.row,
-      value: delta,
-      createdAt: new Date(), // current time
-      writtenBy: currentUser
-    }, function(error) {
-      if(error) {
-        console.log("Accounts.createUser Faild: ",error.reason);
-      }
-    });
+    for (var i = row_start; i <= row_end; i++) {
+      const delta = val_arr[i];
+
+      DocumentContents.insert({
+        docId: this.state.id,
+        row: i,
+        value: delta,
+        createdAt: new Date(), // current time
+        writtenBy: currentUser
+      }, function(error) {
+        if(error) {
+          console.log("Accounts.createUser Faild: ",error.reason);
+        }
+      });
+  }
 
   }
 
