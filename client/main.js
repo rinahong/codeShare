@@ -18,7 +18,8 @@ Meteor.startup(() => {
         <div>
           <NavBar onSignOut={()=> Meteor.logout(function(error){
             if(!error) {
-              Router.go('/signin');
+              window.location.href = Meteor.absoluteUrl('/signin');
+              // Router.go('/signin');
             }
           })}/>
           <Switch>

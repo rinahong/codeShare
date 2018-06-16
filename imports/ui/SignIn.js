@@ -7,8 +7,9 @@ Template.login.events({
           if(error){
               console.log(error.reason);
           } else {
-
-            // Go back to previous page
+            window.location.href = Meteor.absoluteUrl('/me/documents');
+            // Below only render template not redirecting to the '/me/documents'
+            // Router.go('/me/documents');
           }
       });
     }

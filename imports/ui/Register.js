@@ -17,7 +17,7 @@ Template.register.events({
             if(error) {
               console.log("Accounts.createUser Faild: ",error.reason);
             } else {
-              Router.go('/documents');
+              window.location.href = Meteor.absoluteUrl('/me/documents');
             }
           });
         } else {
