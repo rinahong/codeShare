@@ -3,7 +3,8 @@ import { render } from 'react-dom';
 import brace from 'brace';
 import AceEditor from 'react-ace';
 import { Redirect } from 'react-router-dom';
-import { Tracker } from 'meteor/tracker'
+import { Tracker } from 'meteor/tracker';
+import _ from 'lodash';
 
 import Chat from './Chat.js';
 import { Documents } from '../api/documents.js';
@@ -37,24 +38,38 @@ export default class Editor extends Component {
   }
 
   onChange(value, event) {
+    const {row} = event.start;
+    const val_arr = value.split('\n');
+    const delta = val_arr[row];
+
     Documents.insert({
       id: this.state.id,
-      value,
+      row: event.start.row,
+      value: delta,
       createdAt: new Date(), // current time
     });
+
   }
 
   onLoad(editor) {
 
       Tracker.autorun(() => {
 
-        let document = Documents.findOne({id: this.state.id}, {sort: {createdAt: -1, limit: 1}});
-        if (document) {
-          console.log(document);
-          let prevValue = editor.getValue();
+        let values = [];
+        let text = '';
+        let prevValue = editor.getValue();
+        let data = Documents.find({id: this.state.id}, {sort: {createdAt: 1}}).fetch();
 
-          if (prevValue === document.value) return;
-          editor.setValue(document.value,1);
+        if (data) {
+          _.map(data, function(row_data) {
+              values[row_data.row] = row_data.value;
+          })
+
+          text = values.join('\n');
+          if (text == prevValue) return;
+
+          editor.setValue(text,1);
+
         }
       });
   }
@@ -79,6 +94,7 @@ export default class Editor extends Component {
     return (
       [<Chat key="0" id={this.state.id}/>,
       <AceEditor
+      ref="aceEditor"
       key="1"
       mode="javascript"
       theme="monokai"
