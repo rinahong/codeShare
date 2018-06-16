@@ -34,19 +34,31 @@ const theme = createMuiTheme({
 Meteor.startup(() => {
 
   // console.log(Meteor.userId());
-  console.log();
+import {LandingPage} from '../imports/ui/LandingPage';
+import {Register} from '../imports/ui/Register';
+import '../imports/api/Router';
+
+Meteor.startup(() => {
+  console.log(Meteor.userId());
+
   render(
       <BrowserRouter>
         <div>
-          <NavBar2 onSignOut={()=> Meteor.logout(function(err){
-            console.log(err);
-          })}  />
-          <Switch>
-            <Route path="/document/:id/" component={Editor}/>
-            <Route path="/signin/" component={SignIn}/>
-            <Route path="/home/" component={Landing}/>
 
-            {/* <Route path="/" component={AccountsUIWrapper}/> */}
+          <NavBar2 onSignOut={()=> Meteor.logout(function(error){
+            if(!error) {
+              window.location.href = Meteor.absoluteUrl('/signin');
+              // Router.go('/signin');
+            }
+          })}/>
+          <Switch>
+            <Route path="/documents/:id/" component={Editor}/>
+             <Route path="/signin/" component={SignIn}/>
+            <Route path="/home/" component={Landing}/>
+            {/* <Route path="/users/:id/" component={LandingPage}/> */}
+            {/* <Route exact path="/" component={SignIn}/> */}
+            {/* <Route path="/signin/" component={SignIn}/> */}
+            {/* <Route path="/register" component={Register}/> */}
           </Switch>
         </div>
       </BrowserRouter>
