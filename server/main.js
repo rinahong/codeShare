@@ -6,4 +6,5 @@ import '../imports/api/messages.js';
 import '../imports/api/DocumentContents.js';
 
 Meteor.startup(() => {
+    
 });
