@@ -7,7 +7,7 @@ import { Tracker } from 'meteor/tracker';
 import _ from 'lodash';
 
 import Chat from './Chat.js';
-import { Documents } from '../api/documents.js';
+import { DocumentContents} from '../api/DocumentContents.js';
 
 import 'brace/mode/javascript';
 import 'brace/theme/monokai';
@@ -41,12 +41,18 @@ export default class Editor extends Component {
     const {row} = event.start;
     const val_arr = value.split('\n');
     const delta = val_arr[row];
+    var currentUser = Meteor.userId();
 
-    Documents.insert({
-      id: this.state.id,
+    DocumentContents.insert({
+      docId: this.state.id,
       row: event.start.row,
       value: delta,
       createdAt: new Date(), // current time
+      writtenBy: currentUser
+    }, function(error) {
+      if(error) {
+        console.log("Accounts.createUser Faild: ",error.reason);
+      }
     });
 
   }
@@ -54,11 +60,10 @@ export default class Editor extends Component {
   onLoad(editor) {
 
       Tracker.autorun(() => {
-
         let values = [];
         let text = '';
         let prevValue = editor.getValue();
-        let data = Documents.find({id: this.state.id}, {sort: {createdAt: 1}}).fetch();
+        let data = DocumentContents.find({docId: this.state.id}, {sort: {createdAt: 1}}).fetch();
 
         if (data) {
           _.map(data, function(row_data) {
@@ -69,7 +74,6 @@ export default class Editor extends Component {
           if (text == prevValue) return;
 
           editor.setValue(text,1);
-
         }
       });
   }
@@ -84,7 +88,7 @@ export default class Editor extends Component {
       return (
         <Redirect
             to={{
-              pathname: "/",
+              pathname: "/signin",
               state: { from: this.props.location }
             }}
           />

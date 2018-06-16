@@ -11,7 +11,7 @@ function NavBar (props) {
         display: 'flex',
       }}
     >
-      <Link style={{marginRight: '20px'}} to="/document/1">Editor </Link>
+      <Link style={{marginRight: '20px'}} to="/me/documents">My documents </Link>
 
       {
         Meteor.userId() ? ([  // Should be wrapped in the array
