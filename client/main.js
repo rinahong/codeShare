@@ -14,7 +14,6 @@ import {SignIn} from '../imports/ui/SignIn';
 import NavBar2 from '../imports/ui/NavBar2';
 // import InsetList from '../imports/ui/InsetList';
 
-
 const theme = createMuiTheme({
   palette: {
     primary: {
@@ -30,6 +29,7 @@ const theme = createMuiTheme({
     // error: will use the default color
   },
 });
+
 
 Meteor.startup(() => {
 
@@ -63,4 +63,7 @@ Meteor.startup(() => {
         </div>
       </BrowserRouter>
     , document.getElementById('render-target'));
+}); 
 });
+
+
