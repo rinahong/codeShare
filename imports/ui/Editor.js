@@ -3,17 +3,17 @@ import { render } from 'react-dom';
 import brace from 'brace';
 import AceEditor from 'react-ace';
 import { Redirect } from 'react-router-dom';
-import { withTracker } from 'meteor/react-meteor-data';
-import { Tracker } from 'meteor/tracker'
+import { Tracker } from 'meteor/tracker';
 import _ from 'lodash';
 
-import { Documents } from '../api/documents.js';
+import Chat from './Chat.js';
+import { DocumentContents} from '../api/DocumentContents.js';
 
 import 'brace/mode/javascript';
 import 'brace/theme/monokai';
 
 // Render editor
-class Editor extends Component {
+export default class Editor extends Component {
 
   constructor(props) {
     super(props);
@@ -38,81 +38,88 @@ class Editor extends Component {
   }
 
   onChange(value, event) {
-    Documents.insert({
-      id: this.state.id,
-      value,
+    const {row} = event.start;
+    const val_arr = value.split('\n');
+    const delta = val_arr[row];
+    var currentUser = Meteor.userId();
+
+    DocumentContents.insert({
+      docId: this.state.id,
+      row: event.start.row,
+      value: delta,
       createdAt: new Date(), // current time
+      writtenBy: currentUser
+    }, function(error) {
+      if(error) {
+        console.log("Accounts.createUser Faild: ",error.reason);
+      }
     });
+
   }
 
   onLoad(editor) {
-    /*
-    let document = Documents.findOne({id: this.state.id}, {sort: {createdAt: -1, limit: 1}});
-    if (document) {
-      editor.setValue(document.value);
-    }*/
-    
-    Tracker.autorun(() => {
-       let document = Documents.findOne({id: this.state.id}, {sort: {createdAt: -1, limit: 1}});
-       if (document) {
-         editor.setValue(document.value);
-       }
-    });
-    
+
+      Tracker.autorun(() => {
+        let values = [];
+        let text = '';
+        let prevValue = editor.getValue();
+        let data = DocumentContents.find({docId: this.state.id}, {sort: {createdAt: 1}}).fetch();
+
+        if (data) {
+          _.map(data, function(row_data) {
+              values[row_data.row] = row_data.value;
+          })
+
+          text = values.join('\n');
+          if (text == prevValue) return;
+
+          editor.setValue(text,1);
+        }
+      });
   }
 
   render() {
-    console.log(this.props.document);
 
-    const {id} = this.props.match.params; //document ID
     const height = this.getHeight(); //window height
     const width = this.getWidth(); //window width
-    const value = this.props.document ? this.props.document.value : '';
 
     // check is user is logged in; if not, redirect to login page
     if (Meteor.userId() == null) {
       return (
         <Redirect
             to={{
-              pathname: "/",
+              pathname: "/signin",
               state: { from: this.props.location }
             }}
           />
         )
     }
 
-    const onChange = _.debounce((value, event) => {this.onChange(value, event)}, 3000);
-
     return (
+      [<Chat key="0" id={this.state.id}/>,
       <AceEditor
+      ref="aceEditor"
+      key="1"
       mode="javascript"
       theme="monokai"
       name="editor"
       onLoad={this.onLoad}
-      onChange={onChange}
+      onChange={this.onChange}
       fontSize={14}
       showPrintMargin={false}
       showGutter={true}
       highlightActiveLine={true}
       height={height}
       width={width}
-      value={value}
+      debounceChangePeriod={1000}
+      editorProps={{$blockScrolling: Infinity}}
       setOptions={{
         enableBasicAutocompletion: true,
         enableLiveAutocompletion: true,
         enableSnippets: false,
         showLineNumbers: true,
         tabSize: 2,
-      }}/>
+      }}/>]
     );
   }
 }
-
-export default withTracker(() => {
-  if (this.state) {
-    return {
-      document: Documents.findOne({id: this.state.id}, {sort: {createdAt: -1, limit: 1}})
-    };
-  }
-  return {};
-})(Editor);
