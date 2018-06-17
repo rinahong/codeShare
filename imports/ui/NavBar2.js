@@ -24,6 +24,7 @@ import NoteAddIcon from '@material-ui/icons/NoteAdd';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import DeleteIcon from '@material-ui/icons/Delete';
 import ListSubheader from '@material-ui/core/ListSubheader';
+// import BroadridgeLogo from './imports/ui/br_logo.png';
 
 // import { mailFolderListItems, otherMailFolderListItems } from '../imports/tileData';
 
@@ -88,7 +89,10 @@ const styles = theme => ({
     ...theme.mixins.toolbar,
   },
   toolbarBroadridgeLogo: {
-    backgroundImage: `url(https://unsplash.it/240/65)`,
+    backgroundImage: 'url("https://upload.wikimedia.org/wikipedia/en/d/d0/Broadridge_Financial_Solutions_Logo.svg")',
+    // backgroundImage: 'url('+ BroadridgeLogo+')',
+    backgroundRepeat: 'no-repeat',
+    backgroundSize: '100% 100%',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'flex-end',
@@ -102,7 +106,7 @@ const styles = theme => ({
   },
 });
 
-class MiniDrawer extends React.Component {
+class NavBar2 extends React.Component {
   state = {
     open: false,
   };
@@ -114,6 +118,8 @@ class MiniDrawer extends React.Component {
   handleDrawerClose = () => {
     this.setState({ open: false });
   };
+
+ 
 
   render() {
     const { classes, theme } = this.props;
@@ -209,11 +215,13 @@ class MiniDrawer extends React.Component {
       </div>
     );
   }
+
+  
 }
 
-MiniDrawer.propTypes = {
+NavBar2.propTypes = {
   classes: PropTypes.object.isRequired,
   theme: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles, { withTheme: true })(MiniDrawer);
+export default withStyles(styles, { withTheme: true })(NavBar2);

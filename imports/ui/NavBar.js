@@ -24,6 +24,9 @@ const styles = {
   },
 };
 
+// class NavBar extends React.Component {
+  
+// }
 function NavBar(props) {
   const {onSignOut = () => {}} = props;
   const { classes } = props;
@@ -34,8 +37,7 @@ function NavBar(props) {
       <AppBar position="static">
         <Toolbar>
           
-          {
-        Meteor.userId() ? ([  // Should be wrapped in the array
+          {Meteor.userId() ? ([  // Should be wrapped in the array
           <IconButton className={classes.menuButton} color="inherit" aria-label="Menu">
             <MenuIcon />
           </IconButton>,
@@ -44,8 +46,7 @@ function NavBar(props) {
           <Button color="inherit" key='2' href="/" onClick={onSignOut}>Sign Out </Button>
         ]) : (
           <Button color="inherit" component={LoginLink}>Login</Button>
-        )
-      }
+        )}
         </Toolbar>
         
       </AppBar>
@@ -53,8 +54,8 @@ function NavBar(props) {
   );
 }
 
-NavBar.propTypes = {
-  classes: PropTypes.object.isRequired,
-};
+// NavBar.propTypes = {
+//   classes: PropTypes.object.isRequired,
+// };
 
 export default withStyles(styles)(NavBar);
