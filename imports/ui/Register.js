@@ -15,13 +15,13 @@ Template.register.events({
               }
           },function(error) {
             if(error) {
-              console.log("Accounts.createUser Faild: ",error.reason);
+              console.log("Accounts.createUser Failed: ",error.reason);
             } else {
               window.location.href = Meteor.absoluteUrl('/me/documents');
             }
           });
         } else {
-          console.log("Password do not match.");
+          console.log("Passwords do not match.");
         }
 
     }

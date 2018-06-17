@@ -11,14 +11,14 @@ Template.createDocument.events({
       createdBy: currentUser
     }, function(error,results){
       if(error) {
-        console.log("Documents Insert Faild: ",error.reason);
+        console.log("Documents Insert Failed: ",error.reason);
       } else {
         UserDocuments.insert({
           userId: currentUser,
           docId: results
         }, function(error, results){
           if(error) {
-            console.log("UserDocuments Insert Faild: ",error.reason);
+            console.log("UserDocuments Insert Failed: ",error.reason);
           } else {
             console.log("No error!")
           }
