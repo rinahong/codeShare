@@ -28,8 +28,10 @@ import ListSubheader from '@material-ui/core/ListSubheader';
 
 // import { mailFolderListItems, otherMailFolderListItems } from '../imports/tileData';
 
-const drawerWidth = 240;
 
+import Button from '@material-ui/core/Button';
+
+const drawerWidth = 240;
 const styles = theme => ({
   root: {
     flexGrow: 1,
@@ -107,6 +109,11 @@ const styles = theme => ({
 });
 
 class NavBar2 extends React.Component {
+
+constructor() {
+  super();
+}
+
   state = {
     open: false,
   };
@@ -123,20 +130,21 @@ class NavBar2 extends React.Component {
 
   render() {
     const { classes, theme } = this.props;
+    // const {onSignOut = () => {}} = props;
+
 
     return (
       <div className={classes.root}>
         <AppBar
+          color="primary"
           position="absolute"
-          className={classNames(classes.appBar, this.state.open && classes.appBarShift)}
-        >
+          className={classNames(classes.appBar, this.state.open && classes.appBarShift)}>
           <Toolbar disableGutters={!this.state.open}>
             <IconButton
               color="inherit"
               aria-label="open drawer"
               onClick={this.handleDrawerOpen}
-              className={classNames(classes.menuButton, this.state.open && classes.hide)}
-            >
+              className={classNames(classes.menuButton, this.state.open && classes.hide)}>
               <MenuIcon />
             </IconButton>
             <Typography variant="title" color="inherit" noWrap>

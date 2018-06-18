@@ -5,7 +5,8 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
 import Editor from '../imports/ui/Editor.js';
 import { Landing } from '../imports/ui/Landing';
-import { createMuiTheme } from '@material-ui/core/styles';
+// import { createMuiTheme } from '@material-ui/core/styles';
+import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 
 
 // import AccountsUIWrapper from '../imports/ui/AccountsUIWrapper.js';
@@ -19,7 +20,7 @@ const theme = createMuiTheme({
   palette: {
     primary: {
       // light: will be calculated from palette.primary.main,
-      main: '#ff4400',
+      main: '#00578e',
       // dark: will be calculated from palette.primary.main,
       // contrastText: will be calculated to contast with palette.primary.main
     },
@@ -43,27 +44,34 @@ Meteor.startup(() => {
   console.log(Meteor.userId());
 
   render(
-      <BrowserRouter>
-        <div>
+    <MuiThemeProvider theme={theme}>
+        <BrowserRouter>
+          <div>
 
-          <NavBar onSignOut={()=> Meteor.logout(function(error){
-            if(!error) {
-              window.location.href = Meteor.absoluteUrl('/signin');
-              // Router.go('/signin');
-            }
-          })}/>
-          <NavBar2 />
-          <Switch>
-            <Route path="/documents/:id/" component={Editor}/>
-            <Route path="/signin/" component={SignIn}/>
-            <Route path="/home/" component={Landing}/>
-            {/* <Route path="/users/:id/" component={LandingPage}/> */}
-            {/* <Route exact path="/" component={SignIn}/> */}
-            {/* <Route path="/signin/" component={SignIn}/> */}
-            {/* <Route path="/register" component={Register}/> */}
-          </Switch>
-        </div>
-      </BrowserRouter>
+            <NavBar theme={theme} onSignOut={()=> Meteor.logout(function(error){
+              if(!error) {
+                window.location.href = Meteor.absoluteUrl('/signin');
+                // Router.go('/signin');
+              }
+            })}/>
+            <NavBar2 theme={theme} onSignOut={()=> Meteor.logout(function(error){
+              if(!error) {
+                window.location.href = Meteor.absoluteUrl('/signin');
+                // Router.go('/signin');
+              }
+            })}/>
+            <Switch>
+              <Route path="/documents/:id/" component={Editor}/>
+              <Route path="/signin/" component={SignIn}/>
+              <Route path="/home/" component={Landing}/>
+              {/* <Route path="/users/:id/" component={LandingPage}/> */}
+              {/* <Route exact path="/" component={SignIn}/> */}
+              {/* <Route path="/signin/" component={SignIn}/> */}
+              {/* <Route path="/register" component={Register}/> */}
+            </Switch>
+          </div>
+        </BrowserRouter>
+      </MuiThemeProvider>
     , document.getElementById('render-target'));
 }); 
 });
