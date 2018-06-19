@@ -1,42 +1,3 @@
-// import { UserDocuments } from '../api/UserDoc.js';
-// import { Documents } from '../api/Documents.js';
-//
-// Template.createDocument.events({
-//   'submit form': function(event){
-//     event.preventDefault();
-//     var currentUser = Meteor.userId();
-//     Documents.insert({
-//       title: "Untitled Document",
-//       createdAt: new Date(), // current time
-//       createdBy: currentUser
-//     }, function(error,results){
-//       if(error) {
-//         console.log("Documents Insert Faild: ",error.reason);
-//       } else {
-//         UserDocuments.insert({
-//           userId: currentUser,
-//           docId: results
-//         }, function(error, results){
-//           if(error) {
-//             console.log("UserDocuments Insert Faild: ",error.reason);
-//           } else {
-//             console.log("No error!")
-//           }
-//         })
-//       }
-//     });
-//   }
-// });
-//
-// Template.docLists.helpers({
-//     'list': function(){
-//         var currentUser = Meteor.userId();
-//         return Documents.find({ createdBy: currentUser }, {sort: {createdAt: -1}});
-//     }
-// });
-
-
-
 import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
 import { UserDocuments } from '../api/UserDoc.js';
@@ -122,7 +83,7 @@ export class LandingPage extends Component {
           {
             this.state.documents.map(doc => (
               <li key={doc._id}>
-                <Link to={`/`}>
+                <Link to={`/documents/${doc._id}`}>
                   {JSON.stringify(doc.title) + "---" + JSON.stringify(doc._id)}
                 </Link>
               </li>
