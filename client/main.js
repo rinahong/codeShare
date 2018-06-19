@@ -11,7 +11,7 @@ import { createMuiTheme } from '@material-ui/core/styles';
 // import AccountsUIWrapper from '../imports/ui/AccountsUIWrapper.js';
 
 import {SignInPage} from '../imports/ui/SignInPage';
-import NavBar2 from '../imports/ui/NavBar2';
+import NavBar from '../imports/ui/NavBar';
 // import {LandingPage} from '../imports/ui/LandingPage';
 import { RegisterPage } from '../imports/ui/RegisterPage';
 // import '../imports/api/Router';
@@ -40,7 +40,7 @@ Meteor.startup(() => {
       <BrowserRouter>
         <div>
 
-          <NavBar2 onSignOut={()=> Meteor.logout(function(error){
+          <NavBar onSignOut={()=> Meteor.logout(function(error){
             if(!error) {
               window.location.href = Meteor.absoluteUrl('/signin');
               // Router.go('/signin');
