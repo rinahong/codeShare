@@ -27,7 +27,8 @@ const styles = {
 function NavBar(props) {
   const {classes, onSignOut = () => {}} = props;
   const LoginLink = props => <Link to="/signin" {...props} />;
-  const EditorLink = props => <Link to="/documents/1" {...props} />
+  const MyDocumentsLink = props => <Link to="/me/documents" {...props} />
+  console.log(onSignOut)
   return (
     <div className={classes.root}>
       <AppBar position="static">
@@ -39,7 +40,7 @@ function NavBar(props) {
             <MenuIcon />
           </IconButton>,
           <Typography variant="title" color="inherit" className={classes.flex} key='1' style={{marginRight: '20px'}}>Welcome to CodeShare, {Meteor.userId()}</Typography>,
-          <Button color="inherit" component={EditorLink}>Editor</Button>,
+          <Button color="inherit" component={MyDocumentsLink}>My Documents</Button>,
           <Button color="inherit" key='2' href="/" onClick={onSignOut}>Sign Out </Button>
         ]) : (
           <Button color="inherit" component={LoginLink}>Login</Button>
