@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Widget, addResponseMessage, addLinkSnippet, addUserMessage } from 'react-chat-widget';
 import { withTracker } from 'meteor/react-meteor-data';
 
-import { Messages } from '../api/Messages.js';
+import { Messages } from '../api/messages.js';
 
 import 'react-chat-widget/lib/styles.css';
 
