@@ -28,7 +28,7 @@ function NavBar(props) {
   const {classes, onSignOut = () => {}} = props;
   const LoginLink = props => <Link to="/signin" {...props} />;
   const MyDocumentsLink = props => <Link to="/me/documents" {...props} />
-  console.log(onSignOut)
+  // console.log(onSignOut)
   return (
     <div className={classes.root}>
       <AppBar position="static">

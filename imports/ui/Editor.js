@@ -13,7 +13,6 @@ import 'brace/mode/javascript';
 import 'brace/theme/monokai';
 
 // Render editor
-// export default class Editor extends Component {
 export class Editor extends Component {
 
   constructor(props) {
@@ -90,7 +89,6 @@ export class Editor extends Component {
 
     // check is user is logged in; if not, redirect to login page
     if (Meteor.userId() == null) {
-      console.log("where am i?")
       return (
         <Redirect
             to={{

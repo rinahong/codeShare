@@ -7,8 +7,9 @@ import Button from '@material-ui/core/Button';
 import NavBar from '../imports/api/NavBar';
 import { SignInPage } from '../imports/ui/SignInPage';
 import { RegisterPage } from '../imports/ui/RegisterPage';
-import {Editor} from '../imports/ui/Editor.js';
+import { Editor } from '../imports/ui/Editor.js';
 import { Landing } from '../imports/ui/Landing';
+import { LandingPage } from '../imports/ui/LandingPage';
 
 const theme = createMuiTheme({
   palette: {
@@ -43,9 +44,11 @@ Meteor.startup(() => {
             }
           })}/>
           <Switch>
+
             <Route path="/signin" component={SignInPage}/>
             <Route path="/register" component={RegisterPage}/>
             <Route path="/home" component={Landing}/>
+            <Route path="/me/documents" component={LandingPage}/>
             <Route path="/documents/:id" component={Editor}/>
           </Switch>
         </div>
