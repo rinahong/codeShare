@@ -1,5 +1,5 @@
-import { UserDocuments } from '../api/userDoc.js';
-import { Documents } from '../api/documents.js';
+import { UserDocuments } from '../api/UserDoc.js';
+import { Documents } from '../api/Documents.js';
 
 Template.createDocument.events({
   'submit form': function(event){

@@ -5,13 +5,17 @@ export class SignInPage extends Component {
   constructor (props) {
 
     super(props);
+    let prevUrlString = "";
+    if(this.props.location.state) {
+      prevUrlString = this.props.location.state.from.pathname;
+    }
     this.state = {
       email: "",
       password: "",
-      previousURl: this.props.location.state.from.pathname
+      previousURl: prevUrlString
     };
     this.createToken = this.createToken.bind(this);
-    console.log("in signin page ctor", this.state.previousURl)
+
   }
 
   handleChange (name) {
@@ -28,11 +32,8 @@ export class SignInPage extends Component {
       if(error){
           console.log(error.reason);
       } else {
-        console.log(this)
           if (previousURl !== "" || previousURl != null) {
               window.location.href = Meteor.absoluteUrl(previousURl);
-          } else {
-            window.location.href = Meteor.absoluteUrl('/me/documents');
           }
       }
     });
