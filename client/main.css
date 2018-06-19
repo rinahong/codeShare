@@ -124,3 +124,18 @@ header .hide-completed {
     padding-bottom: 5px;
   }
 } */
+
+
+.conversation-container > .header {
+  background-color: #00578e !important;
+}
+
+.message > .response {
+  background-color: #a8b324 !important;
+  color: white !important;
+}
+
+.client {
+  background-color: #00578e !important;
+  color: white !important;
+}
