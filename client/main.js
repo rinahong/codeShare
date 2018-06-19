@@ -12,6 +12,9 @@ import { createMuiTheme } from '@material-ui/core/styles';
 
 import {SignIn} from '../imports/ui/SignIn';
 import NavBar2 from '../imports/ui/NavBar2';
+// import {LandingPage} from '../imports/ui/LandingPage';
+import {Register} from '../imports/ui/Register';
+// import '../imports/api/Router';
 // import InsetList from '../imports/ui/InsetList';
 
 const theme = createMuiTheme({
@@ -29,14 +32,6 @@ const theme = createMuiTheme({
     // error: will use the default color
   },
 });
-
-
-Meteor.startup(() => {
-
-  // console.log(Meteor.userId());
-import {LandingPage} from '../imports/ui/LandingPage';
-import {Register} from '../imports/ui/Register';
-import '../imports/api/Router';
 
 Meteor.startup(() => {
   console.log(Meteor.userId());
@@ -58,12 +53,9 @@ Meteor.startup(() => {
             {/* <Route path="/users/:id/" component={LandingPage}/> */}
             {/* <Route exact path="/" component={SignIn}/> */}
             {/* <Route path="/signin/" component={SignIn}/> */}
-            {/* <Route path="/register" component={Register}/> */}
+            <Route path="/register" component={Register}/>
           </Switch>
         </div>
       </BrowserRouter>
     , document.getElementById('render-target'));
-}); 
 });
-
-

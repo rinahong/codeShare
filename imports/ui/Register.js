@@ -25,21 +25,29 @@ export class Register extends Component {
 
   registerUser (event) {
     event.preventDefault();
-    const {email, password, password_confirmation} = this.state;
-    // if (password == password_confirmation) {
-    Accounts.createUser({
-      email: email,
-      password: password
-    });
-    Accounts.createUser({email: email, password: password}, function(err){
-      console.log(err);
-    });
-    // }
+    const {email, username, password, password_confirmation} = this.state;
+    if(password === password_confirmation) {
+      Accounts.createUser({
+          email: email,
+          password: password,
+          profile: {
+            username: username
+          }
+      },function(error) {
+        if(error) {
+          console.log("Accounts.createUser Faild: ",error.reason);
+        } else {
+          window.location.href = Meteor.absoluteUrl('/me/documents');
+        }
+      });
+    } else {
+      console.log("Password do not match.");
+    }
     // this.props.history.push('/signin');
   }
 
   render () {
-    const {email, password, password_confirmation} = this.state;
+    const {email, username,password, password_confirmation} = this.state;
     return (
       <main
         className="SignInPage"
@@ -61,7 +69,7 @@ export class Register extends Component {
           </div>
 
           <div>
-            <label htmlFor='username'>Email</label> <br />
+            <label htmlFor='username'>Username</label> <br />
             <input
               value={username}
               onChange={this.handleChange('username')}
@@ -94,7 +102,7 @@ export class Register extends Component {
           </div>
 
           <div>
-            <input type='submit' value='Sign In'/>
+            <input type='submit' value='Register!'/>
           </div>
         </form>
 
