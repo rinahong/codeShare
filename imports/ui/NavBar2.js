@@ -10,7 +10,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import { Meteor } from 'meteor/meteor'
 
 import { Link } from 'react-router-dom'
- 
+
 const styles = {
   root: {
     flexGrow: 1,
@@ -28,12 +28,12 @@ function NavBar(props) {
   const {onSignOut = () => {}} = props;
   const { classes } = props;
   const LoginLink = props => <Link to="/signin" {...props} />;
-  const EditorLink = props => <Link to="/document/1" {...props} />
+  const EditorLink = props => <Link to="/documents/1" {...props} />
   return (
     <div className={classes.root}>
       <AppBar position="static">
         <Toolbar>
-          
+
           {
         Meteor.userId() ? ([  // Should be wrapped in the array
           <IconButton className={classes.menuButton} color="inherit" aria-label="Menu">
@@ -47,7 +47,7 @@ function NavBar(props) {
         )
       }
         </Toolbar>
-        
+
       </AppBar>
     </div>
   );

@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
-import { Accounts } from 'meteor/accounts-base';
 
-export class Register extends Component {
+export class RegisterPage extends Component {
   constructor (props) {
     super(props);
 
@@ -43,7 +42,6 @@ export class Register extends Component {
     } else {
       console.log("Password do not match.");
     }
-    // this.props.history.push('/signin');
   }
 
   render () {

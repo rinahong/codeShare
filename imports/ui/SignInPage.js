@@ -1,17 +1,17 @@
 import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
-import {browserHistory} from 'react-router';
 
-export class SignIn extends Component {
+export class SignInPage extends Component {
   constructor (props) {
+
     super(props);
-    console.log("In signin ctor")
     this.state = {
       email: "",
-      password: ""
+      password: "",
+      previousURl: this.props.location.state.from.pathname
     };
     this.createToken = this.createToken.bind(this);
-
+    console.log("in signin page ctor", this.state.previousURl)
   }
 
   handleChange (name) {
@@ -23,23 +23,19 @@ export class SignIn extends Component {
 
   createToken (event) {
     event.preventDefault();
-    const {email, password} = this.state;
+    const {email, password, previousURl} = this.state;
     Meteor.loginWithPassword(email, password, function(error){
       if(error){
           console.log(error.reason);
       } else {
-        window.location.href = Meteor.absoluteUrl('/me/documents');
-        // this.props.history.push(`/me/documents`);
+        console.log(this)
+          if (previousURl !== "" || previousURl != null) {
+              window.location.href = Meteor.absoluteUrl(previousURl);
+          } else {
+            window.location.href = Meteor.absoluteUrl('/me/documents');
+          }
       }
-  });
-    // setTimeout(()=>{
-    //   if (this.props.location.state) {
-    //       console.log(this.props.location.state.from.pathname);
-    //       this.props.history.push(this.props.location.state.from.pathname);
-    //   } else {
-    //     this.props.history.push(`/users/${Meteor.userId()}`);
-    //   }
-    // },1000)
+    });
   }
 
   render () {
