@@ -2,17 +2,14 @@ import React from 'react';
 import { Meteor } from 'meteor/meteor';
 import { render } from 'react-dom';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
-import Button from '@material-ui/core/Button';
-import Editor from '../imports/ui/Editor.js';
-import { Landing } from '../imports/ui/Landing';
 import { createMuiTheme } from '@material-ui/core/styles';
-
-
-// import AccountsUIWrapper from '../imports/ui/AccountsUIWrapper.js';
-
-import {SignIn} from '../imports/ui/SignIn';
-import NavBar2 from '../imports/ui/NavBar2';
-// import InsetList from '../imports/ui/InsetList';
+import Button from '@material-ui/core/Button';
+import NavBar from '../imports/api/NavBar';
+import { SignInPage } from '../imports/ui/SignInPage';
+import { RegisterPage } from '../imports/ui/RegisterPage';
+import { Editor } from '../imports/ui/Editor.js';
+import { Landing } from '../imports/ui/Landing';
+import { LandingPage } from '../imports/ui/LandingPage';
 
 const theme = createMuiTheme({
   palette: {
@@ -30,14 +27,6 @@ const theme = createMuiTheme({
   },
 });
 
-
-Meteor.startup(() => {
-
-  // console.log(Meteor.userId());
-import {LandingPage} from '../imports/ui/LandingPage';
-import {Register} from '../imports/ui/Register';
-import '../imports/api/Router';
-
 Meteor.startup(() => {
   console.log(Meteor.userId());
 
@@ -45,25 +34,24 @@ Meteor.startup(() => {
       <BrowserRouter>
         <div>
 
-          <NavBar2 onSignOut={()=> Meteor.logout(function(error){
+          <NavBar onSignOut={()=> Meteor.logout(function(error){
+            console.log("Am I even in logout?")
             if(!error) {
               window.location.href = Meteor.absoluteUrl('/signin');
-              // Router.go('/signin');
+              console.log("Signout successfully, but why not redirect???")
+            }else {
+              console.log("why error?", error.reason)
             }
           })}/>
           <Switch>
-            <Route path="/documents/:id/" component={Editor}/>
-             <Route path="/signin/" component={SignIn}/>
-            <Route path="/home/" component={Landing}/>
-            {/* <Route path="/users/:id/" component={LandingPage}/> */}
-            {/* <Route exact path="/" component={SignIn}/> */}
-            {/* <Route path="/signin/" component={SignIn}/> */}
-            {/* <Route path="/register" component={Register}/> */}
+
+            <Route path="/signin" component={SignInPage}/>
+            <Route path="/register" component={RegisterPage}/>
+            <Route path="/home" component={Landing}/>
+            <Route path="/me/documents" component={LandingPage}/>
+            <Route path="/documents/:id" component={Editor}/>
           </Switch>
         </div>
       </BrowserRouter>
     , document.getElementById('render-target'));
-}); 
 });
-
-

@@ -1,4 +1,6 @@
 import React from 'react';
+import { Meteor } from 'meteor/meteor'
+import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
@@ -7,10 +9,8 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
-import { Meteor } from 'meteor/meteor'
 
-import { Link } from 'react-router-dom'
- 
+
 const styles = {
   root: {
     flexGrow: 1,
@@ -25,29 +25,29 @@ const styles = {
 };
 
 function NavBar(props) {
-  const {onSignOut = () => {}} = props;
-  const { classes } = props;
+  const {classes, onSignOut = () => {}} = props;
   const LoginLink = props => <Link to="/signin" {...props} />;
-  const EditorLink = props => <Link to="/document/1" {...props} />
+  const MyDocumentsLink = props => <Link to="/me/documents" {...props} />
+  // console.log(onSignOut)
   return (
     <div className={classes.root}>
       <AppBar position="static">
         <Toolbar>
-          
+
           {
         Meteor.userId() ? ([  // Should be wrapped in the array
           <IconButton className={classes.menuButton} color="inherit" aria-label="Menu">
             <MenuIcon />
           </IconButton>,
           <Typography variant="title" color="inherit" className={classes.flex} key='1' style={{marginRight: '20px'}}>Welcome to CodeShare, {Meteor.userId()}</Typography>,
-          <Button color="inherit" component={EditorLink}>Editor</Button>,
+          <Button color="inherit" component={MyDocumentsLink}>My Documents</Button>,
           <Button color="inherit" key='2' href="/" onClick={onSignOut}>Sign Out </Button>
         ]) : (
           <Button color="inherit" component={LoginLink}>Login</Button>
         )
       }
         </Toolbar>
-        
+
       </AppBar>
     </div>
   );

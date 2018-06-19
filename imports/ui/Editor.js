@@ -13,7 +13,7 @@ import 'brace/mode/javascript';
 import 'brace/theme/monokai';
 
 // Render editor
-export default class Editor extends Component {
+export class Editor extends Component {
 
   constructor(props) {
     super(props);
