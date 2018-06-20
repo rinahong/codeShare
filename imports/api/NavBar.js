@@ -3,8 +3,6 @@ import { Meteor } from 'meteor/meteor'
 import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
@@ -24,6 +22,7 @@ import HistoryIcon from '@material-ui/icons/History';
 import NoteAddIcon from '@material-ui/icons/NoteAdd';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import DeleteIcon from '@material-ui/icons/Delete';
+import { AppBar, Toolbar } from '@material-ui/core';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import { RenderLoop } from 'brace';
 
@@ -159,67 +158,71 @@ class NavBar extends React.Component {
 
           </Toolbar>
         </AppBar>
-        <Drawer
-          variant="permanent"
-          classes={{
-            paper: classNames(classes.drawerPaper, !this.state.open && classes.drawerPaperClose),
-          }}
-          open={this.state.open}>
-          <div className={classes.toolbarBroadridgeLogo}>
-            {/* <img src="" /> */}
 
-            <IconButton onClick={this.handleDrawerClose}>
-              {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
-            </IconButton>
-          </div>
-          <Divider />
-          <List>
-            <div>
-              <ListItem button>
-                <ListItemIcon>
-                  <HomeIcon />
-                </ListItemIcon>
-                <ListItemText primary="Home" />
-              </ListItem>
-              <ListItem button>
-                <ListItemIcon>
-                  <NoteAddIcon />
-                </ListItemIcon>
-                <ListItemText primary="New Document" />
-              </ListItem>
-              <ListItem button>
-                <ListItemIcon>
-                  <GetAppIcon />
-                </ListItemIcon>
-                <ListItemText primary="Download" />
-              </ListItem>
-              <ListItem button>
-                <ListItemIcon>
-                  <HistoryIcon />
-                </ListItemIcon>
-                <ListItemText primary="History" />
-              </ListItem>
+        {Meteor.userId() ? ([  // Should be wrapped in the array
+          <Drawer
+            variant="permanent"
+            classes={{
+              paper: classNames(classes.drawerPaper, !this.state.open && classes.drawerPaperClose),
+            }}
+            open={this.state.open}>
+            <div className={classes.toolbarBroadridgeLogo}>
+              {/* <img src="" /> */}
+
+              <IconButton onClick={this.handleDrawerClose}>
+                {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+              </IconButton>
             </div>
-          </List>
-          <Divider />
-          <List>
+            <Divider />
+            <List>
+              <div>
+                <ListItem button>
+                  <ListItemIcon>
+                    <HomeIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Home" />
+                </ListItem>
+                <ListItem button>
+                  <ListItemIcon>
+                    <NoteAddIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="New Document" />
+                </ListItem>
+                <ListItem button>
+                  <ListItemIcon>
+                    <GetAppIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Download" />
+                </ListItem>
+                <ListItem button>
+                  <ListItemIcon>
+                    <HistoryIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="History" />
+                </ListItem>
+              </div>
+            </List>
+            <Divider />
+            <List>
 
+              <div>
+                <ListItem button>
+                  <ListItemIcon>
+                    <DeleteIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Delete" />
+                </ListItem>
+              </div>
+            </List>
+          </Drawer>
+        ]) : (
             <div>
-              <ListItem button>
-                <ListItemIcon>
-                  <DeleteIcon />
-                </ListItemIcon>
-                <ListItemText primary="Delete" />
-              </ListItem>
-            </div>
+              yoikes
+              </div>
+          )}
 
 
-          </List>
-        </Drawer>
-        <main className={classes.content}>
-          <div className={classes.toolbar} />
-          <Typography noWrap>{'You think water moves fast? You should see ice.'}</Typography>
-        </main>
+
       </div>
     );
   }

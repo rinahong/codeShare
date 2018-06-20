@@ -33,7 +33,6 @@ Meteor.startup(() => {
     <MuiThemeProvider theme={theme}>
       <BrowserRouter>
         <div>
-
           <NavBar theme={theme} onSignOut={() => Meteor.logout(function (error) {
             console.log("Am I even in logout?")
             if (!error) {
