@@ -2,8 +2,7 @@ import React from 'react';
 import { Meteor } from 'meteor/meteor';
 import { render } from 'react-dom';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
-import { createMuiTheme } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
+import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 
 import NavBar from '../imports/api/NavBar';
 import { SignInPage } from '../imports/ui/SignInPage';
@@ -15,7 +14,7 @@ const theme = createMuiTheme({
   palette: {
     primary: {
       // light: will be calculated from palette.primary.main,
-      main: '#ff4400',
+      main: '#00578e',
       // dark: will be calculated from palette.primary.main,
       // contrastText: will be calculated to contast with palette.primary.main
     },
@@ -31,6 +30,7 @@ Meteor.startup(() => {
   console.log(Meteor.userId());
 
   render(
+    <MuiThemeProvider theme={theme}>
       <BrowserRouter>
         <div>
 
@@ -52,5 +52,6 @@ Meteor.startup(() => {
           </Switch>
         </div>
       </BrowserRouter>
+    </MuiThemeProvider>
     , document.getElementById('render-target'));
 });
