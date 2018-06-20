@@ -17,10 +17,8 @@ const styles = theme => ({
 
 class InsetList extends Component {
 
-
-
  InsetList(props) {
-  
+
   const { classes } = props;
   return (
     <div className={classes.root} >

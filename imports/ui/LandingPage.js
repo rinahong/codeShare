@@ -1,7 +1,8 @@
-import React, {Component} from 'react';
-import {Link} from 'react-router-dom';
+import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
+
 import { UserDocuments } from '../api/userDoc';
-import { Documents } from '../api/documents';
+import { DocumentContents } from '../api/documentContents';
 
 export class LandingPage extends Component {
   constructor (props) {
@@ -18,7 +19,7 @@ export class LandingPage extends Component {
   componentDidMount () {
     var currentUser = Meteor.userId();
     Tracker.autorun(() => {
-      let data = Documents.find({ createdBy: currentUser }, {sort: {createdAt: -1}}).fetch()
+      let data = DocumentContents.find({ createdBy: currentUser }, {sort: {createdAt: -1}}).fetch()
       if (data) {
         console.log(data)
         this.setState({documents: data, loading: false});
@@ -29,20 +30,21 @@ export class LandingPage extends Component {
   createDocument() {
     console.log("am i in createDocument")
     var currentUser = Meteor.userId();
-    Documents.insert({
+
+    DocumentContents.insert({
       title: "Untitled Document",
       createdAt: new Date(), // current time
       createdBy: currentUser
     }, function(error,results){
       if(error) {
-        console.log("Documents Insert Faild: ",error.reason);
+        console.log("Documents Insert Failed: ",error.reason);
       } else {
         UserDocuments.insert({
           userId: currentUser,
           docId: results
         }, function(error, results){
           if(error) {
-            console.log("UserDocuments Insert Faild: ",error.reason);
+            console.log("UserDocuments Insert Failed: ",error.reason);
           } else {
             console.log("No error!")
           }

@@ -7,7 +7,8 @@ import { Tracker } from 'meteor/tracker';
 import _ from 'lodash';
 
 import Chat from './Chat.js';
-import { DocumentContents} from '../api/DocumentContents.js';
+import { DocumentContents } from '../api/documentContents.js';
+import CustomOpenEdgeMode from '../customModes/openEdge.js';
 
 import 'brace/mode/javascript';
 import 'brace/theme/monokai';
@@ -27,7 +28,15 @@ export class Editor extends Component {
       id: this.props.match.params.id
     }
 
+    // I hate this... but need a non-reactive variable
+    this.prevValues = [];
+
   }
+
+  componentDidMount() {
+		const customMode = new CustomOpenEdgeMode();
+		this.refs.aceEditor.editor.getSession().setMode(customMode);
+	}
 
   getHeight() {
     return (3 * window.innerHeight) + "px";
@@ -38,12 +47,14 @@ export class Editor extends Component {
   }
 
   onChange(value, event) {
-    const row_start = event.start.row;
-    const row_end = event.end.row;
+
     const val_arr = value.split('\n');
     const currentUser = Meteor.userId();
 
-    for (var i = row_start; i <= row_end; i++) {
+    for (var i = 0; i < val_arr.length; i++) {
+
+      if (val_arr[i] == this.prevValues[i]) continue;
+
       const delta = val_arr[i];
 
       DocumentContents.insert({
@@ -54,10 +65,10 @@ export class Editor extends Component {
         writtenBy: currentUser
       }, function(error) {
         if(error) {
-          console.log("Accounts.createUser Faild: ",error.reason);
+          console.log("Document save Failed: ",error.reason);
         }
       });
-  }
+    }
 
   }
 
@@ -73,6 +84,8 @@ export class Editor extends Component {
           _.map(data, function(row_data) {
               values[row_data.row] = row_data.value;
           })
+
+          this.prevValues = values;
 
           text = values.join('\n');
           if (text == prevValue) return;

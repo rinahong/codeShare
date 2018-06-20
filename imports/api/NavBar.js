@@ -36,14 +36,14 @@ function NavBar(props) {
 
           {
         Meteor.userId() ? ([  // Should be wrapped in the array
-          <IconButton className={classes.menuButton} color="inherit" aria-label="Menu">
+          <IconButton key='0' className={classes.menuButton} color="inherit" aria-label="Menu">
             <MenuIcon />
           </IconButton>,
           <Typography variant="title" color="inherit" className={classes.flex} key='1' style={{marginRight: '20px'}}>Welcome to CodeShare, {Meteor.userId()}</Typography>,
-          <Button color="inherit" component={MyDocumentsLink}>My Documents</Button>,
-          <Button color="inherit" key='2' href="/" onClick={onSignOut}>Sign Out </Button>
+          <Button color="inherit" key='2' component={MyDocumentsLink}>My Documents</Button>,
+          <Button color="inherit" key='3' href="/" onClick={onSignOut}>Sign Out </Button>
         ]) : (
-          <Button color="inherit" component={LoginLink}>Login</Button>
+          <Button key='1' color="inherit" component={LoginLink}>Login</Button>
         )
       }
         </Toolbar>

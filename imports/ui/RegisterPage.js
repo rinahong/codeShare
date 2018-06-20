@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 
 export class RegisterPage extends Component {
   constructor (props) {
@@ -34,7 +34,7 @@ export class RegisterPage extends Component {
           }
       },function(error) {
         if(error) {
-          console.log("Accounts.createUser Faild: ",error.reason);
+          console.log("Accounts.createUser Failed: ",error.reason);
         } else {
           window.location.href = Meteor.absoluteUrl('/me/documents');
         }
