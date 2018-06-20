@@ -34,21 +34,21 @@ Meteor.startup(() => {
       <BrowserRouter>
         <div>
 
-          <NavBar theme={theme} onSignOut={()=> Meteor.logout(function(error){
+          <NavBar theme={theme} onSignOut={() => Meteor.logout(function (error) {
             console.log("Am I even in logout?")
-            if(!error) {
+            if (!error) {
               window.location.href = Meteor.absoluteUrl('/signin');
               console.log("Signout successfully, but why not redirect???")
-            }else {
+            } else {
               console.log("why error?", error.reason)
             }
-          })}/>
+          })} />
           <Switch>
 
-            <Route path="/signin" component={SignInPage}/>
-            <Route path="/register" component={RegisterPage}/>
-            <Route path="/me/documents" component={LandingPage}/>
-            <Route path="/documents/:id" component={Editor}/>
+            <Route path="/signin" component={SignInPage} />
+            <Route path="/register" component={RegisterPage} />
+            <Route path="/me/documents" component={LandingPage} />
+            <Route path="/documents/:id" component={Editor} />
           </Switch>
         </div>
       </BrowserRouter>

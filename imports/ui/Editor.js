@@ -34,9 +34,9 @@ export class Editor extends Component {
   }
 
   componentDidMount() {
-		const customMode = new CustomOpenEdgeMode();
-		this.refs.aceEditor.editor.getSession().setMode(customMode);
-	}
+    const customMode = new CustomOpenEdgeMode();
+    this.refs.aceEditor.editor.getSession().setMode(customMode);
+  }
 
   getHeight() {
     return (3 * window.innerHeight) + "px";
@@ -63,9 +63,9 @@ export class Editor extends Component {
         value: delta,
         createdAt: new Date(), // current time
         writtenBy: currentUser
-      }, function(error) {
-        if(error) {
-          console.log("Document save Failed: ",error.reason);
+      }, function (error) {
+        if (error) {
+          console.log("Document save Failed: ", error.reason);
         }
       });
     }
@@ -74,25 +74,25 @@ export class Editor extends Component {
 
   onLoad(editor) {
 
-      Tracker.autorun(() => {
-        let values = [];
-        let text = '';
-        let prevValue = editor.getValue();
-        let data = DocumentContents.find({docId: this.state.id}, {sort: {createdAt: 1}}).fetch();
+    Tracker.autorun(() => {
+      let values = [];
+      let text = '';
+      let prevValue = editor.getValue();
+      let data = DocumentContents.find({ docId: this.state.id }, { sort: { createdAt: 1 } }).fetch();
 
-        if (data) {
-          _.map(data, function(row_data) {
-              values[row_data.row] = row_data.value;
-          })
+      if (data) {
+        _.map(data, function (row_data) {
+          values[row_data.row] = row_data.value;
+        })
 
-          this.prevValues = values;
+        this.prevValues = values;
 
-          text = values.join('\n');
-          if (text == prevValue) return;
+        text = values.join('\n');
+        if (text == prevValue) return;
 
-          editor.setValue(text,1);
-        }
-      });
+        editor.setValue(text, 1);
+      }
+    });
   }
 
   render() {
@@ -104,39 +104,39 @@ export class Editor extends Component {
     if (Meteor.userId() == null) {
       return (
         <Redirect
-            to={{
-              pathname: "/signin",
-              state: { from: this.props.location }
-            }}
-          />
-        )
+          to={{
+            pathname: "/signin",
+            state: { from: this.props.location }
+          }}
+        />
+      )
     }
 
     return (
-      [<Chat key="0" id={this.state.id}/>,
+      [<Chat key="0" id={this.state.id} />,
       <AceEditor
-      ref="aceEditor"
-      key="1"
-      mode="javascript"
-      theme="monokai"
-      name="editor"
-      onLoad={this.onLoad}
-      onChange={this.onChange}
-      fontSize={14}
-      showPrintMargin={false}
-      showGutter={true}
-      highlightActiveLine={true}
-      height={height}
-      width={width}
-      debounceChangePeriod={1000}
-      editorProps={{$blockScrolling: Infinity}}
-      setOptions={{
-        enableBasicAutocompletion: true,
-        enableLiveAutocompletion: true,
-        enableSnippets: false,
-        showLineNumbers: true,
-        tabSize: 2,
-      }}/>]
+        ref="aceEditor"
+        key="1"
+        mode="javascript"
+        theme="monokai"
+        name="editor"
+        onLoad={this.onLoad}
+        onChange={this.onChange}
+        fontSize={14}
+        showPrintMargin={false}
+        showGutter={true}
+        highlightActiveLine={true}
+        height={height}
+        width={width}
+        debounceChangePeriod={1000}
+        editorProps={{ $blockScrolling: Infinity }}
+        setOptions={{
+          enableBasicAutocompletion: true,
+          enableLiveAutocompletion: true,
+          enableSnippets: false,
+          showLineNumbers: true,
+          tabSize: 2,
+        }} />]
     );
   }
 

@@ -110,9 +110,9 @@ const MyDocumentsLink = props => <Link to="/me/documents" {...props} />
 
 class NavBar extends React.Component {
 
-constructor() {
-  super();
-}
+  constructor() {
+    super();
+  }
 
   state = {
     open: false,
@@ -126,11 +126,11 @@ constructor() {
     this.setState({ open: false });
   };
 
- 
+
 
   render() {
     // const {  } = this.props;
-    const { classes, theme, onSignOut = () => {}} = this.props;
+    const { classes, theme, onSignOut = () => { } } = this.props;
 
 
     return (
@@ -143,21 +143,21 @@ constructor() {
           <Toolbar disableGutters={!this.state.open}>
 
 
-                {Meteor.userId() ? ([  // Should be wrapped in the array
-                <IconButton
-                  color="inherit"
-                  aria-label="open drawer"
-                  onClick={this.handleDrawerOpen}
-                  className={classNames(classes.menuButton, this.state.open && classes.hide)}>
-                  <MenuIcon />
-                </IconButton>,
-                <Typography variant="title" color="inherit" className={classes.flex} key='1' style={{marginRight: '20px'}}>Welcome to CodeShare, {Meteor.userId()}</Typography>,
-                <Button color="inherit" key='2' component={MyDocumentsLink}>My Documents</Button>,
-                <Button color="inherit" key='3' href="/" onClick={onSignOut}>Sign Out </Button>
-                ]) : (
+            {Meteor.userId() ? ([  // Should be wrapped in the array
+              <IconButton
+                color="inherit"
+                aria-label="open drawer"
+                onClick={this.handleDrawerOpen}
+                className={classNames(classes.menuButton, this.state.open && classes.hide)}>
+                <MenuIcon />
+              </IconButton>,
+              <Typography variant="title" color="inherit" className={classes.flex} key='1' style={{ marginRight: '20px' }}>Welcome to CodeShare, {Meteor.userId()}</Typography>,
+              <Button color="inherit" key='2' component={MyDocumentsLink}>My Documents</Button>,
+              <Button color="inherit" key='3' href="/" onClick={onSignOut}>Sign Out </Button>
+            ]) : (
                 <Button key='1' color="inherit" component={LoginLink}>Login</Button>)}
 
-        </Toolbar>
+          </Toolbar>
         </AppBar>
         <Drawer
           variant="permanent"
@@ -166,59 +166,52 @@ constructor() {
           }}
           open={this.state.open}>
           <div className={classes.toolbarBroadridgeLogo}>
-          {/* <img src="" /> */}
+            {/* <img src="" /> */}
 
             <IconButton onClick={this.handleDrawerClose}>
               {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
-              
             </IconButton>
-            
           </div>
           <Divider />
           <List>
-
-
-
-<div>
-    <ListItem button>
-      <ListItemIcon>
-        <HomeIcon />
-      </ListItemIcon>
-      <ListItemText primary="Home" />
-    </ListItem>
-    <ListItem button>
-      <ListItemIcon>
-        <NoteAddIcon />
-      </ListItemIcon>
-      <ListItemText primary="New Document" />
-    </ListItem>
-    <ListItem button>
-      <ListItemIcon>
-        <GetAppIcon />
-      </ListItemIcon>
-      <ListItemText primary="Download" />
-    </ListItem>
-    <ListItem button>
-      <ListItemIcon>
-        <HistoryIcon />
-      </ListItemIcon>
-      <ListItemText primary="History" />
-    </ListItem>
-  </div>
-
-
+            <div>
+              <ListItem button>
+                <ListItemIcon>
+                  <HomeIcon />
+                </ListItemIcon>
+                <ListItemText primary="Home" />
+              </ListItem>
+              <ListItem button>
+                <ListItemIcon>
+                  <NoteAddIcon />
+                </ListItemIcon>
+                <ListItemText primary="New Document" />
+              </ListItem>
+              <ListItem button>
+                <ListItemIcon>
+                  <GetAppIcon />
+                </ListItemIcon>
+                <ListItemText primary="Download" />
+              </ListItem>
+              <ListItem button>
+                <ListItemIcon>
+                  <HistoryIcon />
+                </ListItemIcon>
+                <ListItemText primary="History" />
+              </ListItem>
+            </div>
           </List>
           <Divider />
           <List>
 
-<div>
-    <ListItem button>
-      <ListItemIcon>
-        <DeleteIcon />
-      </ListItemIcon>
-      <ListItemText primary="Delete" />
-    </ListItem>
-  </div>
+            <div>
+              <ListItem button>
+                <ListItemIcon>
+                  <DeleteIcon />
+                </ListItemIcon>
+                <ListItemText primary="Delete" />
+              </ListItem>
+            </div>
 
 
           </List>
@@ -231,7 +224,7 @@ constructor() {
     );
   }
 
-  
+
 }
 
 NavBar.propTypes = {
