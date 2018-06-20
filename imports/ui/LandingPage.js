@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
 import { UserDocuments } from '../api/userDoc';
-import { DocumentContents } from '../api/documentContents';
+import { DocumentContents } from '../api/DocumentContents';
 
 export class LandingPage extends Component {
   constructor (props) {
