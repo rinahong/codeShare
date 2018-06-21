@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-
+import { Link, Redirect } from 'react-router-dom';
 import { UserDocuments } from '../api/userDoc';
 import { Documents } from '../api/documents.js';
 import { DocumentContents } from '../api/documentContents.js';
@@ -33,14 +32,19 @@ export class LandingPage extends Component {
   //Rina prefers option 2. Render page only once unlike option 1.
   //Rina will talk about option 1 issue tomorrow meeting.
   componentDidMount () {
-    var currentUser = Meteor.userId();
-    Meteor.call('getDocuments', currentUser, (error, result) => {
-      if(error) {
-        console.log("There was an error to retreive Document list");
-      } else {
-        this.setState({documents: result, loading: false});
-      }
-    });
+    const currentUser = Meteor.userId();
+    if(currentUser) {
+      Meteor.call('getDocuments', currentUser, (error, result) => {
+        if(error) {
+          console.log("There was an error to retreive Document list");
+        } else {
+          this.setState({documents: result, loading: false});
+        }
+      });
+    } else {
+      console.log("landing page this.props", this.props)
+      this.props.history.push("/signin")
+    }
   }
 
   createDocument() {

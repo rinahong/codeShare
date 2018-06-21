@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 export class RegisterPage extends Component {
   constructor (props) {
     super(props);
-
     this.state = {
       email: "",
       username: "",
@@ -25,6 +24,8 @@ export class RegisterPage extends Component {
   registerUser (event) {
     event.preventDefault();
     const {email, username, password, password_confirmation} = this.state;
+    const propsHistory = this.props.history;
+
     if(password === password_confirmation) {
       Accounts.createUser({
           email: email,
@@ -36,7 +37,7 @@ export class RegisterPage extends Component {
         if(error) {
           console.log("Accounts.createUser Failed: ",error.reason);
         } else {
-          window.location.href = Meteor.absoluteUrl('/me/documents');
+          propsHistory.push('/me/documents');
         }
       });
     } else {
