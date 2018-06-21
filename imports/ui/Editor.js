@@ -7,7 +7,7 @@ import { Tracker } from 'meteor/tracker';
 import _ from 'lodash';
 
 import Chat from './Chat.js';
-import { DocumentContents } from '../api/DocumentContents.js';
+import { DocumentContents } from '../api/documentContents.js';
 import CustomOpenEdgeMode from '../customModes/openEdge.js';
 
 import 'brace/mode/javascript';

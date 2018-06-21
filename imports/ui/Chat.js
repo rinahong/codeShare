@@ -3,7 +3,7 @@ import { Widget, addResponseMessage, addLinkSnippet, addUserMessage } from 'reac
 import { withTracker } from 'meteor/react-meteor-data';
 import _ from 'lodash';
 
-import { Messages } from '../api/Messages.js';
+import { Messages } from '../api/messages.js';
 
 import 'react-chat-widget/lib/styles.css';
 
