@@ -4,7 +4,7 @@ import { render } from 'react-dom';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 
-import NavBar from '../imports/api/NavBar';
+import NavBar from '../imports/ui/NavBar';
 import { SignInPage } from '../imports/ui/SignInPage';
 import { RegisterPage } from '../imports/ui/RegisterPage';
 import { Editor } from '../imports/ui/Editor.js';
