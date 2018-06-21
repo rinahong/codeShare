@@ -7,6 +7,7 @@ import { Tracker } from 'meteor/tracker';
 import _ from 'lodash';
 
 import Chat from './Chat.js';
+import { Documents } from '../api/documents.js';
 import { DocumentContents } from '../api/documentContents.js';
 import CustomOpenEdgeMode from '../customModes/openEdge.js';
 
@@ -25,7 +26,8 @@ export class Editor extends Component {
     this.onLoad = this.onLoad.bind(this);
 
     this.state = {
-      id: this.props.match.params.id
+      id: this.props.match.params.id,
+      title: ""
     }
 
     // I hate this... but need a non-reactive variable
@@ -34,8 +36,18 @@ export class Editor extends Component {
   }
 
   componentDidMount() {
+    const {id} = this.state;
 		const customMode = new CustomOpenEdgeMode();
 		this.refs.aceEditor.editor.getSession().setMode(customMode);
+
+    // Find the document on this editor page.
+    Meteor.call('findDocument', id, (error, result) => {
+      if(error) {
+        console.log("There was an error to retreive Document");
+      } else {
+        this.setState({ title: result.title });
+      }
+    });
 	}
 
   getHeight() {
@@ -95,8 +107,28 @@ export class Editor extends Component {
       });
   }
 
-  render() {
+  handleTitleChange (name) {
+    const {title} = this.state;
+    return event => {
+      const {currentTarget} = event;
+      this.setState({[name]: currentTarget.value});
+    };
+  }
 
+  //Update title of the document when onBlur.
+  updateDocument() {
+    const {id, title} = this.state;
+    return () => {
+      Meteor.call('updateTitle', id, title, (error) => {
+        if(error) {
+          console.log("There was an error to retreive Document list");
+        }
+      });
+    }
+  }
+
+  render() {
+    const {title} = this.state;
     const height = this.getHeight(); //window height
     const width = this.getWidth(); //window width
 
@@ -113,30 +145,42 @@ export class Editor extends Component {
     }
 
     return (
-      [<Chat key="0" id={this.state.id}/>,
-      <AceEditor
-      ref="aceEditor"
-      key="1"
-      mode="javascript"
-      theme="monokai"
-      name="editor"
-      onLoad={this.onLoad}
-      onChange={this.onChange}
-      fontSize={14}
-      showPrintMargin={false}
-      showGutter={true}
-      highlightActiveLine={true}
-      height={height}
-      width={width}
-      debounceChangePeriod={1000}
-      editorProps={{$blockScrolling: Infinity}}
-      setOptions={{
-        enableBasicAutocompletion: true,
-        enableLiveAutocompletion: true,
-        enableSnippets: false,
-        showLineNumbers: true,
-        tabSize: 2,
-      }}/>]
+      [
+        <div>
+          <input
+            value={title}
+            onChange={this.handleTitleChange('title')}
+            onBlur={this.updateDocument()}
+            type='title'
+            id='title'
+            name='title'
+          />
+        </div>,
+        <Chat key="0" id={this.state.id}/>,
+        <AceEditor
+        ref="aceEditor"
+        key="1"
+        mode="javascript"
+        theme="monokai"
+        name="editor"
+        onLoad={this.onLoad}
+        onChange={this.onChange}
+        fontSize={14}
+        showPrintMargin={false}
+        showGutter={true}
+        highlightActiveLine={true}
+        height={height}
+        width={width}
+        debounceChangePeriod={1000}
+        editorProps={{$blockScrolling: Infinity}}
+        setOptions={{
+          enableBasicAutocompletion: true,
+          enableLiveAutocompletion: true,
+          enableSnippets: false,
+          showLineNumbers: true,
+          tabSize: 2,
+        }}/>
+      ]
     );
   }
 

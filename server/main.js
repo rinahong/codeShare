@@ -15,6 +15,17 @@ Meteor.startup(() => {
       return DocumentContents.remove({docId: docId}, function() {
               Documents.remove(docId);
             });
+    },
+    
+    findDocument: function(docId) {
+      return Documents.findOne({ _id: docId });
+    },
+
+    updateTitle(docId, docTitle) {
+      Documents.update({ _id: docId },
+        {
+          title: docTitle
+        });
     }
   });
 });

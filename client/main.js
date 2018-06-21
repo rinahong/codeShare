@@ -29,11 +29,9 @@ const theme = createMuiTheme({
 
 Meteor.startup(() => {
   console.log(Meteor.userId());
-
   render(
       <BrowserRouter>
         <div>
-
           <NavBar onSignOut={()=> Meteor.logout(function(error){
             console.log("Am I even in logout?")
             if(!error) {
