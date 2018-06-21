@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
 import { UserDocuments } from '../api/userDoc';
-import { DocumentContents } from '../api/documentContents';
+import { Documents } from '../api/documents.js';
 
 export class LandingPage extends Component {
   constructor (props) {
@@ -20,7 +20,7 @@ export class LandingPage extends Component {
   // componentDidMount () {
   //   var currentUser = Meteor.userId();
   //   Tracker.autorun(() => {
-  //     let data = DocumentContents.find({ createdBy: currentUser }, {sort: {createdAt: -1}}).fetch()
+  //     let data = Documents.find({ createdBy: currentUser }, {sort: {createdAt: -1}}).fetch()
   //     if (data) {
   //       console.log(data)
   //       this.setState({documents: data, loading: false});
@@ -35,7 +35,7 @@ export class LandingPage extends Component {
     var currentUser = Meteor.userId();
     Meteor.call('getDocuments', currentUser, (error, result) => {
       if(error) {
-        console.log("There was an error to retreive DocumentContent list");
+        console.log("There was an error to retreive Document list");
       } else {
         this.setState({documents: result, loading: false});
       }
@@ -45,7 +45,7 @@ export class LandingPage extends Component {
   createDocument() {
     var currentUser = Meteor.userId();
 
-    DocumentContents.insert({
+    Documents.insert({
       title: "Untitled Document",
       createdAt: new Date(), // current time
       createdBy: currentUser
