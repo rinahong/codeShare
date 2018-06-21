@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 
 import { UserDocuments } from '../api/userDoc';
 import { Documents } from '../api/documents.js';
+import { DocumentContents } from '../api/documentContents.js';
 
 export class LandingPage extends Component {
   constructor (props) {
@@ -67,6 +68,26 @@ export class LandingPage extends Component {
     });
   }
 
+  deleteDocument (documentId) {
+    return () => {
+      const {documents} = this.state;
+      // Meteor.method "deleteDocument" will remove Document from mongoDB.
+      Meteor.call('deleteDocument', documentId, (error, result) => {
+        if(error) {
+          console.log("There was an error to retreive Document list");
+        } else {
+          // Remove the document from the state, so that, remove the document from the LandingPage.
+          this.setState({
+            documents: documents.filter(doc => doc._id !== documentId)
+          });
+        }
+      });
+
+
+    }
+  }
+
+
   render () {
     const {loading} = this.state;
 
@@ -102,6 +123,7 @@ export class LandingPage extends Component {
                 <Link to={`/documents/${doc._id}`}>
                   {JSON.stringify(doc.title) + "---" + JSON.stringify(doc._id)}
                 </Link>
+                <button onClick={this.deleteDocument(doc._id)}>Delete</button>
               </li>
             ))
           }
