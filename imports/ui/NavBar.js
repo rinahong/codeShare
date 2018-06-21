@@ -20,6 +20,7 @@ import NoteAddIcon from '@material-ui/icons/NoteAdd';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import DeleteIcon from '@material-ui/icons/Delete';
 
+import { DocumentContents } from '../api/documentContents';
 
 
 const drawerWidth = 240;
@@ -102,8 +103,10 @@ const MyDocumentsLink = props => <Link to="/me/documents" {...props} />
 
 class NavBar extends React.Component {
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
+
+    this.createDocument = this.createDocument.bind(this);
   }
 
   state = {
@@ -118,7 +121,31 @@ class NavBar extends React.Component {
     this.setState({ open: false });
   };
 
+  createDocument() {
+    console.log("am i in createDocument")
+    var currentUser = Meteor.userId();
 
+    DocumentContents.insert({
+      title: "Untitled Document",
+      createdAt: new Date(), // current time
+      createdBy: currentUser
+    }, function (error, results) {
+      if (error) {
+        console.log("Documents Insert Failed: ", error.reason);
+      } else {
+        UserDocuments.insert({
+          userId: currentUser,
+          docId: results
+        }, function (error, results) {
+          if (error) {
+            console.log("UserDocuments Insert Failed: ", error.reason);
+          } else {
+            console.log("No error!")
+          }
+        })
+      }
+    });
+  }
 
   render() {
     // const {  } = this.props;
@@ -175,7 +202,7 @@ class NavBar extends React.Component {
                   </ListItemIcon>
                   <ListItemText primary="Home" />
                 </ListItem>
-                <ListItem button>
+                <ListItem button onClick={this.createDocument}>
                   <ListItemIcon>
                     <NoteAddIcon />
                   </ListItemIcon>
@@ -213,10 +240,10 @@ class NavBar extends React.Component {
             {children}
           </main>
         ]) : (
-          <main className={classes.content}>
-            <div className={classes.toolbar} />
-            {children}
-          </main>
+            <main className={classes.content}>
+              <div className={classes.toolbar} />
+              {children}
+            </main>
           )}
 
 
