@@ -19,6 +19,7 @@ import HistoryIcon from '@material-ui/icons/History';
 import NoteAddIcon from '@material-ui/icons/NoteAdd';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import DeleteIcon from '@material-ui/icons/Delete';
+import LinkIcon from '@material-ui/icons/Link';
 
 import { DocumentContents } from '../api/documentContents';
 
@@ -96,6 +97,9 @@ const styles = theme => ({
     flexGrow: 1,
     backgroundColor: theme.palette.background.default,
   },
+  rightIcon: {
+    marginLeft: theme.spacing.unit,
+  },
 });
 
 const LoginLink = props => <Link to="/signin" {...props} />;
@@ -171,7 +175,10 @@ class NavBar extends React.Component {
                 <MenuIcon />
               </IconButton>,
               <Typography variant="title" color="inherit" className={classes.flex} key='1' style={{ marginRight: '20px' }}>Welcome to CodeShare, {Meteor.userId()}</Typography>,
-              <Button color="inherit">Share</Button>,
+              <Button color="inherit">
+                Share
+                <LinkIcon className={classes.rightIcon} />
+              </Button>,
               <Button color="inherit" key='3' href="/" onClick={onSignOut}>Sign Out </Button>
             ]) : (
                 <Button key='1' color="inherit" component={LoginLink}>Login</Button>)}

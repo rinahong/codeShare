@@ -1,8 +1,16 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-
 import { UserDocuments } from '../api/userDoc';
 import { DocumentContents } from '../api/documentContents';
+
+import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/core/styles';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
+import ListSubheader from '@material-ui/core/ListSubheader';
 
 export class LandingPage extends Component {
   constructor(props) {
@@ -79,20 +87,24 @@ export class LandingPage extends Component {
           </div>
         </form>
 
-
         <h2>Documents</h2>
-        <ul style={{ paddingLeft: '10px' }}>
+
+        <List style={{ paddingLeft: '10px', width: '50%', backgroundColor: 'paper'}} subheader={<ListSubheader component="div">Documents</ListSubheader>}>
           {
             this.state.documents.map(doc => (
-              <li key={doc._id}>
+              <ListItem button key={doc._id}>
+                <ListItemIcon>
+                  <InsertDriveFileIcon />
+                </ListItemIcon>
                 <Link to={`/documents/${doc._id}`}>
-                  {JSON.stringify(doc.title) + "---" + JSON.stringify(doc._id)}
+                  <ListItemText inset primary={JSON.stringify(doc.title) + "---" + JSON.stringify(doc._id)} />
                 </Link>
-              </li>
+              </ListItem>
             ))
           }
-        </ul>
+        </List>
       </main>
     );
   }
 }
+
