@@ -2,15 +2,12 @@ import React from 'react';
 import { Meteor } from 'meteor/meteor'
 import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types';
+import { AppBar, Toolbar, IconButton, Typography, Drawer, Divider } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 
-import Divider from '@material-ui/core/Divider';
 import List from '@material-ui/core/List';
-import Drawer from '@material-ui/core/Drawer';
 import classNames from 'classnames';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
@@ -22,9 +19,7 @@ import HistoryIcon from '@material-ui/icons/History';
 import NoteAddIcon from '@material-ui/icons/NoteAdd';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import DeleteIcon from '@material-ui/icons/Delete';
-import { AppBar, Toolbar } from '@material-ui/core';
-import ListSubheader from '@material-ui/core/ListSubheader';
-import { RenderLoop } from 'brace';
+
 
 
 const drawerWidth = 240;
@@ -129,7 +124,7 @@ class NavBar extends React.Component {
 
   render() {
     // const {  } = this.props;
-    const { classes, theme, onSignOut = () => { } } = this.props;
+    const { classes, children, theme, onSignOut = () => { } } = this.props;
 
 
     return (
@@ -214,11 +209,16 @@ class NavBar extends React.Component {
                 </ListItem>
               </div>
             </List>
-          </Drawer>
+          </Drawer>,
+          <main className={classes.content}>
+            <div className={classes.toolbar} />
+            {children}
+          </main>
         ]) : (
-            <div>
-              yoikes
-              </div>
+          <main className={classes.content}>
+            <div className={classes.toolbar} />
+            {children}
+          </main>
           )}
 
 
