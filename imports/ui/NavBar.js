@@ -26,7 +26,6 @@ const drawerWidth = 240;
 const styles = theme => ({
   root: {
     flexGrow: 1,
-    height: 430,
     zIndex: 1,
     overflow: 'hidden',
     position: 'relative',
@@ -76,7 +75,7 @@ const styles = theme => ({
   },
   toolbar: {
     display: 'flex',
-    alignItems: 'center',
+    alignItems: 'right',
     justifyContent: 'flex-end',
     padding: '0 8px',
     ...theme.mixins.toolbar,
@@ -95,7 +94,6 @@ const styles = theme => ({
   content: {
     flexGrow: 1,
     backgroundColor: theme.palette.background.default,
-    padding: theme.spacing.unit * 3,
   },
 });
 
@@ -146,7 +144,7 @@ class NavBar extends React.Component {
                 <MenuIcon />
               </IconButton>,
               <Typography variant="title" color="inherit" className={classes.flex} key='1' style={{ marginRight: '20px' }}>Welcome to CodeShare, {Meteor.userId()}</Typography>,
-              <Button color="inherit" key='2' component={MyDocumentsLink}>My Documents</Button>,
+              <Button color="inherit">Share</Button>,
               <Button color="inherit" key='3' href="/" onClick={onSignOut}>Sign Out </Button>
             ]) : (
                 <Button key='1' color="inherit" component={LoginLink}>Login</Button>)}
@@ -171,7 +169,7 @@ class NavBar extends React.Component {
             <Divider />
             <List>
               <div>
-                <ListItem button>
+                <ListItem button key='2' component={MyDocumentsLink}>
                   <ListItemIcon>
                     <HomeIcon />
                   </ListItemIcon>

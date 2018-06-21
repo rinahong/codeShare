@@ -41,14 +41,16 @@ Meteor.startup(() => {
             } else {
               console.log("why error?", error.reason)
             }
-          })} />
-          <Switch>
+          })} >
+            <Switch>
 
-            <Route path="/signin" component={SignInPage} />
-            <Route path="/register" component={RegisterPage} />
-            <Route path="/me/documents" component={LandingPage} />
-            <Route path="/documents/:id" component={Editor} />
-          </Switch>
+              <Route path="/signin" component={SignInPage} />
+              <Route path="/register" component={RegisterPage} />
+              <Route path="/me/documents" component={LandingPage} />
+              <Route path="/documents/:id" component={Editor} />
+            </Switch>
+
+          </NavBar>
         </div>
       </BrowserRouter>
     </MuiThemeProvider>
