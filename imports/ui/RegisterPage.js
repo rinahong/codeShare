@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 export class RegisterPage extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
 
     this.state = {
@@ -14,27 +14,27 @@ export class RegisterPage extends Component {
     this.registerUser = this.registerUser.bind(this);
   }
 
-  handleChange (name) {
+  handleChange(name) {
     return event => {
-      const {currentTarget} = event;
-      this.setState({[name]: currentTarget.value});
+      const { currentTarget } = event;
+      this.setState({ [name]: currentTarget.value });
     };
   }
 
 
-  registerUser (event) {
+  registerUser(event) {
     event.preventDefault();
-    const {email, username, password, password_confirmation} = this.state;
-    if(password === password_confirmation) {
+    const { email, username, password, password_confirmation } = this.state;
+    if (password === password_confirmation) {
       Accounts.createUser({
-          email: email,
-          password: password,
-          profile: {
-            username: username
-          }
-      },function(error) {
-        if(error) {
-          console.log("Accounts.createUser Failed: ",error.reason);
+        email: email,
+        password: password,
+        profile: {
+          username: username
+        }
+      }, function (error) {
+        if (error) {
+          console.log("Accounts.createUser Failed: ", error.reason);
         } else {
           window.location.href = Meteor.absoluteUrl('/me/documents');
         }
@@ -44,8 +44,8 @@ export class RegisterPage extends Component {
     }
   }
 
-  render () {
-    const {email, username,password, password_confirmation} = this.state;
+  render() {
+    const { email, username, password, password_confirmation } = this.state;
     return (
       <main
         className="SignInPage"
@@ -100,7 +100,7 @@ export class RegisterPage extends Component {
           </div>
 
           <div>
-            <input type='submit' value='Register!'/>
+            <input type='submit' value='Register!' />
           </div>
         </form>
 

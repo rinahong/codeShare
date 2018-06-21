@@ -2,11 +2,11 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
 export class SignInPage extends Component {
-  constructor (props) {
+  constructor(props) {
 
     super(props);
     let prevUrlString = "";
-    if(this.props.location.state) {
+    if (this.props.location.state) {
       prevUrlString = this.props.location.state.from.pathname;
     }
     this.state = {
@@ -18,29 +18,29 @@ export class SignInPage extends Component {
 
   }
 
-  handleChange (name) {
+  handleChange(name) {
     return event => {
-      const {currentTarget} = event;
-      this.setState({[name]: currentTarget.value});
+      const { currentTarget } = event;
+      this.setState({ [name]: currentTarget.value });
     };
   }
 
-  createToken (event) {
+  createToken(event) {
     event.preventDefault();
-    const {email, password, previousURl} = this.state;
-    Meteor.loginWithPassword(email, password, function(error){
-      if(error){
-          console.log(error.reason);
+    const { email, password, previousURl } = this.state;
+    Meteor.loginWithPassword(email, password, function (error) {
+      if (error) {
+        console.log(error.reason);
       } else {
-          if (previousURl !== "" || previousURl != null) {
-              window.location.href = Meteor.absoluteUrl(previousURl);
-          }
+        if (previousURl !== "" || previousURl != null) {
+          window.location.href = Meteor.absoluteUrl(previousURl);
+        }
       }
     });
   }
 
-  render () {
-    const {email, password} = this.state;
+  render() {
+    const { email, password } = this.state;
     return (
       <main
         className="SignInPage"
@@ -73,7 +73,7 @@ export class SignInPage extends Component {
           </div>
 
           <div>
-            <input type='submit' value='Sign In'/>
+            <input type='submit' value='Sign In' />
           </div>
         </form>
         <Link to={`/register`}> Register </Link>

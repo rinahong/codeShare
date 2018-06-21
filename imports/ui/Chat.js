@@ -21,24 +21,24 @@ export default class Chat extends Component {
 
   componentDidMount() {
     Tracker.autorun(() => {
-        if (this.state) {
-          // load all messages at first
-          if (this.state.getAll) {
-            let messages = Messages.find({id: this.state.id}, {sort: {createdAt: -1}}).fetch();
-            if (!messages.length) return;
+      if (this.state) {
+        // load all messages at first
+        if (this.state.getAll) {
+          let messages = Messages.find({ id: this.state.id }, { sort: { createdAt: -1 } }).fetch();
+          if (!messages.length) return;
 
-            _.map(messages, function(message) {
-                message.user == Meteor.userId() ? addUserMessage(message.message) : addResponseMessage(message.message);
-            });
-            this.setState({getAll: false});
-          }
-          else {
-            let messages = Messages.findOne({id: this.state.id}, {sort: {createdAt: -1, limit: 1}});
-            if (messages && messages.user != Meteor.userId()) {
-              addResponseMessage(messages.message);
-            }
+          _.map(messages, function (message) {
+            message.user == Meteor.userId() ? addUserMessage(message.message) : addResponseMessage(message.message);
+          });
+          this.setState({ getAll: false });
+        }
+        else {
+          let messages = Messages.findOne({ id: this.state.id }, { sort: { createdAt: -1, limit: 1 } });
+          if (messages && messages.user != Meteor.userId()) {
+            addResponseMessage(messages.message);
           }
         }
+      }
     });
   }
 

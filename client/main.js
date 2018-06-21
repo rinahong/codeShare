@@ -2,8 +2,7 @@ import React from 'react';
 import { Meteor } from 'meteor/meteor';
 import { render } from 'react-dom';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
-import { createMuiTheme } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
+import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 
 import NavBar from '../imports/api/NavBar';
 import { SignInPage } from '../imports/ui/SignInPage';
@@ -15,7 +14,7 @@ const theme = createMuiTheme({
   palette: {
     primary: {
       // light: will be calculated from palette.primary.main,
-      main: '#ff4400',
+      main: '#00578e',
       // dark: will be calculated from palette.primary.main,
       // contrastText: will be calculated to contast with palette.primary.main
     },
@@ -31,26 +30,27 @@ Meteor.startup(() => {
   console.log(Meteor.userId());
 
   render(
+    <MuiThemeProvider theme={theme}>
       <BrowserRouter>
         <div>
-
-          <NavBar onSignOut={()=> Meteor.logout(function(error){
+          <NavBar theme={theme} onSignOut={() => Meteor.logout(function (error) {
             console.log("Am I even in logout?")
-            if(!error) {
+            if (!error) {
               window.location.href = Meteor.absoluteUrl('/signin');
               console.log("Signout successfully, but why not redirect???")
-            }else {
+            } else {
               console.log("why error?", error.reason)
             }
-          })}/>
+          })} />
           <Switch>
 
-            <Route path="/signin" component={SignInPage}/>
-            <Route path="/register" component={RegisterPage}/>
-            <Route path="/me/documents" component={LandingPage}/>
-            <Route path="/documents/:id" component={Editor}/>
+            <Route path="/signin" component={SignInPage} />
+            <Route path="/register" component={RegisterPage} />
+            <Route path="/me/documents" component={LandingPage} />
+            <Route path="/documents/:id" component={Editor} />
           </Switch>
         </div>
       </BrowserRouter>
+    </MuiThemeProvider>
     , document.getElementById('render-target'));
 });
