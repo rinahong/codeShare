@@ -75,17 +75,15 @@ export class CustomHighlightRules extends window.ace.acequire("ace/mode/text_hig
             originalRegex: "(?i)(\\b(if|available|down|where|else( if)?|for\\s+(each|first|last)|do while|repeat(\\s+while)?|find( first|last)?|then( do( transaction)?)?|next|page|quit)\\b|(?<!-)(\\bend\\b(?!\\s+procedure)))"
         }, {
             token: "storage.type.define.abl",
-            regex: /\b(?:define\s+(?:(?:(?:new\s+)?shared\s+)?(?:variable|stream|buffer)|(?:input|input-output|output)\s+parameter|temp-table|query)|form)\b/,
+            regex: /\b((?:def(ine)*\s+(?:(?:(?:new\s+)?shared\s+)?(?:var(iable)*|stream|buffer))|(?:input|input-output|output)\s+param(eter)*|temp-table|query)|form)\b/,
             caseInsensitive: true
         }, {
             token: "storage.type.source.abl",
-            regex: "\\b(?<!&)(?:character|(?<!-)handle|dataset-handle|dataset|field|(?<!-)index|logical|integer|stream|frame [a-z]+)(?!\\s*\\()\\b",
-            caseInsensitive: true,
-            TODO: "FIXME: regexp doesn't have js equivalent",
-            originalRegex: "(?i)\\b(?<!&)(character|(?<!-)handle|dataset-handle|dataset|field|(?<!-)index|logical|integer|stream|frame [a-z]+)(?!\\s*\\()\\b"
-        }, {
+						regex: /\b(?<!&)(?:char(?:acter)*|(?<!-)handle|dataset-handle|dataset|field|(?<!-)index|log(?:ical)*|int(?:eger)*|dec(?:imal)*|date|stream|frame [a-z]+)(?!\s*\()\b/,
+            caseInsensitive: true
+        },{
             token: "storage.type.function.abl",
-            regex: /end procedure/,
+            regex: /end\s+(procedure)*/,
             caseInsensitive: true
         }, {
             token: "support.function.source.abl",
@@ -107,7 +105,7 @@ export class CustomHighlightRules extends window.ace.acequire("ace/mode/text_hig
                 "entity.name.function.abl",
                 "meta.function.source.abl"
             ],
-            regex: /(procedure)(\s+)([a-z0-9_-]+)(:)/,
+            regex: /(proc(?:edure)*|func(?:tion)*)(\s+)([a-z0-9_-]+)(:)/,
             caseInsensitive: true
         }, {
             token: "support.function.source.abl",
