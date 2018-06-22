@@ -40,8 +40,13 @@ export class Editor extends Component {
 		const customMode = new CustomOpenEdgeMode();
     if(Meteor.userId()) {
       this.refs.aceEditor.editor.getSession().setMode(customMode);
+    } else {
+      this.props.history.push({
+        pathname: "/signin",
+        state: { from: this.props.location }
+      })
     }
-		
+
     // Find the document on this editor page.
     Meteor.call('findDocument', id, (error, result) => {
       if(error) {
@@ -133,18 +138,6 @@ export class Editor extends Component {
     const {title} = this.state;
     const height = this.getHeight(); //window height
     const width = this.getWidth(); //window width
-
-    // check is user is logged in; if not, redirect to login page
-    if (Meteor.userId() == null) {
-      return (
-        <Redirect
-          to={{
-            pathname: "/signin",
-            state: { from: this.props.location }
-          }}
-        />
-      )
-    }
 
     return (
       [
