@@ -27,7 +27,6 @@ export class SignInPage extends Component {
     };
   }
 
-<<<<<<< HEAD
   createToken (event) {
     const {email, password, previousURl = ""} = this.state;
     const propsHistory = this.props.history;
@@ -46,17 +45,6 @@ export class SignInPage extends Component {
           console.log("PreviouseURL is empty string")
           propsHistory.push("/me/documents");
           propsHistory.goBack();
-=======
-  createToken(event) {
-    event.preventDefault();
-    const { email, password, previousURl } = this.state;
-    Meteor.loginWithPassword(email, password, function (error) {
-      if (error) {
-        console.log(error.reason);
-      } else {
-        if (previousURl !== "" || previousURl != null) {
-          window.location.href = Meteor.absoluteUrl(previousURl);
->>>>>>> 6de1f75947f6ce4a47cade5709e1dae5e6aa5078
         }
       }
 
