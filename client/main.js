@@ -46,7 +46,7 @@ Meteor.startup(() => {
 
               <Route path="/signin" component={SignInPage} />
               <Route path="/register" component={RegisterPage} />
-              <Route path="/me/documents" component={LandingPage} />
+              <Route path="/me/documents" component={LandingPage} theme={theme} />
               <Route path="/documents/:id" component={Editor} />
             </Switch>
 

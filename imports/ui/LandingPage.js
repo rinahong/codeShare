@@ -11,6 +11,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
 import ListSubheader from '@material-ui/core/ListSubheader';
+import { Button } from '@material-ui/core';
 
 export class LandingPage extends Component {
   constructor(props) {
@@ -80,16 +81,15 @@ export class LandingPage extends Component {
         className="LandingPage"
         style={{ padding: '0  20px' }}
       >
+        
         <h2>Create Document</h2>
-        <form onSubmit={this.createDocument}>
-          <div>
-            <input type='submit' value='Create New Document' />
-          </div>
-        </form>
+        <Button variant="contained" color="secondary" onClick={this.createDocument} style={{ padding: '0  20px', color: 'white' }}>
+            New Document
+        </Button>
 
         <h2>Documents</h2>
 
-        <List style={{ paddingLeft: '10px', width: '50%', backgroundColor: 'paper'}} subheader={<ListSubheader component="div">Documents</ListSubheader>}>
+        <List style={{ paddingLeft: '10px', width: '50%', backgroundColor: 'paper' }} subheader={<ListSubheader component="div">Documents</ListSubheader>}>
           {
             this.state.documents.map(doc => (
               <ListItem button key={doc._id}>
