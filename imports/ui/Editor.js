@@ -38,8 +38,10 @@ export class Editor extends Component {
   componentDidMount() {
     const {id} = this.state;
 		const customMode = new CustomOpenEdgeMode();
-		this.refs.aceEditor.editor.getSession().setMode(customMode);
-
+    if(Meteor.userId()) {
+      this.refs.aceEditor.editor.getSession().setMode(customMode);
+    }
+		
     // Find the document on this editor page.
     Meteor.call('findDocument', id, (error, result) => {
       if(error) {

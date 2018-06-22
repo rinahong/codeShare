@@ -31,20 +31,19 @@ export class SignInPage extends Component {
     const {email, password, previousURl = ""} = this.state;
     const propsHistory = this.props.history;
     event.preventDefault();
+    
     Meteor.loginWithPassword(email, password, function(error){
-      // Rina will work on below if statement very soon.
       if(error){
           console.log(error.reason);
       } else {
-        //From Editor.page, previousURL is set to document/:_id
-        if (previousURl != "" ) {
-            console.log("PreviouseURL is not empty string", previousURl)
-            // propsHistory.push(previousURL) //<-- USE THIS ONE, NOT BELOW!
-            // window.location.href = Meteor.absoluteUrl(previousURl);
-        } else { //All other page not sending previousURL through props. Therefore, previousURL = ""
-          console.log("PreviouseURL is empty string")
+
+        //If previousURl is not empty, redirect to previous page.
+        if (previousURl != "") {
+            console.log("PreviouseURL is not empty:", previousURl)
+            propsHistory.push(previousURl);
+        } else { //Else, always go to my document list page.
+          console.log("PreviouseURL is empty string.")
           propsHistory.push("/me/documents");
-          propsHistory.goBack();
         }
       }
 

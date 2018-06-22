@@ -17,6 +17,7 @@ export class LandingPage extends Component {
   }
 
   componentDidMount () {
+    console.log("landingpage comdidmount props: ", this.props)
     const currentUser = Meteor.userId();
     if(currentUser) {
       Meteor.call('getDocuments', currentUser, (error, result) => {
@@ -27,7 +28,10 @@ export class LandingPage extends Component {
         }
       });
     } else {
-      this.props.history.push("/signin")
+      this.props.history.push({
+        pathname: "/signin",
+        state: { from: this.props.location }
+      })
     }
   }
 
