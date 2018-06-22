@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
 export class SignInPage extends Component {
-  constructor (props) {
+  constructor(props) {
 
     super(props);
 
@@ -20,13 +20,14 @@ export class SignInPage extends Component {
 
   }
 
-  handleChange (name) {
+  handleChange(name) {
     return event => {
-      const {currentTarget} = event;
-      this.setState({[name]: currentTarget.value});
+      const { currentTarget } = event;
+      this.setState({ [name]: currentTarget.value });
     };
   }
 
+<<<<<<< HEAD
   createToken (event) {
     const {email, password, previousURl = ""} = this.state;
     const propsHistory = this.props.history;
@@ -45,14 +46,25 @@ export class SignInPage extends Component {
           console.log("PreviouseURL is empty string")
           propsHistory.push("/me/documents");
           propsHistory.goBack();
+=======
+  createToken(event) {
+    event.preventDefault();
+    const { email, password, previousURl } = this.state;
+    Meteor.loginWithPassword(email, password, function (error) {
+      if (error) {
+        console.log(error.reason);
+      } else {
+        if (previousURl !== "" || previousURl != null) {
+          window.location.href = Meteor.absoluteUrl(previousURl);
+>>>>>>> 6de1f75947f6ce4a47cade5709e1dae5e6aa5078
         }
       }
 
     });
   }
 
-  render () {
-    const {email, password} = this.state;
+  render() {
+    const { email, password } = this.state;
     return (
       <main
         className="SignInPage"
@@ -85,7 +97,7 @@ export class SignInPage extends Component {
           </div>
 
           <div>
-            <input type='submit' value='Sign In'/>
+            <input type='submit' value='Sign In' />
           </div>
         </form>
         <Link to={`/register`}> Register </Link>

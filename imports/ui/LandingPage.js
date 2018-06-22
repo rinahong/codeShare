@@ -5,7 +5,7 @@ import { Documents } from '../api/documents.js';
 import { DocumentContents } from '../api/documentContents.js';
 
 export class LandingPage extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
 
     this.state = {
@@ -38,16 +38,16 @@ export class LandingPage extends Component {
       title: "Untitled Document",
       createdAt: new Date(), // current time
       createdBy: currentUser
-    }, function(error,results){
-      if(error) {
-        console.log("Documents Insert Failed: ",error.reason);
+    }, function (error, results) {
+      if (error) {
+        console.log("Documents Insert Failed: ", error.reason);
       } else {
         UserDocuments.insert({
           userId: currentUser,
           docId: results
-        }, function(error, results){
-          if(error) {
-            console.log("UserDocuments Insert Failed: ",error.reason);
+        }, function (error, results) {
+          if (error) {
+            console.log("UserDocuments Insert Failed: ", error.reason);
           } else {
             console.log("No error!")
           }
@@ -83,7 +83,7 @@ export class LandingPage extends Component {
       return (
         <main
           className="LandingPage"
-          style={{padding: '0  20px'}}
+          style={{ padding: '0  20px' }}
         >
           <h3>Loading documents...</h3>
         </main>
@@ -93,18 +93,18 @@ export class LandingPage extends Component {
     return (
       <main
         className="LandingPage"
-        style={{padding: '0  20px'}}
+        style={{ padding: '0  20px' }}
       >
         <h2>Create Document</h2>
         <form onSubmit={this.createDocument}>
           <div>
-            <input type='submit' value='Create New Document'/>
+            <input type='submit' value='Create New Document' />
           </div>
         </form>
 
 
         <h2>Documents</h2>
-        <ul style={{paddingLeft: '10px'}}>
+        <ul style={{ paddingLeft: '10px' }}>
           {
             this.state.documents.map(doc => (
               <li key={doc._id}>

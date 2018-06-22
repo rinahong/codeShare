@@ -7,8 +7,12 @@ import { Tracker } from 'meteor/tracker';
 import _ from 'lodash';
 
 import Chat from './Chat.js';
+<<<<<<< HEAD
 import { Documents } from '../api/documents.js';
 import { DocumentContents } from '../api/documentContents.js';
+=======
+import { DocumentContents } from '../api/documentContents';
+>>>>>>> 6de1f75947f6ce4a47cade5709e1dae5e6aa5078
 import CustomOpenEdgeMode from '../customModes/openEdge.js';
 
 import 'brace/mode/javascript';
@@ -75,9 +79,9 @@ export class Editor extends Component {
         value: delta,
         createdAt: new Date(), // current time
         writtenBy: currentUser
-      }, function(error) {
-        if(error) {
-          console.log("Document save Failed: ",error.reason);
+      }, function (error) {
+        if (error) {
+          console.log("Document save Failed: ", error.reason);
         }
       });
     }
@@ -86,25 +90,25 @@ export class Editor extends Component {
 
   onLoad(editor) {
 
-      Tracker.autorun(() => {
-        let values = [];
-        let text = '';
-        let prevValue = editor.getValue();
-        let data = DocumentContents.find({docId: this.state.id}, {sort: {createdAt: 1}}).fetch();
+    Tracker.autorun(() => {
+      let values = [];
+      let text = '';
+      let prevValue = editor.getValue();
+      let data = DocumentContents.find({ docId: this.state.id }, { sort: { createdAt: 1 } }).fetch();
 
-        if (data) {
-          _.map(data, function(row_data) {
-              values[row_data.row] = row_data.value;
-          })
+      if (data) {
+        _.map(data, function (row_data) {
+          values[row_data.row] = row_data.value;
+        })
 
-          this.prevValues = values;
+        this.prevValues = values;
 
-          text = values.join('\n');
-          if (text == prevValue) return;
+        text = values.join('\n');
+        if (text == prevValue) return;
 
-          editor.setValue(text,1);
-        }
-      });
+        editor.setValue(text, 1);
+      }
+    });
   }
 
   handleTitleChange (name) {
@@ -136,15 +140,16 @@ export class Editor extends Component {
     if (Meteor.userId() == null) {
       return (
         <Redirect
-            to={{
-              pathname: "/signin",
-              state: { from: this.props.location }
-            }}
-          />
-        )
+          to={{
+            pathname: "/signin",
+            state: { from: this.props.location }
+          }}
+        />
+      )
     }
 
     return (
+<<<<<<< HEAD
       [
         <div>
           <input
@@ -158,6 +163,10 @@ export class Editor extends Component {
         </div>,
         <Chat key="0" id={this.state.id}/>,
         <AceEditor
+=======
+      [<Chat key="0" id={this.state.id} />,
+      <AceEditor
+>>>>>>> 6de1f75947f6ce4a47cade5709e1dae5e6aa5078
         ref="aceEditor"
         key="1"
         mode="javascript"
@@ -172,15 +181,23 @@ export class Editor extends Component {
         height={height}
         width={width}
         debounceChangePeriod={1000}
+<<<<<<< HEAD
         editorProps={{$blockScrolling: Infinity}}
+=======
+        editorProps={{ $blockScrolling: Infinity }}
+>>>>>>> 6de1f75947f6ce4a47cade5709e1dae5e6aa5078
         setOptions={{
           enableBasicAutocompletion: true,
           enableLiveAutocompletion: true,
           enableSnippets: false,
           showLineNumbers: true,
           tabSize: 2,
+<<<<<<< HEAD
         }}/>
       ]
+=======
+        }} />]
+>>>>>>> 6de1f75947f6ce4a47cade5709e1dae5e6aa5078
     );
   }
 
