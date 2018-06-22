@@ -16,21 +16,6 @@ export class LandingPage extends Component {
     this.createDocument = this.createDocument.bind(this);
   }
 
-  // Option 1:
-  // componentDidMount () {
-  //   var currentUser = Meteor.userId();
-  //   Tracker.autorun(() => {
-  //     let data = Documents.find({ createdBy: currentUser }, {sort: {createdAt: -1}}).fetch()
-  //     if (data) {
-  //       console.log(data)
-  //       this.setState({documents: data, loading: false});
-  //     }
-  //   });
-  // }
-
-  // Option 2:
-  //Rina prefers option 2. Render page only once unlike option 1.
-  //Rina will talk about option 1 issue tomorrow meeting.
   componentDidMount () {
     const currentUser = Meteor.userId();
     if(currentUser) {
