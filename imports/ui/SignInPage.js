@@ -6,9 +6,9 @@ export class SignInPage extends Component {
 
     super(props);
 
-    console.log("signin ctor",props);
     let prevUrlString = "";
     if(this.props.location.state) {
+      console.log(this.props)
       prevUrlString = this.props.location.state.from.pathname;
     }
     this.state = {
@@ -28,23 +28,26 @@ export class SignInPage extends Component {
   }
 
   createToken (event) {
-    const {email, password, previousURl} = this.state;
+    const {email, password, previousURl = ""} = this.state;
     const propsHistory = this.props.history;
-
     event.preventDefault();
     Meteor.loginWithPassword(email, password, function(error){
+      // Rina will work on below if statement very soon.
       if(error){
           console.log(error.reason);
       } else {
-        console.log ("propsHistory in createToken", previousUrl)
-        propsHistory.goBack();
-
-          // if (previousURl !== "" || previousURl != null) {
-          //   // console.log("In SignInpage")
-          //   console.log(previousURl)
-          //     // window.location.href = Meteor.absoluteUrl(previousURl);
-          // }
+        //From Editor.page, previousURL is set to document/:_id
+        if (previousURl != "" ) {
+            console.log("PreviouseURL is not empty string", previousURl)
+            // propsHistory.push(previousURL) //<-- USE THIS ONE, NOT BELOW!
+            // window.location.href = Meteor.absoluteUrl(previousURl);
+        } else { //All other page not sending previousURL through props. Therefore, previousURL = ""
+          console.log("PreviouseURL is empty string")
+          propsHistory.push("/me/documents");
+          propsHistory.goBack();
+        }
       }
+
     });
   }
 

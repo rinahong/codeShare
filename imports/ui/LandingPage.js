@@ -42,7 +42,6 @@ export class LandingPage extends Component {
         }
       });
     } else {
-      console.log("landing page this.props", this.props)
       this.props.history.push("/signin")
     }
   }
