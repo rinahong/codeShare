@@ -7,12 +7,8 @@ import { Tracker } from 'meteor/tracker';
 import _ from 'lodash';
 
 import Chat from './Chat.js';
-<<<<<<< HEAD
 import { Documents } from '../api/documents.js';
 import { DocumentContents } from '../api/documentContents.js';
-=======
-import { DocumentContents } from '../api/documentContents';
->>>>>>> 6de1f75947f6ce4a47cade5709e1dae5e6aa5078
 import CustomOpenEdgeMode from '../customModes/openEdge.js';
 
 import 'brace/mode/javascript';
@@ -149,7 +145,6 @@ export class Editor extends Component {
     }
 
     return (
-<<<<<<< HEAD
       [
         <div>
           <input
@@ -163,10 +158,6 @@ export class Editor extends Component {
         </div>,
         <Chat key="0" id={this.state.id}/>,
         <AceEditor
-=======
-      [<Chat key="0" id={this.state.id} />,
-      <AceEditor
->>>>>>> 6de1f75947f6ce4a47cade5709e1dae5e6aa5078
         ref="aceEditor"
         key="1"
         mode="javascript"
@@ -181,23 +172,15 @@ export class Editor extends Component {
         height={height}
         width={width}
         debounceChangePeriod={1000}
-<<<<<<< HEAD
-        editorProps={{$blockScrolling: Infinity}}
-=======
         editorProps={{ $blockScrolling: Infinity }}
->>>>>>> 6de1f75947f6ce4a47cade5709e1dae5e6aa5078
         setOptions={{
           enableBasicAutocompletion: true,
           enableLiveAutocompletion: true,
           enableSnippets: false,
           showLineNumbers: true,
           tabSize: 2,
-<<<<<<< HEAD
         }}/>
       ]
-=======
-        }} />]
->>>>>>> 6de1f75947f6ce4a47cade5709e1dae5e6aa5078
     );
   }
 
