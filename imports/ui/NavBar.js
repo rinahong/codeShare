@@ -104,13 +104,30 @@ const MyDocumentsLink = props => <Link to="/me/documents" {...props} />
 
 class NavBar extends React.Component {
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      open: false,
+      username: ""
+    };
+
+    // this.getUsername = this.getUsername.bind(this);
+
   }
 
-  state = {
-    open: false,
-  };
+  componentDidUpdate(prevProps, prevState) {
+    console.log("Beginning of compoenet did update")
+    // Typical usage (don't forget to compare props):
+    if(Meteor.userId()) {
+      this.getUsername()
+      console.log("username",this.state.username)
+      // this.setState({usesrname: this.getUsername()});
+    }
+    // if (this.state.username !== prevState.username) {
+
+    // }
+  }
 
   handleDrawerOpen = () => {
     this.setState({ open: true });
@@ -120,13 +137,28 @@ class NavBar extends React.Component {
     this.setState({ open: false });
   };
 
+  getUsername() {
+    const {username} = this.state;
+    return () => {
+      Meteor.call('getUsername', (error, result) => {
+        if(error) {
+          console.log("There was an error to retreive Document list");
+        } else {
+          console.log("Username returned: ", result.profile.username)
+          this.setState({username: result.profile.username});
+          // return result.profile.username;
+
+        }
+      });
+    }
+  }
+
 
 
   render() {
     // const {  } = this.props;
     const { classes, children, theme, onSignOut = () => { } } = this.props;
-
-
+    const { username } = this.state;
     return (
       <div className={classes.root}>
         <AppBar
@@ -137,7 +169,7 @@ class NavBar extends React.Component {
           <Toolbar disableGutters={!this.state.open}>
 
 
-            {Meteor.userId() ? ([  // Should be wrapped in the array
+            { Meteor.userId() ? ([  // Should be wrapped in the array
               <IconButton
                 color="inherit"
                 aria-label="open drawer"
@@ -145,7 +177,7 @@ class NavBar extends React.Component {
                 className={classNames(classes.menuButton, this.state.open && classes.hide)}>
                 <MenuIcon />
               </IconButton>,
-              <Typography variant="title" color="inherit" className={classes.flex} key='1' style={{ marginRight: '20px' }}>Welcome to CodeShare, {Meteor.userId()}</Typography>,
+              <Typography variant="title" color="inherit" className={classes.flex} key='1' style={{ marginRight: '20px' }}>Welcome to CodeShare, { username }</Typography>,
               <Button color="inherit" key='2' component={MyDocumentsLink}>My Documents</Button>,
               <Button color="inherit" key='3' href="/" onClick={onSignOut}>Sign Out </Button>
             ]) : (

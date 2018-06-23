@@ -26,6 +26,10 @@ Meteor.startup(() => {
         {
           title: docTitle
         });
+    },
+
+    getUsername: function() {
+      return Meteor.user();
     }
   });
 });
