@@ -5,6 +5,7 @@ import AceEditor from 'react-ace';
 import { Redirect } from 'react-router-dom';
 import { Tracker } from 'meteor/tracker';
 import _ from 'lodash';
+import Popup from "reactjs-popup";
 
 import Chat from './Chat.js';
 import { Documents } from '../api/documents.js';
@@ -25,6 +26,7 @@ export class Editor extends Component {
     this.getWidth = this.getWidth.bind(this);
     this.onChange = this.onChange.bind(this);
     this.onLoad = this.onLoad.bind(this);
+    this.viewUserAvaliable = this.viewUserAvaliable.bind(this);
 
     this.state = {
       id: this.props.match.params.id,
@@ -135,17 +137,28 @@ export class Editor extends Component {
     }
   }
 
-  // shareDocumentOnSubmit(){
-  //   const {id} = this.state;
-  //
-  //   return () => {
-  //     Meteor.call('shareDocumentOnSubmit', id, userList, (error) => {
-  //       if(error) {
-  //         console.log("There was an error to permit user to this Document");
-  //       }
-  //     });
-  //   }
-  // }
+  viewUserAvaliable(close){
+    return(
+      <div className="modal">
+        <a className="close" onClick={close}>
+          &times;
+        </a>
+        <div className="header"> Share with others </div>
+        <div className="content">=======rina</div>
+        <div className="actions">
+          <button
+            className="button"
+            onClick={() => {
+              console.log('modal closed ')
+              close()
+            }}
+          >
+            close modal
+          </button>
+        </div>
+      </div>
+    )
+  }
 
   render() {
     const {title} = this.state;
@@ -165,7 +178,11 @@ export class Editor extends Component {
             name='title'
           />
         </div>,
-        // <button onClick={this.shareDocument()}>SHARE</button>,
+        <Popup trigger={<button className="button"> Open Modal </button>} modal>
+          {close => (
+            this.viewUserAvaliable(close)
+          )}
+        </Popup>,
         <Chat key="0" id={this.state.id}/>,
         <AceEditor
         ref="aceEditor"
@@ -196,3 +213,12 @@ export class Editor extends Component {
 
 
 }
+
+
+
+
+export default () => (
+  <Popup trigger={<button> Trigger</button>} position="right center">
+    <div>Popup content here !!</div>
+  </Popup>
+);
