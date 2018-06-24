@@ -109,24 +109,28 @@ class NavBar extends React.Component {
 
     this.state = {
       open: false,
-      username: ""
+      currentUser: []
     };
-
-    // this.getUsername = this.getUsername.bind(this);
-
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    console.log("Beginning of compoenet did update")
-    // Typical usage (don't forget to compare props):
-    if(Meteor.userId()) {
-      this.getUsername()
-      console.log("username",this.state.username)
-      // this.setState({usesrname: this.getUsername()});
-    }
-    // if (this.state.username !== prevState.username) {
+  componentDidMount() {
+    const {currentUser} = this.state;
+    if (Meteor.userId()) {
+      if (Meteor.isClient) {
+        Meteor.subscribe("users", {
+          onReady: function () {
+              this.setState({
+                currentUser:  Meteor.users.find({_id: Meteor.userId()}).fetch()
+              });
+          }.bind(this),
 
-    // }
+          onStop: function () {
+           // called when data publication is stopped
+           console.log("NavBar: data publication is stopped");
+          }
+        });
+      }
+    }
   }
 
   handleDrawerOpen = () => {
@@ -137,28 +141,11 @@ class NavBar extends React.Component {
     this.setState({ open: false });
   };
 
-  getUsername() {
-    const {username} = this.state;
-    return () => {
-      Meteor.call('getUsername', (error, result) => {
-        if(error) {
-          console.log("There was an error to retreive Document list");
-        } else {
-          console.log("Username returned: ", result.profile.username)
-          this.setState({username: result.profile.username});
-          // return result.profile.username;
-
-        }
-      });
-    }
-  }
-
-
-
   render() {
     // const {  } = this.props;
     const { classes, children, theme, onSignOut = () => { } } = this.props;
-    const { username } = this.state;
+    const { currentUser } = this.state;
+
     return (
       <div className={classes.root}>
         <AppBar
@@ -168,8 +155,7 @@ class NavBar extends React.Component {
 
           <Toolbar disableGutters={!this.state.open}>
 
-
-            { Meteor.userId() ? ([  // Should be wrapped in the array
+            { (currentUser.length > 0) ? ([  // Should be wrapped in the array
               <IconButton
                 color="inherit"
                 aria-label="open drawer"
@@ -177,7 +163,7 @@ class NavBar extends React.Component {
                 className={classNames(classes.menuButton, this.state.open && classes.hide)}>
                 <MenuIcon />
               </IconButton>,
-              <Typography variant="title" color="inherit" className={classes.flex} key='1' style={{ marginRight: '20px' }}>Welcome to CodeShare, { username }</Typography>,
+              <Typography variant="title" color="inherit" className={classes.flex} key='1' style={{ marginRight: '20px' }}>Welcome to CodeShare, { currentUser[0].profile.username}</Typography>,
               <Button color="inherit" key='2' component={MyDocumentsLink}>My Documents</Button>,
               <Button color="inherit" key='3' href="/" onClick={onSignOut}>Sign Out </Button>
             ]) : (
@@ -186,7 +172,7 @@ class NavBar extends React.Component {
           </Toolbar>
         </AppBar>
 
-        {Meteor.userId() ? ([  // Should be wrapped in the array
+        { Meteor.userId() ? ([  // Should be wrapped in the array
           <Drawer
             variant="permanent"
             classes={{

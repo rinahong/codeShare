@@ -30,7 +30,8 @@ export class Editor extends Component {
 
     this.state = {
       id: this.props.match.params.id,
-      title: ""
+      title: "",
+      users: []
     }
 
     // I hate this... but need a non-reactive variable
@@ -39,7 +40,7 @@ export class Editor extends Component {
   }
 
   componentDidMount() {
-    const {id} = this.state;
+    const {id, users} = this.state;
 		const customMode = new CustomOpenEdgeMode();
     if(Meteor.userId()) {
       this.refs.aceEditor.editor.getSession().setMode(customMode);
@@ -48,6 +49,20 @@ export class Editor extends Component {
         pathname: "/signin",
         state: { from: this.props.location }
       })
+    }
+
+    if (Meteor.isClient) {
+      Meteor.subscribe("users", {
+        onReady: function () {
+          this.setState({users: Meteor.users.find({}).fetch()})
+        }.bind(this),
+
+        onStop: function () {
+         // called when data publication is stopped
+         console.log("users in onStop", users)
+        }
+      });
+      console.log("users in if client", users)
     }
 
     // Find the document on this editor page.
@@ -138,13 +153,21 @@ export class Editor extends Component {
   }
 
   viewUserAvaliable(close){
+    const {users} = this.state;
     return(
       <div className="modal">
         <a className="close" onClick={close}>
           &times;
         </a>
         <div className="header"> Share with others </div>
-        <div className="content">=======rina</div>
+        <div className="content">
+          <h3>=======rina</h3>
+          {
+            users.map(user => (
+              <p>{user.profile.username}</p>
+            ))
+          }
+        </div>
         <div className="actions">
           <button
             className="button"
