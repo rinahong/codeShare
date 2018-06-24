@@ -10,6 +10,7 @@ import Chat from './Chat.js';
 import { Documents } from '../api/documents.js';
 import { DocumentContents } from '../api/documentContents.js';
 import CustomOpenEdgeMode from '../customModes/openEdge.js';
+import {UserSelection} from './UserSelection.js';
 
 import 'brace/mode/javascript';
 import 'brace/theme/monokai';
@@ -134,6 +135,18 @@ export class Editor extends Component {
     }
   }
 
+  // shareDocumentOnSubmit(){
+  //   const {id} = this.state;
+  //
+  //   return () => {
+  //     Meteor.call('shareDocumentOnSubmit', id, userList, (error) => {
+  //       if(error) {
+  //         console.log("There was an error to permit user to this Document");
+  //       }
+  //     });
+  //   }
+  // }
+
   render() {
     const {title} = this.state;
     const height = this.getHeight(); //window height
@@ -142,6 +155,7 @@ export class Editor extends Component {
     return (
       [
         <div>
+          <UserSelection />
           <input
             value={title}
             onChange={this.handleTitleChange('title')}
@@ -151,6 +165,7 @@ export class Editor extends Component {
             name='title'
           />
         </div>,
+        // <button onClick={this.shareDocument()}>SHARE</button>,
         <Chat key="0" id={this.state.id}/>,
         <AceEditor
         ref="aceEditor"
