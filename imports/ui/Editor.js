@@ -27,11 +27,14 @@ export class Editor extends Component {
     this.onChange = this.onChange.bind(this);
     this.onLoad = this.onLoad.bind(this);
     this.viewUserAvaliable = this.viewUserAvaliable.bind(this);
+    this.givePermission = this.givePermission.bind(this);
+    this.updateUserPermissionList = this.updateUserPermissionList.bind(this);
 
     this.state = {
       id: this.props.match.params.id,
       title: "",
-      users: []
+      meteorUsers: [],
+      userIdsWithPermission: []
     }
 
     // I hate this... but need a non-reactive variable
@@ -40,7 +43,7 @@ export class Editor extends Component {
   }
 
   componentDidMount() {
-    const {id, users} = this.state;
+    const {id, meteorUsers} = this.state;
 		const customMode = new CustomOpenEdgeMode();
     if(Meteor.userId()) {
       this.refs.aceEditor.editor.getSession().setMode(customMode);
@@ -54,12 +57,12 @@ export class Editor extends Component {
     if (Meteor.isClient) {
       Meteor.subscribe("users", {
         onReady: function () {
-          this.setState({users: Meteor.users.find({}).fetch()})
+          this.setState({meteorUsers: Meteor.users.find({}).fetch()})
         }.bind(this),
 
         onStop: function () {
          // called when data publication is stopped
-         console.log("users in onStop", users)
+         console.log("users in onStop", meteorUsers)
         }
       });
     }
@@ -151,8 +154,19 @@ export class Editor extends Component {
     }
   }
 
+  updateUserPermissionList(listOfIds) {
+    this.setState({
+      userIdsWithPermission: listOfIds.split(',')
+    })
+  }
+
+  givePermission() {
+    const { userIdsWithPermission } = this.state;
+    console.log("In givePermission",userIdsWithPermission)
+  }
+
   viewUserAvaliable(close){
-    const {users} = this.state;
+    const { meteorUsers, userIdsWithPermission } = this.state;
     return(
       <div className="modal">
         <a className="close" onClick={close}>
@@ -160,9 +174,18 @@ export class Editor extends Component {
         </a>
         <div className="header"> Share with others </div>
         <div className="content">
-          <UserSelection users={users}/>
+          <UserSelection meteorUsers={meteorUsers} updateUserPermissionList={this.updateUserPermissionList}/>
         </div>
         <div className="actions">
+          <button
+            className="button"
+            onClick={() => {
+              console.log('Permission Sent')
+              this.givePermission()
+            }}
+          >
+            SEND
+          </button>
           <button
             className="button"
             onClick={() => {

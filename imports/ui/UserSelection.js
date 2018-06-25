@@ -29,20 +29,22 @@ export class UserSelection extends Component {
   }
 
 	componentDidMount() {
-		const { users = {} } = this.props;
+		const { meteorUsers = [] } = this.props;
 		const { allUsers } = this.state;
 		var userArray = [];
-		var eachUser = {};
-		users.map(user => (
+		meteorUsers.map(user => (
 			userArray.push({ 'label': user.profile.username, 'value': user._id })
 		))
 		this.setState({allUsers: userArray});
 	}
 
 	handleSelectChange (value) {
+		var { updateUserPermissionList = () => {} } = this.props;
 		console.log('You\'ve selected:', value);
+		updateUserPermissionList(value)
 		this.setState({ value });
 	}
+
 	toggleCheckbox (e) {
 		this.setState({
 			[e.target.name]: e.target.checked,
@@ -56,7 +58,6 @@ export class UserSelection extends Component {
 	render () {
 		const { disabled, stayOpen, value, allUsers } = this.state;
 		const options = allUsers;
-
 		return (
 			<div className="section">
 				<Select
