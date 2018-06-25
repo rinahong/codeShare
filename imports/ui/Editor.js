@@ -21,6 +21,7 @@ import 'brace/theme/monokai';
 import 'brace/mode/jsx';
 
 const languages = [
+  'openedge',
   'javascript',
   'java',
   'python',
@@ -36,8 +37,10 @@ const languages = [
   'csharp',
   'elixir',
   'typescript',
-  'css'
+  'css',
 ]
+
+const customMode = new CustomOpenEdgeMode();
 
 
 // Render editor
@@ -70,12 +73,11 @@ export class Editor extends Component {
 
   componentDidMount() {
     const {id, meteorUsers} = this.state;
-		const customMode = new CustomOpenEdgeMode();
     if(Meteor.userId()) {
       
       // this.refs.aceEditor.editor.getSession().setMode({this.state.mode});
 
-      this.refs.aceEditor.editor.getSession().setMode(customMode);
+      
     } else {
       this.props.history.push({
         pathname: "/signin",
@@ -141,6 +143,11 @@ export class Editor extends Component {
   }
 
   setMode(e) {
+
+    if(this.state.mode = 'openedge') {
+      this.refs.aceEditor.editor.getSession().setMode(customMode);
+    }
+
     this.setState({
       mode: e.target.value
     })
@@ -274,7 +281,7 @@ export class Editor extends Component {
         <AceEditor
         ref="aceEditor"
         key="1"
-        mode="text"
+        mode={this.state.mode}
         theme="monokai"
         name="editor"
         onLoad={this.onLoad}
