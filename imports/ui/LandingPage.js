@@ -4,6 +4,16 @@ import { UserDocuments } from '../api/userDoc';
 import { Documents } from '../api/documents.js';
 import { DocumentContents } from '../api/documentContents.js';
 
+import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/core/styles';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
+import ListSubheader from '@material-ui/core/ListSubheader';
+import { Button } from '@material-ui/core';
+
 export class LandingPage extends Component {
   constructor(props) {
     super(props);
@@ -16,15 +26,14 @@ export class LandingPage extends Component {
     this.createDocument = this.createDocument.bind(this);
   }
 
-  componentDidMount () {
-    console.log("landingpage comdidmount props: ", this.props)
+  componentDidMount() {
     const currentUser = Meteor.userId();
-    if(currentUser) {
+    if (currentUser) {
       Meteor.call('getDocuments', currentUser, (error, result) => {
-        if(error) {
+        if (error) {
           console.log("There was an error to retreive Document list");
         } else {
-          this.setState({documents: result, loading: false});
+          this.setState({ documents: result, loading: false });
         }
       });
     } else {
@@ -60,12 +69,12 @@ export class LandingPage extends Component {
     });
   }
 
-  deleteDocument (documentId) {
+  deleteDocument(documentId) {
     return () => {
-      const {documents} = this.state;
+      const { documents } = this.state;
       // Meteor.method "deleteDocument" will remove Document from mongoDB.
       Meteor.call('deleteDocument', documentId, (error, result) => {
-        if(error) {
+        if (error) {
           console.log("There was an error to retreive Document list");
         } else {
           // Remove the document from the state, so that, remove the document from the LandingPage.
@@ -80,8 +89,8 @@ export class LandingPage extends Component {
   }
 
 
-  render () {
-    const {loading} = this.state;
+  render() {
+    const { loading } = this.state;
 
     if (loading) {
       return (
@@ -99,27 +108,35 @@ export class LandingPage extends Component {
         className="LandingPage"
         style={{ padding: '0  20px' }}
       >
+
         <h2>Create Document</h2>
         <form onSubmit={this.createDocument}>
           <div>
-            <input type='submit' value='Create New Document' />
+            <Button variant="contained" color="secondary" type="submit" style={{ padding: '0  20px', color: 'white' }}>
+              New Document
+            </Button>
           </div>
         </form>
 
 
         <h2>Documents</h2>
-        <ul style={{ paddingLeft: '10px' }}>
+
+        <List style={{ paddingLeft: '10px', width: '50%', backgroundColor: 'paper' }} subheader={<ListSubheader component="div">Documents</ListSubheader>}>
           {
             this.state.documents.map(doc => (
-              <li key={doc._id}>
+              <ListItem button key={doc._id}>
+                <ListItemIcon>
+                  <InsertDriveFileIcon />
+                </ListItemIcon>
                 <Link to={`/documents/${doc._id}`}>
-                  {JSON.stringify(doc.title) + "---" + JSON.stringify(doc._id)}
+                  <ListItemText inset primary={JSON.stringify(doc.title) + "---" + JSON.stringify(doc._id)} />
+
                 </Link>
                 <button onClick={this.deleteDocument(doc._id)}>Delete</button>
-              </li>
+              </ListItem>
             ))
           }
-        </ul>
+        </List>
       </main>
     );
   }
