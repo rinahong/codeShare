@@ -62,7 +62,6 @@ export class Editor extends Component {
          console.log("users in onStop", users)
         }
       });
-      console.log("users in if client", users)
     }
 
     // Find the document on this editor page.
@@ -161,12 +160,7 @@ export class Editor extends Component {
         </a>
         <div className="header"> Share with others </div>
         <div className="content">
-          <h3>=======rina</h3>
-          {
-            users.map(user => (
-              <p>{user.profile.username}</p>
-            ))
-          }
+          <UserSelection users={users}/>
         </div>
         <div className="actions">
           <button
@@ -191,7 +185,6 @@ export class Editor extends Component {
     return (
       [
         <div>
-          <UserSelection />
           <input
             value={title}
             onChange={this.handleTitleChange('title')}

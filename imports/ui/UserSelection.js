@@ -3,34 +3,20 @@ import PropTypes from 'prop-types';
 import Select from 'react-select';
 import 'react-select/dist/react-select.css';
 
-const FLAVOURS = [
-	{ label: 'Chocolate', value: 'chocolate' },
-	{ label: 'Vanilla', value: 'vanilla' },
-	{ label: 'Strawberry', value: 'strawberry' },
-	{ label: 'Caramel', value: 'caramel' },
-	{ label: 'Cookies and Cream', value: 'cookiescream' },
-	{ label: 'Peppermint', value: 'peppermint' },
-];
-
-const WHY_WOULD_YOU = [
-	{ label: 'Chocolate (are you crazy?)', value: 'chocolate', disabled: true },
-].concat(FLAVOURS.slice(1));
-
 export class UserSelection extends Component {
 
   constructor(props) {
     super(props);
 
     this.state = {
+			allUsers: [],
 			removeSelected: true,
 			disabled: false,
-			crazy: false,
 			stayOpen: false,
 			value: [],
 			rtl: false,
     }
 
-		console.log("rina in userSelection.js")
 		this.handleSelectChange = this.handleSelectChange.bind(this);
 		this.toggleCheckbox = this.toggleCheckbox.bind(this);
 		this.toggleRtl = this.toggleRtl.bind(this);
@@ -41,6 +27,18 @@ export class UserSelection extends Component {
 		// },
 
   }
+
+	componentDidMount() {
+		const { users = {} } = this.props;
+		const { allUsers } = this.state;
+		var userArray = [];
+		var eachUser = {};
+		users.map(user => (
+			userArray.push({ 'label': user.profile.username, 'value': user._id })
+		))
+		this.setState({allUsers: userArray});
+	}
+
 	handleSelectChange (value) {
 		console.log('You\'ve selected:', value);
 		this.setState({ value });
@@ -56,8 +54,9 @@ export class UserSelection extends Component {
 	}
 
 	render () {
-		const { crazy, disabled, stayOpen, value } = this.state;
-		const options = crazy ? WHY_WOULD_YOU : FLAVOURS;
+		const { disabled, stayOpen, value, allUsers } = this.state;
+		const options = allUsers;
+
 		return (
 			<div className="section">
 				<Select
@@ -81,10 +80,6 @@ export class UserSelection extends Component {
 					<label className="checkbox">
 						<input type="checkbox" className="checkbox-control" name="disabled" checked={this.state.disabled} onChange={this.toggleCheckbox} />
 						<span className="checkbox-label">Disable the control</span>
-					</label>
-					<label className="checkbox">
-						<input type="checkbox" className="checkbox-control" name="crazy" checked={crazy} onChange={this.toggleCheckbox} />
-						<span className="checkbox-label">I don't like Chocolate (disabled the option)</span>
 					</label>
 					<label className="checkbox">
 						<input type="checkbox" className="checkbox-control" name="stayOpen" checked={stayOpen} onChange={this.toggleCheckbox}/>
