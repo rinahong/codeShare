@@ -172,7 +172,7 @@ export class Editor extends Component {
           console.log("Yay upserted successfull")
         }
       });
-
+      //TODO: Later, write a function to send emails to all permitted users.
     })
   }
 
