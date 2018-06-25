@@ -66,6 +66,37 @@ export class Editor extends Component {
          console.log("users in onStop", meteorUsers)
         }
       });
+
+      Meteor.subscribe("usersByDoc", id, {
+        onReady: function () {
+          var onlyUserIdsByDoc = [];
+
+          //Fetch all userDocuments by Document id and parse userId to store in the array.
+          UserDocuments.find({ docId: id }).fetch().map((eachUser)=>{
+            onlyUserIdsByDoc.push(eachUser.userId);
+          });
+
+          console.log("onlyUserIdsByDoc", onlyUserIdsByDoc);
+
+          // Exclude users of document from meteorUsers.
+          // As we map through onlyUserIdsByDoc,
+          // filtering meteorUsers by removing a user by userId.
+          onlyUserIdsByDoc.map((userId)=>{
+            console.log(userId)
+            this.setState({
+              meteorUsers: this.state.meteorUsers
+                .filter( u => u._id !== userId)
+            })
+          })
+          console.log("final!",this.state.meteorUsers);
+
+        }.bind(this),
+
+        onStop: function () {
+         // called when data publication is stopped
+         console.log("users in onStop", meteorUsers);
+        }
+      });
     }
 
     // Find the document on this editor page.
@@ -163,15 +194,19 @@ export class Editor extends Component {
 
   givePermission() {
     const { id, userIdsWithPermission } = this.state;
-    console.log("In givePermission",userIdsWithPermission)
     userIdsWithPermission.map((userId) => {
       Meteor.call('upsertUserDocument', userId, id, (error, result) => {
         if(error) {
           console.log("There was an error to upsert");
         } else {
-          console.log("Yay upserted successfull")
+          console.log("Yay upserted successfull");
         }
       });
+      // TODO: Below setState not working properly
+      // this.setState({
+      //   meteorUsers: this.state.meteorUsers
+      //     .filter( u => u._id !== userId)
+      // })
       //TODO: Later, write a function to send emails to all permitted users.
     })
   }

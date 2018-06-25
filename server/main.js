@@ -3,11 +3,16 @@ import '../imports/api/messages';
 import { Documents } from '../imports/api/documents.js';
 import { DocumentContents } from '../imports/api/documentContents.js';
 import { UserDocuments } from '../imports/api/userDoc';
+import { publishComposite } from 'meteor/reywood:publish-composite';
 
 Meteor.startup(() => {
   return (
     Meteor.publish('users', function() {
       return Meteor.users.find({});
+    }),
+
+    Meteor.publish('usersByDoc', function(docId) {
+        return UserDocuments.find({ docId: docId });
     }),
 
     Meteor.methods({

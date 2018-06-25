@@ -43,6 +43,7 @@ export class UserSelection extends Component {
 	render () {
 		const { value, allUsers } = this.state;
 		const options = allUsers;
+    const placeholder = (allUsers.length == 0) ? "There are no more users to add..." : "Select user(s)";
 		return (
 			<div className="section">
 				<Select
@@ -50,7 +51,7 @@ export class UserSelection extends Component {
 					multi
 					onChange={this.handleSelectChange}
 					options={options}
-					placeholder="Select user(s)"
+					placeholder={placeholder}
           removeSelected={true}
 					simpleValue
 					value={value}
