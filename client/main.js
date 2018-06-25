@@ -28,7 +28,6 @@ const theme = createMuiTheme({
 
 Meteor.startup(() => {
   console.log(Meteor.userId());
-
   render(
     <MuiThemeProvider theme={theme}>
       <BrowserRouter>

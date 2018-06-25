@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import { UserDocuments } from '../api/userDoc';
-import { DocumentContents } from '../api/documentContents';
+import { Documents } from '../api/documents.js';
+import { DocumentContents } from '../api/documentContents.js';
 
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
@@ -25,22 +26,25 @@ export class LandingPage extends Component {
     this.createDocument = this.createDocument.bind(this);
   }
 
-  componentDidMount() {
-    var currentUser = Meteor.userId();
-    Tracker.autorun(() => {
-      let data = DocumentContents.find({ createdBy: currentUser }, { sort: { createdAt: -1 } }).fetch()
-      if (data) {
-        console.log(data)
-        this.setState({ documents: data, loading: false });
-      }
-    });
+  componentDidMount () {
+    const currentUser = Meteor.userId();
+    if(currentUser) {
+      Meteor.call('getDocuments', currentUser, (error, result) => {
+        if(error) {
+          console.log("There was an error to retreive Document list");
+        } else {
+          this.setState({documents: result, loading: false});
+        }
+      });
+    } else {
+      this.props.history.push("/signin")
+    }
   }
 
   createDocument() {
-    console.log("am i in createDocument")
     var currentUser = Meteor.userId();
 
-    DocumentContents.insert({
+    Documents.insert({
       title: "Untitled Document",
       createdAt: new Date(), // current time
       createdBy: currentUser
@@ -62,8 +66,28 @@ export class LandingPage extends Component {
     });
   }
 
-  render() {
-    const { loading } = this.state;
+  deleteDocument (documentId) {
+    return () => {
+      const {documents} = this.state;
+      // Meteor.method "deleteDocument" will remove Document from mongoDB.
+      Meteor.call('deleteDocument', documentId, (error, result) => {
+        if(error) {
+          console.log("There was an error to retreive Document list");
+        } else {
+          // Remove the document from the state, so that, remove the document from the LandingPage.
+          this.setState({
+            documents: documents.filter(doc => doc._id !== documentId)
+          });
+        }
+      });
+
+
+    }
+  }
+
+
+  render () {
+    const {loading} = this.state;
 
     if (loading) {
       return (
@@ -98,8 +122,10 @@ export class LandingPage extends Component {
                 </ListItemIcon>
                 <Link to={`/documents/${doc._id}`}>
                   <ListItemText inset primary={JSON.stringify(doc.title) + "---" + JSON.stringify(doc._id)} />
+        
                 </Link>
               </ListItem>
+              <button onClick={this.deleteDocument(doc._id)}>Delete</button>
             ))
           }
         </List>
