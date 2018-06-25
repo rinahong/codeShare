@@ -37,7 +37,10 @@ export class LandingPage extends Component {
         }
       });
     } else {
-      this.props.history.push("/signin")
+      this.props.history.push({
+        pathname: "/signin",
+        state: { from: this.props.location }
+      })
     }
   }
 
@@ -107,9 +110,14 @@ export class LandingPage extends Component {
       >
 
         <h2>Create Document</h2>
-        <Button variant="contained" color="secondary" onClick={this.createDocument} style={{ padding: '0  20px', color: 'white' }}>
-          New Document
-        </Button>
+        <form onSubmit={this.createDocument}>
+          <div>
+            <Button variant="contained" color="secondary" type="submit" style={{ padding: '0  20px', color: 'white' }}>
+              New Document
+            </Button>
+          </div>
+        </form>
+
 
         <h2>Documents</h2>
 
@@ -133,4 +141,3 @@ export class LandingPage extends Component {
     );
   }
 }
-

@@ -110,12 +110,32 @@ class NavBar extends React.Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      open: false,
+      currentUser: []
+    };
     this.createDocument = this.createDocument.bind(this);
   }
 
-  state = {
-    open: false,
-  };
+  componentDidMount() {
+    const {currentUser} = this.state;
+    if (Meteor.userId()) {
+      if (Meteor.isClient) {
+        Meteor.subscribe("users", {
+          onReady: function () {
+              this.setState({
+                currentUser:  Meteor.users.find({_id: Meteor.userId()}).fetch()
+              });
+          }.bind(this),
+
+          onStop: function () {
+           // called when data publication is stopped
+           console.log("NavBar: data publication is stopped");
+          }
+        });
+      }
+    }
+  }
 
   handleDrawerOpen = () => {
     this.setState({ open: true });
@@ -154,7 +174,7 @@ class NavBar extends React.Component {
   render() {
     // const {  } = this.props;
     const { classes, children, theme, onSignOut = () => { } } = this.props;
-
+    const { currentUser } = this.state;
 
     return (
       <div className={classes.root}>
@@ -165,8 +185,7 @@ class NavBar extends React.Component {
 
           <Toolbar disableGutters={!this.state.open}>
 
-
-            {Meteor.userId() ? ([  // Should be wrapped in the array
+            { (currentUser.length > 0) ? ([  // Should be wrapped in the array
               <IconButton
                 color="inherit"
                 aria-label="open drawer"
@@ -174,7 +193,7 @@ class NavBar extends React.Component {
                 className={classNames(classes.menuButton, this.state.open && classes.hide)}>
                 <MenuIcon />
               </IconButton>,
-              <Typography variant="title" color="inherit" className={classes.flex} key='1' style={{ marginRight: '20px' }}>Welcome to CodeShare, {Meteor.userId()}</Typography>,
+              <Typography variant="title" color="inherit" className={classes.flex} key='1' style={{ marginRight: '20px' }}>Welcome to CodeShare, { currentUser[0].profile.username}</Typography>,
               <Button color="inherit">
                 Share
                 <LinkIcon className={classes.rightIcon} />
@@ -186,7 +205,7 @@ class NavBar extends React.Component {
           </Toolbar>
         </AppBar>
 
-        {Meteor.userId() ? ([  // Should be wrapped in the array
+        { Meteor.userId() ? ([  // Should be wrapped in the array
           <Drawer
             variant="permanent"
             classes={{

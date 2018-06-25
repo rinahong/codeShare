@@ -5,11 +5,14 @@ import AceEditor from 'react-ace';
 import { Redirect } from 'react-router-dom';
 import { Tracker } from 'meteor/tracker';
 import _ from 'lodash';
+import Popup from "reactjs-popup";
 
 import Chat from './Chat.js';
 import { Documents } from '../api/documents.js';
 import { DocumentContents } from '../api/documentContents.js';
+import { UserDocuments } from '../api/userDoc';
 import CustomOpenEdgeMode from '../customModes/openEdge.js';
+import {UserSelection} from './UserSelection.js';
 
 import 'brace/mode/javascript';
 import 'brace/theme/monokai';
@@ -24,10 +27,15 @@ export class Editor extends Component {
     this.getWidth = this.getWidth.bind(this);
     this.onChange = this.onChange.bind(this);
     this.onLoad = this.onLoad.bind(this);
+    this.viewUserAvaliable = this.viewUserAvaliable.bind(this);
+    this.givePermission = this.givePermission.bind(this);
+    this.updateUserPermissionList = this.updateUserPermissionList.bind(this);
 
     this.state = {
       id: this.props.match.params.id,
-      title: ""
+      title: "",
+      meteorUsers: [],
+      userIdsWithPermission: []
     }
 
     // I hate this... but need a non-reactive variable
@@ -36,9 +44,29 @@ export class Editor extends Component {
   }
 
   componentDidMount() {
-    const {id} = this.state;
+    const {id, meteorUsers} = this.state;
 		const customMode = new CustomOpenEdgeMode();
-		this.refs.aceEditor.editor.getSession().setMode(customMode);
+    if(Meteor.userId()) {
+      this.refs.aceEditor.editor.getSession().setMode(customMode);
+    } else {
+      this.props.history.push({
+        pathname: "/signin",
+        state: { from: this.props.location }
+      })
+    }
+
+    if (Meteor.isClient) {
+      Meteor.subscribe("users", {
+        onReady: function () {
+          this.setState({meteorUsers: Meteor.users.find({}).fetch()})
+        }.bind(this),
+
+        onStop: function () {
+         // called when data publication is stopped
+         console.log("users in onStop", meteorUsers)
+        }
+      });
+    }
 
     // Find the document on this editor page.
     Meteor.call('findDocument', id, (error, result) => {
@@ -127,22 +155,66 @@ export class Editor extends Component {
     }
   }
 
+  updateUserPermissionList(listOfIds) {
+    this.setState({
+      userIdsWithPermission: listOfIds.split(',')
+    })
+  }
+
+  givePermission() {
+    const { id, userIdsWithPermission } = this.state;
+    console.log("In givePermission",userIdsWithPermission)
+    userIdsWithPermission.map((userId) => {
+      Meteor.call('upsertUserDocument', userId, id, (error, result) => {
+        if(error) {
+          console.log("There was an error to upsert");
+        } else {
+          console.log("Yay upserted successfull")
+        }
+      });
+      //TODO: Later, write a function to send emails to all permitted users.
+    })
+  }
+
+  viewUserAvaliable(close){
+    const { meteorUsers, userIdsWithPermission } = this.state;
+    return(
+      <div className="modal">
+        <a className="close" onClick={close}>
+          &times;
+        </a>
+        <div className="header"> Share with others </div>
+        <div className="content">
+          <UserSelection meteorUsers={meteorUsers} updateUserPermissionList={this.updateUserPermissionList}/>
+        </div>
+        <div className="actions">
+          <button
+            className="button"
+            onClick={() => {
+              console.log('Permission Sent')
+              this.givePermission()
+            }}
+          >
+            SEND
+          </button>
+          <button
+            className="button"
+            onClick={() => {
+              console.log('modal closed ')
+              close()
+            }}
+          >
+            close modal
+          </button>
+        </div>
+      </div>
+    )
+  }
+
   render() {
     const {title} = this.state;
     const height = this.getHeight(); //window height
     const width = this.getWidth(); //window width
-
-    // check is user is logged in; if not, redirect to login page
-    if (Meteor.userId() == null) {
-      return (
-        <Redirect
-          to={{
-            pathname: "/signin",
-            state: { from: this.props.location }
-          }}
-        />
-      )
-    }
 
     return (
       [
@@ -156,6 +228,11 @@ export class Editor extends Component {
             name='title'
           />
         </div>,
+        <Popup trigger={<button className="button"> Open Modal </button>} modal>
+          {close => (
+            this.viewUserAvaliable(close)
+          )}
+        </Popup>,
         <Chat key="0" id={this.state.id}/>,
         <AceEditor
         ref="aceEditor"
@@ -183,6 +260,11 @@ export class Editor extends Component {
       ]
     );
   }
-
-
 }
+
+
+export default () => (
+  <Popup trigger={<button> Trigger</button>} position="right center">
+    <div>Popup content here !!</div>
+  </Popup>
+);
