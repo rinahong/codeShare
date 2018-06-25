@@ -19,14 +19,15 @@ import HistoryIcon from '@material-ui/icons/History';
 import NoteAddIcon from '@material-ui/icons/NoteAdd';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import DeleteIcon from '@material-ui/icons/Delete';
+import LinkIcon from '@material-ui/icons/Link';
 
+import { DocumentContents } from '../api/documentContents';
 
 
 const drawerWidth = 240;
 const styles = theme => ({
   root: {
     flexGrow: 1,
-    height: 430,
     zIndex: 1,
     overflow: 'hidden',
     position: 'relative',
@@ -76,7 +77,7 @@ const styles = theme => ({
   },
   toolbar: {
     display: 'flex',
-    alignItems: 'center',
+    alignItems: 'right',
     justifyContent: 'flex-end',
     padding: '0 8px',
     ...theme.mixins.toolbar,
@@ -95,7 +96,9 @@ const styles = theme => ({
   content: {
     flexGrow: 1,
     backgroundColor: theme.palette.background.default,
-    padding: theme.spacing.unit * 3,
+  },
+  rightIcon: {
+    marginLeft: theme.spacing.unit,
   },
 });
 
@@ -104,8 +107,10 @@ const MyDocumentsLink = props => <Link to="/me/documents" {...props} />
 
 class NavBar extends React.Component {
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
+
+    this.createDocument = this.createDocument.bind(this);
   }
 
   state = {
@@ -120,7 +125,31 @@ class NavBar extends React.Component {
     this.setState({ open: false });
   };
 
+  createDocument() {
+    console.log("am i in createDocument")
+    var currentUser = Meteor.userId();
 
+    DocumentContents.insert({
+      title: "Untitled Document",
+      createdAt: new Date(), // current time
+      createdBy: currentUser
+    }, function (error, results) {
+      if (error) {
+        console.log("Documents Insert Failed: ", error.reason);
+      } else {
+        UserDocuments.insert({
+          userId: currentUser,
+          docId: results
+        }, function (error, results) {
+          if (error) {
+            console.log("UserDocuments Insert Failed: ", error.reason);
+          } else {
+            console.log("No error!")
+          }
+        })
+      }
+    });
+  }
 
   render() {
     // const {  } = this.props;
@@ -146,7 +175,10 @@ class NavBar extends React.Component {
                 <MenuIcon />
               </IconButton>,
               <Typography variant="title" color="inherit" className={classes.flex} key='1' style={{ marginRight: '20px' }}>Welcome to CodeShare, {Meteor.userId()}</Typography>,
-              <Button color="inherit" key='2' component={MyDocumentsLink}>My Documents</Button>,
+              <Button color="inherit">
+                Share
+                <LinkIcon className={classes.rightIcon} />
+              </Button>,
               <Button color="inherit" key='3' href="/" onClick={onSignOut}>Sign Out </Button>
             ]) : (
                 <Button key='1' color="inherit" component={LoginLink}>Login</Button>)}
@@ -171,13 +203,13 @@ class NavBar extends React.Component {
             <Divider />
             <List>
               <div>
-                <ListItem button>
+                <ListItem button key='2' component={MyDocumentsLink}>
                   <ListItemIcon>
                     <HomeIcon />
                   </ListItemIcon>
                   <ListItemText primary="Home" />
                 </ListItem>
-                <ListItem button>
+                <ListItem button onClick={this.createDocument}>
                   <ListItemIcon>
                     <NoteAddIcon />
                   </ListItemIcon>
@@ -215,10 +247,10 @@ class NavBar extends React.Component {
             {children}
           </main>
         ]) : (
-          <main className={classes.content}>
-            <div className={classes.toolbar} />
-            {children}
-          </main>
+            <main className={classes.content}>
+              <div className={classes.toolbar} />
+              {children}
+            </main>
           )}
 
 

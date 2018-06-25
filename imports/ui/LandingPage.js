@@ -4,6 +4,16 @@ import { UserDocuments } from '../api/userDoc';
 import { Documents } from '../api/documents.js';
 import { DocumentContents } from '../api/documentContents.js';
 
+import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/core/styles';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
+import ListSubheader from '@material-ui/core/ListSubheader';
+import { Button } from '@material-ui/core';
+
 export class LandingPage extends Component {
   constructor(props) {
     super(props);
@@ -95,28 +105,32 @@ export class LandingPage extends Component {
         className="LandingPage"
         style={{ padding: '0  20px' }}
       >
+        
         <h2>Create Document</h2>
-        <form onSubmit={this.createDocument}>
-          <div>
-            <input type='submit' value='Create New Document' />
-          </div>
-        </form>
-
+        <Button variant="contained" color="secondary" onClick={this.createDocument} style={{ padding: '0  20px', color: 'white' }}>
+            New Document
+        </Button>
 
         <h2>Documents</h2>
-        <ul style={{ paddingLeft: '10px' }}>
+
+        <List style={{ paddingLeft: '10px', width: '50%', backgroundColor: 'paper' }} subheader={<ListSubheader component="div">Documents</ListSubheader>}>
           {
             this.state.documents.map(doc => (
-              <li key={doc._id}>
+              <ListItem button key={doc._id}>
+                <ListItemIcon>
+                  <InsertDriveFileIcon />
+                </ListItemIcon>
                 <Link to={`/documents/${doc._id}`}>
-                  {JSON.stringify(doc.title) + "---" + JSON.stringify(doc._id)}
+                  <ListItemText inset primary={JSON.stringify(doc.title) + "---" + JSON.stringify(doc._id)} />
+        
                 </Link>
-                <button onClick={this.deleteDocument(doc._id)}>Delete</button>
-              </li>
+              </ListItem>
+              <button onClick={this.deleteDocument(doc._id)}>Delete</button>
             ))
           }
-        </ul>
+        </List>
       </main>
     );
   }
 }
+
