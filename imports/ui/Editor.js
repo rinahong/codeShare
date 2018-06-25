@@ -10,6 +10,7 @@ import Popup from "reactjs-popup";
 import Chat from './Chat.js';
 import { Documents } from '../api/documents.js';
 import { DocumentContents } from '../api/documentContents.js';
+import { UserDocuments } from '../api/userDoc';
 import CustomOpenEdgeMode from '../customModes/openEdge.js';
 import {UserSelection} from './UserSelection.js';
 
@@ -161,8 +162,18 @@ export class Editor extends Component {
   }
 
   givePermission() {
-    const { userIdsWithPermission } = this.state;
+    const { id, userIdsWithPermission } = this.state;
     console.log("In givePermission",userIdsWithPermission)
+    userIdsWithPermission.map((userId) => {
+      Meteor.call('upsertUserDocument', userId, id, (error, result) => {
+        if(error) {
+          console.log("There was an error to upsert");
+        } else {
+          console.log("Yay upserted successfull")
+        }
+      });
+
+    })
   }
 
   viewUserAvaliable(close){
@@ -249,11 +260,7 @@ export class Editor extends Component {
       ]
     );
   }
-
-
 }
-
-
 
 
 export default () => (

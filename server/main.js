@@ -1,9 +1,8 @@
 import { Meteor } from 'meteor/meteor';
-
-import '../imports/api/userDoc';
 import '../imports/api/messages';
 import { Documents } from '../imports/api/documents.js';
 import { DocumentContents } from '../imports/api/documentContents.js';
+import { UserDocuments } from '../imports/api/userDoc';
 
 Meteor.startup(() => {
   return (
@@ -27,15 +26,25 @@ Meteor.startup(() => {
       },
 
       updateTitle(docId, docTitle) {
-        Documents.update({ _id: docId },
-          {
-            title: docTitle
-          });
+        Documents.update({ _id: docId }, { title: docTitle });
       },
 
-      getUsername: function() {
-        return Meteor.user();
+      upsertUserDocument(userId, docId) {
+        UserDocuments.upsert({
+            // Selector
+            userId: userId,
+            docId: docId
+
+        }, {
+            // Modifier
+            $set: {
+              userId: userId,
+              docId: docId
+            }
+        })
       }
-    })
-  )
+
+    }) //End of Meteor.methods
+  ) //End of return
+
 });
