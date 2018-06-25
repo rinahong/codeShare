@@ -13,16 +13,41 @@ import { DocumentContents } from '../api/documentContents.js';
 import { UserDocuments } from '../api/userDoc';
 import CustomOpenEdgeMode from '../customModes/openEdge.js';
 import {UserSelection} from './UserSelection.js';
+import Select from '@material-ui/core/Select';
 
-import 'brace/mode/javascript';
+import '../api/aceModes.js'
+import 'brace/snippets/javascript';
 import 'brace/theme/monokai';
+import 'brace/mode/jsx';
+
+const languages = [
+  'javascript',
+  'java',
+  'python',
+  'xml',
+  'ruby',
+  'sass',
+  'markdown',
+  'mysql',
+  'json',
+  'html',
+  'handlebars',
+  'golang',
+  'csharp',
+  'elixir',
+  'typescript',
+  'css'
+]
+
 
 // Render editor
 export class Editor extends Component {
 
+
   constructor(props) {
     super(props);
 
+    this.setMode = this.setMode.bind(this);
     this.getHeight = this.getHeight.bind(this);
     this.getWidth = this.getWidth.bind(this);
     this.onChange = this.onChange.bind(this);
@@ -40,13 +65,16 @@ export class Editor extends Component {
 
     // I hate this... but need a non-reactive variable
     this.prevValues = [];
-
+    
   }
 
   componentDidMount() {
     const {id, meteorUsers} = this.state;
 		const customMode = new CustomOpenEdgeMode();
     if(Meteor.userId()) {
+      
+      // this.refs.aceEditor.editor.getSession().setMode({this.state.mode});
+
       this.refs.aceEditor.editor.getSession().setMode(customMode);
     } else {
       this.props.history.push({
@@ -110,6 +138,12 @@ export class Editor extends Component {
       });
     }
 
+  }
+
+  setMode(e) {
+    this.setState({
+      mode: e.target.value
+    })
   }
 
   onLoad(editor) {
@@ -227,6 +261,9 @@ export class Editor extends Component {
             id='title'
             name='title'
           />
+          <Select name="mode" onChange={this.setMode} value={this.state.mode}>
+                  {languages.map((lang) => <option  key={lang} value={lang}>{lang}</option>)}
+          </Select>
         </div>,
         <Popup trigger={<button className="button"> Open Modal </button>} modal>
           {close => (
@@ -237,7 +274,7 @@ export class Editor extends Component {
         <AceEditor
         ref="aceEditor"
         key="1"
-        mode="javascript"
+        mode="text"
         theme="monokai"
         name="editor"
         onLoad={this.onLoad}
