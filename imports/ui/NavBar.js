@@ -21,6 +21,7 @@ import GetAppIcon from '@material-ui/icons/GetApp';
 import DeleteIcon from '@material-ui/icons/Delete';
 import LinkIcon from '@material-ui/icons/Link';
 
+import { Documents } from '../api/documents.js';
 import { DocumentContents } from '../api/documentContents';
 
 
@@ -146,10 +147,9 @@ class NavBar extends React.Component {
   };
 
   createDocument() {
-    console.log("am i in createDocument")
     var currentUser = Meteor.userId();
 
-    DocumentContents.insert({
+    Documents.insert({
       title: "Untitled Document",
       createdAt: new Date(), // current time
       createdBy: currentUser
