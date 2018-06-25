@@ -26,14 +26,14 @@ export class LandingPage extends Component {
     this.createDocument = this.createDocument.bind(this);
   }
 
-  componentDidMount () {
+  componentDidMount() {
     const currentUser = Meteor.userId();
-    if(currentUser) {
+    if (currentUser) {
       Meteor.call('getDocuments', currentUser, (error, result) => {
-        if(error) {
+        if (error) {
           console.log("There was an error to retreive Document list");
         } else {
-          this.setState({documents: result, loading: false});
+          this.setState({ documents: result, loading: false });
         }
       });
     } else {
@@ -66,12 +66,12 @@ export class LandingPage extends Component {
     });
   }
 
-  deleteDocument (documentId) {
+  deleteDocument(documentId) {
     return () => {
-      const {documents} = this.state;
+      const { documents } = this.state;
       // Meteor.method "deleteDocument" will remove Document from mongoDB.
       Meteor.call('deleteDocument', documentId, (error, result) => {
-        if(error) {
+        if (error) {
           console.log("There was an error to retreive Document list");
         } else {
           // Remove the document from the state, so that, remove the document from the LandingPage.
@@ -86,8 +86,8 @@ export class LandingPage extends Component {
   }
 
 
-  render () {
-    const {loading} = this.state;
+  render() {
+    const { loading } = this.state;
 
     if (loading) {
       return (
@@ -105,10 +105,10 @@ export class LandingPage extends Component {
         className="LandingPage"
         style={{ padding: '0  20px' }}
       >
-        
+
         <h2>Create Document</h2>
         <Button variant="contained" color="secondary" onClick={this.createDocument} style={{ padding: '0  20px', color: 'white' }}>
-            New Document
+          New Document
         </Button>
 
         <h2>Documents</h2>
@@ -122,10 +122,10 @@ export class LandingPage extends Component {
                 </ListItemIcon>
                 <Link to={`/documents/${doc._id}`}>
                   <ListItemText inset primary={JSON.stringify(doc.title) + "---" + JSON.stringify(doc._id)} />
-        
+
                 </Link>
+                <button onClick={this.deleteDocument(doc._id)}>Delete</button>
               </ListItem>
-              <button onClick={this.deleteDocument(doc._id)}>Delete</button>
             ))
           }
         </List>
