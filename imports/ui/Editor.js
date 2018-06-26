@@ -13,7 +13,12 @@ import { DocumentContents } from '../api/documentContents.js';
 import { UserDocuments } from '../api/userDoc';
 import CustomOpenEdgeMode from '../customModes/openEdge.js';
 import {UserSelection} from './UserSelection.js';
+
 import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+
+import { Paper, Toolbar, Typography } from '@material-ui/core';
+
 
 import '../api/aceModes.js'
 import 'brace/snippets/javascript';
@@ -39,6 +44,12 @@ const languages = [
   'typescript',
   'css',
 ]
+
+const statusBarStyle = {
+  zIndex: '9999',
+  bottom: '0',
+  position: 'fixed'
+};
 
 const customMode = new CustomOpenEdgeMode();
 
@@ -268,9 +279,6 @@ export class Editor extends Component {
             id='title'
             name='title'
           />
-          <Select name="mode" onChange={this.setMode} value={this.state.mode}>
-                  {languages.map((lang) => <option  key={lang} value={lang}>{lang}</option>)}
-          </Select>
         </div>,
         <Popup trigger={<button className="button"> Open Modal </button>} modal>
           {close => (
@@ -300,7 +308,13 @@ export class Editor extends Component {
           enableSnippets: false,
           showLineNumbers: true,
           tabSize: 2,
-        }}/>
+        }}/>,
+        
+        <Paper style={statusBarStyle} position='fixed' color="default">
+        <Select name="mode" onChange={this.setMode} value={this.state.mode}>
+                  Mode: {languages.map((lang) => <MenuItem  key={lang} value={lang}>{lang}</MenuItem>)}
+        </Select>
+        </Paper>
       ]
     );
   }
