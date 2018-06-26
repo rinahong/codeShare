@@ -85,8 +85,7 @@ const styles = theme => ({
     ...theme.mixins.toolbar,
   },
   toolbarBroadridgeLogo: {
-    backgroundImage: 'url("https://upload.wikimedia.org/wikipedia/en/d/d0/Broadridge_Financial_Solutions_Logo.svg")',
-    // backgroundImage: 'url('+ BroadridgeLogo+')',
+    backgroundImage: 'url("/broadridgelogo.svg")',
     backgroundRepeat: 'no-repeat',
     backgroundSize: '100% 100%',
     display: 'flex',

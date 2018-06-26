@@ -11,6 +11,7 @@ import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import { Button } from '@material-ui/core';
 
+
 export class LandingPage extends Component {
   constructor(props) {
     super(props);
@@ -103,10 +104,9 @@ export class LandingPage extends Component {
     return (
       <main
         className="LandingPage"
-        style={{ padding: '0  20px' }}
+        style={{ padding: '0  20px', textAlign: 'center' }}
       >
-
-        <h2>Create Document</h2>
+      <img src="/codeShareLogo.png" alt="logo" style={{ width: '30%', height: '30%', padding: '10px' }}/>
         <form onSubmit={this.createDocument}>
           <div>
             <Button variant="contained" color="secondary" type="submit" style={{ padding: '0  20px', color: 'white' }}>
