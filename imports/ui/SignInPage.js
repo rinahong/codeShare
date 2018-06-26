@@ -31,7 +31,7 @@ export class SignInPage extends Component {
     const {email, password, previousURl = ""} = this.state;
     const propsHistory = this.props.history;
     event.preventDefault();
-    
+
     Meteor.loginWithPassword(email, password, function(error){
       if(error){
           console.log(error.reason);
