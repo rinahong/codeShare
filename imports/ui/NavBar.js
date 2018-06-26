@@ -1,6 +1,6 @@
 import React from 'react';
 import { Meteor } from 'meteor/meteor'
-import { Link } from 'react-router-dom'
+import { Link, Redirect } from 'react-router-dom'
 import PropTypes from 'prop-types';
 import { AppBar, Toolbar, IconButton, Typography, Drawer, Divider } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
@@ -23,6 +23,7 @@ import LinkIcon from '@material-ui/icons/Link';
 
 import { Documents } from '../api/documents.js';
 import { DocumentContents } from '../api/documentContents';
+import { UserDocuments } from '../api/userDoc';
 
 
 const drawerWidth = 240;
@@ -106,6 +107,9 @@ const styles = theme => ({
 const LoginLink = props => <Link to="/signin" {...props} />;
 const MyDocumentsLink = props => <Link to="/me/documents" {...props} />
 
+// const NewDocumentsLink = props => <Link to="/documents/${docId}" {...props} />
+
+
 class NavBar extends React.Component {
 
   constructor(props) {
@@ -137,6 +141,7 @@ class NavBar extends React.Component {
       }
     }
   }
+  
 
   handleDrawerOpen = () => {
     this.setState({ open: true });
@@ -165,8 +170,10 @@ class NavBar extends React.Component {
             console.log("UserDocuments Insert Failed: ", error.reason);
           } else {
             console.log("No error!")
+             window.location.reload()
           }
         })
+
       }
     });
   }
@@ -228,12 +235,17 @@ class NavBar extends React.Component {
                   </ListItemIcon>
                   <ListItemText primary="Home" />
                 </ListItem>
-                <ListItem button onClick={this.createDocument}>
+
+
+
+                <ListItem button onClick={this.createDocument} component={MyDocumentsLink}>
                   <ListItemIcon>
                     <NoteAddIcon />
                   </ListItemIcon>
                   <ListItemText primary="New Document" />
                 </ListItem>
+
+
                 <ListItem button>
                   <ListItemIcon>
                     <GetAppIcon />
