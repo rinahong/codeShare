@@ -116,6 +116,7 @@ export class SignInPage extends Component {
                 value={password}
                 onChange={this.handleChange('password')}
                 margin="normal"
+                type="password"
               />
 
 

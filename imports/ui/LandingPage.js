@@ -69,6 +69,8 @@ export class LandingPage extends Component {
             console.log("UserDocuments Insert Failed: ", error.reason);
           } else {
             console.log("No error!")
+            window.location.reload()
+
           }
         })
       }
