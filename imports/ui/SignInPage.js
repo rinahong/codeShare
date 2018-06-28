@@ -29,11 +29,11 @@ const style = {
 };
 
 export class SignInPage extends Component {
-  
+
 
   constructor(props) {
 
-    
+
     super(props);
 
     let prevUrlString = "";
@@ -83,7 +83,7 @@ export class SignInPage extends Component {
   render() {
     const { email, password } = this.state;
 
-    
+
 
     return (
       <main
@@ -96,23 +96,16 @@ export class SignInPage extends Component {
           <h2 style={style.title}>Sign In</h2>
           <form onSubmit={this.createToken}>
 
-            <TextField
-              id="email"
-              label="Email"
-              className="textField"
-              value={email}
-              onChange={this.handleChange('email')}
-              margin="normal"
-            />
+
             <div>
-              {/* <label htmlFor='email'>Email</label> <br /> */}
-              {/* <input
-              value={email}
-              onChange={this.handleChange('email')}
-              type='email'
-              id='email'
-              name='email'
-            /> */}
+              <TextField
+                id="email"
+                label="Email"
+                className="textField"
+                value={email}
+                onChange={this.handleChange('email')}
+                margin="normal"
+              />
             </div>
 
             <div>
@@ -125,14 +118,7 @@ export class SignInPage extends Component {
                 margin="normal"
               />
 
-              {/* <label htmlFor='password'>Password</label> <br />
-            <input
-              value={password}
-              onChange={this.handleChange('password')}
-              type='password'
-              id='password'
-              name='password'
-            /> */}
+
             </div>
 
             <div>
@@ -142,9 +128,9 @@ export class SignInPage extends Component {
               </Button>
             </div>
           </form>
-          <p style={style.registerText}> Don't have an account? 
+          <p style={style.registerText}> Don't have an account?
             <Link to={`/register`}> Register </Link>
-            </p>
+          </p>
         </Paper>
       </main>
     )
