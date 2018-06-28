@@ -138,6 +138,7 @@ export class RegisterPage extends Component {
                 label="Password"
                 className="textField"
                 value={password}
+                type="password"
                 onChange={this.handleChange('password')}
                 margin="normal"
               />
@@ -157,7 +158,8 @@ export class RegisterPage extends Component {
                 id="password_confirmation"
                 label="Confirm Password"
                 className="textField"
-                value={password}
+                type='password'
+                value={password_confirmation}
                 onChange={this.handleChange('password_confirmation')}
                 margin="normal"
               />
