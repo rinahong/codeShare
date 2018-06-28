@@ -156,6 +156,6 @@ header .hide-completed {
   background-color: #a8b324 !important;
 }
 
-#body {
+.body {
   margin: 0px !important;
 }
