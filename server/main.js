@@ -15,6 +15,10 @@ Meteor.startup(() => {
         return UserDocuments.find({ docId: docId });
     }),
 
+    Meteor.publish('DocumentContents', function(docId) {
+        return DocumentContents.find({docId: docId}, {sort: {createdAt: 1}})
+    }),
+
     Meteor.methods({
       getDocuments: function(currentUser) {
         return Documents.find({ createdBy: currentUser }, {sort: {createdAt: -1}}).fetch();
