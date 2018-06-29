@@ -31,7 +31,6 @@ const styles = theme => ({
   root: {
     flexGrow: 1,
     zIndex: 1,
-    position: 'relative',
     display: 'flex',
   },
   appBar: {
@@ -224,7 +223,6 @@ class NavBar extends React.Component {
                 {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
               </IconButton>
             </div>
-            <Divider />
             <List>
               <div>
                 <ListItem button key='2' component={MyDocumentsLink}>

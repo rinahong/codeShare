@@ -54,12 +54,10 @@ Meteor.startup(() => {
               { Meteor.userId() ? ([  // Should be wrapped in the array
                     <main>
                         <Route path="/" render={ () => <Redirect to="/me/documents" component={LandingPage} theme={theme}/> } />
-
                     </main>
                   ]) : (
                       <main>
                         <Route path="/" render={ () => <Redirect to="/signin" component={SignInPage}/> } />
-
                       </main>
                     )}
 
