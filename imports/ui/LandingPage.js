@@ -99,7 +99,7 @@ export class LandingPage extends Component {
 
   render() {
     const { loading } = this.state;
-
+    const DATE_OPTIONS = { year: 'numeric', month: 'short' , day: 'numeric', hour: 'numeric', minute: 'numeric' };
     if (loading) {
       return (
         <main
@@ -149,8 +149,8 @@ export class LandingPage extends Component {
                 </ListItemAvatar>
 
                   <Link to={`/documents/${doc._id}`}>
-                      <ListItemText inset primary={JSON.stringify(doc.title) + "---" + JSON.stringify(doc._id)}  secondary="secondary" />
-                  </Link>
+                      <ListItemText inset primary={JSON.stringify(doc.title) + "---" + JSON.stringify(doc._id)}  secondary={"Created: "+(doc.createdAt.toLocaleDateString('en-US', DATE_OPTIONS))} />
+                  </Link>                  
                 <ListItemSecondaryAction onClick={this.deleteDocument(doc._id)}>
 
                   <IconButton aria-label="Delete">
