@@ -138,7 +138,7 @@ class NavBar extends React.Component {
       }
     }
   }
-  
+
 
   handleDrawerOpen = () => {
     this.setState({ open: true });
@@ -189,7 +189,7 @@ class NavBar extends React.Component {
 
           <Toolbar disableGutters={!this.state.open}>
 
-            { (currentUser.length > 0) ? ([  // Should be wrapped in the array
+            { Meteor.userId() ? ([  // Should be wrapped in the array
               <IconButton
                 color="inherit"
                 aria-label="open drawer"
@@ -197,7 +197,7 @@ class NavBar extends React.Component {
                 className={classNames(classes.menuButton, this.state.open && classes.hide)}>
                 <MenuIcon />
               </IconButton>,
-              <Typography variant="title" color="inherit" className={classes.flex} key='1' style={{ marginRight: '20px' }}>Welcome to CodeShare, { currentUser[0].profile.username}</Typography>,
+              <Typography variant="title" color="inherit" className={classes.flex} key='1' style={{ marginRight: '20px' }}>Welcome to CodeShare, { Meteor.userId() }</Typography>,
               <Button color="inherit">
                 Share
                 <LinkIcon className={classes.rightIcon} />
