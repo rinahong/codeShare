@@ -1,6 +1,6 @@
 import React from 'react';
 import { Meteor } from 'meteor/meteor'
-import { Link } from 'react-router-dom'
+import { Link, Redirect } from 'react-router-dom'
 import PropTypes from 'prop-types';
 import { AppBar, Toolbar, IconButton, Typography, Drawer, Divider } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
@@ -23,6 +23,7 @@ import LinkIcon from '@material-ui/icons/Link';
 
 import { Documents } from '../api/documents.js';
 import { DocumentContents } from '../api/documentContents';
+import { UserDocuments } from '../api/userDoc';
 
 
 const drawerWidth = 240;
@@ -30,8 +31,6 @@ const styles = theme => ({
   root: {
     flexGrow: 1,
     zIndex: 1,
-    overflow: 'hidden',
-    position: 'relative',
     display: 'flex',
   },
   appBar: {
@@ -84,8 +83,7 @@ const styles = theme => ({
     ...theme.mixins.toolbar,
   },
   toolbarBroadridgeLogo: {
-    backgroundImage: 'url("https://upload.wikimedia.org/wikipedia/en/d/d0/Broadridge_Financial_Solutions_Logo.svg")',
-    // backgroundImage: 'url('+ BroadridgeLogo+')',
+    backgroundImage: 'url("/broadridgelogo.svg")',
     backgroundRepeat: 'no-repeat',
     backgroundSize: '100% 100%',
     display: 'flex',
@@ -105,6 +103,9 @@ const styles = theme => ({
 
 const LoginLink = props => <Link to="/signin" {...props} />;
 const MyDocumentsLink = props => <Link to="/me/documents" {...props} />
+
+// const NewDocumentsLink = props => <Link to="/documents/${docId}" {...props} />
+
 
 class NavBar extends React.Component {
 
@@ -137,6 +138,7 @@ class NavBar extends React.Component {
       }
     }
   }
+  
 
   handleDrawerOpen = () => {
     this.setState({ open: true });
@@ -165,8 +167,10 @@ class NavBar extends React.Component {
             console.log("UserDocuments Insert Failed: ", error.reason);
           } else {
             console.log("No error!")
+             window.location.reload()
           }
         })
+
       }
     });
   }
@@ -219,7 +223,6 @@ class NavBar extends React.Component {
                 {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
               </IconButton>
             </div>
-            <Divider />
             <List>
               <div>
                 <ListItem button key='2' component={MyDocumentsLink}>
@@ -228,12 +231,17 @@ class NavBar extends React.Component {
                   </ListItemIcon>
                   <ListItemText primary="Home" />
                 </ListItem>
-                <ListItem button onClick={this.createDocument}>
+
+
+
+                <ListItem button onClick={this.createDocument} component={MyDocumentsLink}>
                   <ListItemIcon>
                     <NoteAddIcon />
                   </ListItemIcon>
                   <ListItemText primary="New Document" />
                 </ListItem>
+
+
                 <ListItem button>
                   <ListItemIcon>
                     <GetAppIcon />

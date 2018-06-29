@@ -14,15 +14,54 @@ import { UserDocuments } from '../api/userDoc';
 import CustomOpenEdgeMode from '../customModes/openEdge.js';
 import {UserSelection} from './UserSelection.js';
 
-import 'brace/mode/javascript';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+
+import { Paper, Toolbar, Typography } from '@material-ui/core';
+
+
+import '../api/aceModes.js'
+import 'brace/snippets/javascript';
 import 'brace/theme/monokai';
+import 'brace/mode/jsx';
+
+const languages = [
+  'openedge',
+  'javascript',
+  'java',
+  'python',
+  'xml',
+  'ruby',
+  'sass',
+  'markdown',
+  'mysql',
+  'json',
+  'html',
+  'handlebars',
+  'golang',
+  'csharp',
+  'elixir',
+  'typescript',
+  'css',
+]
+
+const statusBarStyle = {
+  zIndex: '9999',
+  bottom: '0',
+  position: 'fixed'
+};
+
+const customMode = new CustomOpenEdgeMode();
+
 
 // Render editor
 export class Editor extends Component {
 
+
   constructor(props) {
     super(props);
 
+    this.setMode = this.setMode.bind(this);
     this.getHeight = this.getHeight.bind(this);
     this.getWidth = this.getWidth.bind(this);
     this.onChange = this.onChange.bind(this);
@@ -40,14 +79,16 @@ export class Editor extends Component {
 
     // I hate this... but need a non-reactive variable
     this.prevValues = [];
-
+    
   }
 
   componentDidMount() {
     const {id, meteorUsers} = this.state;
-		const customMode = new CustomOpenEdgeMode();
     if(Meteor.userId()) {
-      this.refs.aceEditor.editor.getSession().setMode(customMode);
+      
+      // this.refs.aceEditor.editor.getSession().setMode({this.state.mode});
+
+      
     } else {
       this.props.history.push({
         pathname: "/signin",
@@ -110,6 +151,17 @@ export class Editor extends Component {
       });
     }
 
+  }
+
+  setMode(e) {
+
+    if(this.state.mode = 'openedge') {
+      this.refs.aceEditor.editor.getSession().setMode(customMode);
+    }
+
+    this.setState({
+      mode: e.target.value
+    })
   }
 
   onLoad(editor) {
@@ -237,7 +289,7 @@ export class Editor extends Component {
         <AceEditor
         ref="aceEditor"
         key="1"
-        mode="javascript"
+        mode={this.state.mode}
         theme="monokai"
         name="editor"
         onLoad={this.onLoad}
@@ -256,7 +308,13 @@ export class Editor extends Component {
           enableSnippets: false,
           showLineNumbers: true,
           tabSize: 2,
-        }}/>
+        }}/>,
+        
+        <Paper style={statusBarStyle} position='fixed' color="default">
+        <Select name="mode" onChange={this.setMode} value={this.state.mode}>
+                  Mode: {languages.map((lang) => <MenuItem  key={lang} value={lang}>{lang}</MenuItem>)}
+        </Select>
+        </Paper>
       ]
     );
   }

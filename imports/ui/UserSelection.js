@@ -51,7 +51,7 @@ export class UserSelection extends Component {
 					onChange={this.handleSelectChange}
 					options={options}
 					placeholder="Select user(s)"
-          removeSelected={true}
+          			removeSelected={true}
 					simpleValue
 					value={value}
 				/>
