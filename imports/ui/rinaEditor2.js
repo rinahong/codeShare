@@ -61,6 +61,50 @@ export class Editor extends Component {
         state: { from: this.props.location }
       })
     }
+
+    // Get all users so that we can give permission
+    Meteor.call('getAllUsers', (error, result) => {
+      if(error) {
+        console.log("Can't get users: ", error.reason);
+      } else {
+        this.setState({meteorUsers: result})
+      }
+    });
+
+    //Fetch all userDocuments by Document id
+    Meteor.call('getUserDocuments', id, (error, result) => {
+      if(error) {
+        console.log("Can't get UserDocuments: ", error.reason);
+      } else {
+        var onlyUserIdsByDoc = []
+        //Parse userId and store into the array.
+        result.map((eachUser)=>{
+          onlyUserIdsByDoc.push(eachUser.userId);
+        });
+
+        // Exclude users of this document from meteorUsers using filter().
+        // As we map through onlyUserIdsByDoc,
+        // filtering meteorUsers by removing a user by userId.
+        onlyUserIdsByDoc.map((userId)=>{
+          console.log(userId)
+          this.setState({
+            meteorUsers: this.state.meteorUsers //Should include this.state!!
+              .filter( u => u._id !== userId)
+          })
+        })
+
+        console.log("final users to display in dropdown",this.state.meteorUsers);
+      }
+    });
+
+    // Find the document on this editor page for updating title
+    Meteor.call('findDocument', id, (error, result) => {
+      if(error) {
+        console.log("There was an error to retreive Document");
+      } else {
+        console.log("CALLING DOUCMENT SUCCESS");
+      }
+    });
   }
 
   getHeight() {
