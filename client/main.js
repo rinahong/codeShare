@@ -1,7 +1,7 @@
 import React from 'react';
 import { Meteor } from 'meteor/meteor';
 import { render } from 'react-dom';
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 
 import NavBar from '../imports/ui/NavBar';
@@ -42,12 +42,27 @@ Meteor.startup(() => {
             }
           })} >
             <Switch>
-
               <Route path="/signin" component={SignInPage} />
               <Route path="/register" component={RegisterPage} />
               <Route path="/me/documents" component={LandingPage} theme={theme} />
               <Route path="/documents/:id" component={Editor} />
             </Switch>
+
+
+           {/* If logged in, redirect to document, otherwise to signinpage */}
+
+              { Meteor.userId() ? ([  // Should be wrapped in the array
+                    <main>
+                        <Route path="/" render={ () => <Redirect to="/me/documents" component={LandingPage} theme={theme}/> } />
+
+                    </main>
+                  ]) : (
+                      <main>
+                        <Route path="/" render={ () => <Redirect to="/signin" component={SignInPage}/> } />
+
+                      </main>
+                    )}
+
 
           </NavBar>
         </div>
