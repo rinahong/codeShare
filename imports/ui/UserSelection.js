@@ -22,7 +22,7 @@ export class UserSelection extends Component {
 		const { allUsers } = this.state;
 		var userArray = [];
 		meteorUsers.map(user => (
-			userArray.push({ 'label': user.profile.username, 'value': user._id })
+			userArray.push({ 'label': user.username, 'value': user._id })
 		))
 		this.setState({allUsers: userArray});
 	}

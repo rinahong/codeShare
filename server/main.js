@@ -7,19 +7,31 @@ import { publishComposite } from 'meteor/reywood:publish-composite';
 
 Meteor.startup(() => {
   return (
-    Meteor.publish('users', function() {
-      return Meteor.users.find({});
-    }),
-
-    Meteor.publish('usersByDoc', function(docId) {
-        return UserDocuments.find({ docId: docId });
-    }),
-
-    Meteor.publish('DocumentContents', function(docId) {
-        return DocumentContents.find({docId: docId}, {sort: {createdAt: 1}})
-    }),
+    // Meteor.publish('users', function() {
+    //   return Meteor.users.find({});
+    // }),
+    //
+    // Meteor.publish('usersByDoc', function(docId) {
+    //     return UserDocuments.find({ docId: docId });
+    // }),
+    //
+    // Meteor.publish('findDocument', function(docId) {
+    //     return Documents.find({ _id: docId });
+    // }),
+    //
+    // Meteor.publish('DocumentContents', function(docId) {
+    //     return DocumentContents.find({docId: docId}, {sort: {createdAt: 1}})
+    // }),
 
     Meteor.methods({
+      getAllUsers: function() {
+        return Meteor.users.find({}).fetch();
+      },
+
+      getUserDocuments: function(docId) {
+        return UserDocuments.find({ docId: docId }).fetch();
+      },
+
       getDocuments: function(currentUser) {
         return Documents.find({ createdBy: currentUser }, {sort: {createdAt: -1}}).fetch();
       },
