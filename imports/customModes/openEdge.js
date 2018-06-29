@@ -1,4 +1,4 @@
-import 'brace/mode/java';
+import 'brace/mode/abap';
 
 export class CustomHighlightRules extends window.ace.acequire("ace/mode/text_highlight_rules").TextHighlightRules {
     constructor() {
@@ -204,7 +204,7 @@ export class CustomHighlightRules extends window.ace.acequire("ace/mode/text_hig
     }
 }
 
-export default class CustomOpenEdgeMode extends window.ace.acequire('ace/mode/java').Mode {
+export default class CustomOpenEdgeMode extends window.ace.acequire('ace/mode/abap').Mode {
     constructor() {
         super();
         this.HighlightRules = CustomHighlightRules;

@@ -355,3 +355,60 @@ export class Editor extends Component {
     );
   }
 }
+
+
+
+
+
+
+
+
+
+// onChange(value, event) {
+//
+//   const val_arr = value.split('\n');
+//   const currentUser = Meteor.userId();
+//
+//   for (var i = 0; i < val_arr.length; i++) {
+//
+//     if (val_arr[i] == this.prevValues[i]) continue;
+//
+//     const delta = val_arr[i];
+//
+//     DocumentContents.insert({
+//       docId: this.state.id,
+//       row: i,
+//       value: delta,
+//       createdAt: new Date(), // current time
+//       writtenBy: currentUser
+//     }, function (error) {
+//       if (error) {
+//         console.log("Document save Failed: ", error.reason);
+//       }
+//     });
+//   }
+//
+// }
+
+  // onLoad(editor) {
+  //
+  //   Tracker.autorun(() => {
+  //     let values = [];
+  //     let text = '';
+  //     let prevValue = editor.getValue();
+  //     let data = DocumentContents.find({ docId: this.state.id }, { sort: { createdAt: 1 } }).fetch();
+  //
+  //     if (data) {
+  //       _.map(data, function (row_data) {
+  //         values[row_data.row] = row_data.value;
+  //       })
+  //
+  //       this.prevValues = values;
+  //
+  //       text = values.join('\n');
+  //       if (text == prevValue) return;
+  //
+  //       editor.setValue(text, 1);
+  //     }
+  //   });
+  // }
