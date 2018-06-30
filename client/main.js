@@ -47,20 +47,6 @@ Meteor.startup(() => {
               <Route path="/me/documents" component={LandingPage} theme={theme} />
               <Route path="/documents/:id" component={Editor} />
             </Switch>
-
-
-           {/* If logged in, redirect to document, otherwise to signinpage */}
-
-              { Meteor.userId() ? ([  // Should be wrapped in the array
-                    <main>
-                    </main>
-                  ]) : (
-                      <main>
-                        <Route path="/" render={ () => <Redirect to="/signin" component={SignInPage}/> } />
-                      </main>
-                    )}
-
-
           </NavBar>
         </div>
       </BrowserRouter>
