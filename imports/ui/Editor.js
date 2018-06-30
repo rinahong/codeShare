@@ -74,16 +74,31 @@ export class Editor extends Component {
 
     // I hate this... but need a non-reactive variable
     this.prevValues = [];
-
+    console.log("props", props)
   }
 
   componentDidMount() {
     const {id, availableUsersForPermission} = this.state;
-    if(!Meteor.userId()) {
+    const currentUser = Meteor.userId();
+    if(!currentUser) {
       this.props.history.push({
         pathname: "/signin",
         state: { from: this.props.location }
       })
+    } else {
+      Meteor.call('quickUserSearchInUserDoc', currentUser, id, (error, result) => {
+        if(error) {
+          console.log("Can't get users: ", error.reason);
+        } else {
+          console.log("result user :  ", result);
+          if(_.isEmpty(result)) {
+            alert("You are not authorized...")
+            this.props.history.push({
+              pathname: "/me/documents"
+            })
+          }
+        }
+      });
     }
 
     // Get all users so that we can give permission
