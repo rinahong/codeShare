@@ -114,28 +114,19 @@ class NavBar extends React.Component {
 
     this.state = {
       open: false,
-      currentUser: []
+      username: ""
     };
     this.createDocument = this.createDocument.bind(this);
   }
 
   componentDidMount() {
-    const {currentUser} = this.state;
-    if (Meteor.userId()) {
-      if (Meteor.isClient) {
-        Meteor.subscribe("users", {
-          onReady: function () {
-              this.setState({
-                currentUser:  Meteor.users.find({_id: Meteor.userId()}).fetch()
-              });
-          }.bind(this),
-
-          onStop: function () {
-           // called when data publication is stopped
-           console.log("NavBar: data publication is stopped");
-          }
-        });
-      }
+    if(Meteor.userId()) {
+      setTimeout(() => {
+        let user = Meteor.user();
+        if(user) {
+          this.setState({username: user.username})
+        }
+      },300)
     }
   }
 
@@ -178,8 +169,7 @@ class NavBar extends React.Component {
   render() {
     // const {  } = this.props;
     const { classes, children, theme, onSignOut = () => { } } = this.props;
-    const { currentUser } = this.state;
-
+    const { username } = this.state;
     return (
       <div className={classes.root}>
         <AppBar
@@ -189,7 +179,7 @@ class NavBar extends React.Component {
 
           <Toolbar disableGutters={!this.state.open}>
 
-            { Meteor.userId() ? ([  // Should be wrapped in the array
+            { (Meteor.userId())? ([  // Should be wrapped in the array
               <IconButton
                 color="inherit"
                 aria-label="open drawer"
@@ -197,7 +187,7 @@ class NavBar extends React.Component {
                 className={classNames(classes.menuButton, this.state.open && classes.hide)}>
                 <MenuIcon />
               </IconButton>,
-              <Typography variant="title" color="inherit" className={classes.flex} key='1' style={{ marginRight: '20px' }}>Welcome to CodeShare, { Meteor.userId() }</Typography>,
+              <Typography variant="title" color="inherit" className={classes.flex} key='1' style={{ marginRight: '20px' }}>Welcome to CodeShare, { username }</Typography>,
               <Button color="inherit">
                 Share
                 <LinkIcon className={classes.rightIcon} />
