@@ -32,15 +32,7 @@ Meteor.startup(() => {
     <MuiThemeProvider theme={theme}>
       <BrowserRouter>
         <div class="row">
-          <NavBar theme={theme} onSignOut={() => Meteor.logout(function (error) {
-            console.log("Am I even in logout?")
-            if (!error) {
-              window.location.href = Meteor.absoluteUrl('/signin');
-              console.log("Signout successfully, but why not redirect???")
-            } else {
-              console.log("why error?", error.reason)
-            }
-          })} >
+          <NavBar theme={theme}>
             <Switch>
               <Route path="/signin" component={SignInPage} />
               <Route path="/register" component={RegisterPage} />

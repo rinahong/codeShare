@@ -117,6 +117,7 @@ class NavBar extends React.Component {
       username: ""
     };
     this.createDocument = this.createDocument.bind(this);
+    this.signOut = this.signOut.bind(this);
   }
 
   componentDidMount() {
@@ -126,7 +127,8 @@ class NavBar extends React.Component {
         if(user) {
           this.setState({username: user.username})
         }
-      },300)
+      },300);
+      console.log("=========")
     }
   }
 
@@ -165,11 +167,28 @@ class NavBar extends React.Component {
       }
     });
   }
+  
+  signOut() {
+      // event.preventDefault();
+      console.log("--sign out--")
+      Meteor.logout(function(error){
+        if (error) {
+            console.log("why error?", error.reason)
+        } else {
+          // window.location.reload();
+          console.log("Signout successfully, but why not redirect???")
+        }
+      })
+  }
+
+
 
   render() {
     // const {  } = this.props;
-    const { classes, children, theme, onSignOut = () => { } } = this.props;
+    const { classes, children, theme } = this.props;
     const { username } = this.state;
+    console.log("in render username", username)
+
     return (
       <div className={classes.root}>
         <AppBar
@@ -193,7 +212,7 @@ class NavBar extends React.Component {
                 Share
                 <LinkIcon className={classes.rightIcon} />
               </Button>,
-              <Button color="inherit" key='3' href="/" onClick={onSignOut}>Sign Out </Button>
+              <Button color="inherit" key='3' href="/signin" onClick={() => this.signOut()}>Sign Out </Button>
             ]) : (
                 <Button key='4' color="inherit" component={LoginLink}>Login</Button>)}
 
