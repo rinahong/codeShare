@@ -18,7 +18,7 @@ Meteor.startup(() => {
       getDocuments: function(currentUser) {
         return Documents.find({ createdBy: currentUser }, {sort: {createdAt: -1}}).fetch();
       },
-      
+
       // Delete the document's dependents (document contents) and itself.
       deleteDocument: function(docId) {
         return DocumentContents.remove({docId: docId}, function() {
@@ -31,7 +31,7 @@ Meteor.startup(() => {
       },
 
       updateTitle(docId, docTitle) {
-        Documents.update({ _id: docId }, { title: docTitle });
+        Documents.update({ _id: docId }, {$set: {title: docTitle}});
       },
 
       upsertUserDocument(userId, docId) {
