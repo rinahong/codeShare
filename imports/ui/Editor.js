@@ -66,6 +66,7 @@ export class Editor extends Component {
     this.state = {
       id: this.props.match.params.id,
       title: "",
+      documentCreatedBy: "",
       meteorUsers: [],
       userIdsWithPermission: [],
       defaultValue: ""
@@ -95,14 +96,14 @@ export class Editor extends Component {
     });
 
     //Fetch all userDocuments by Document id
-    Meteor.call('getUserDocuments', id, (error, result) => {
+    Meteor.call('getAllUsersByDocument', id, (error, result) => {
       if(error) {
         console.log("Can't get UserDocuments: ", error.reason);
       } else {
         var onlyUserIdsByDoc = []
         //Parse userId and store into the array.
-        result.map((eachUser)=>{
-          onlyUserIdsByDoc.push(eachUser.userId);
+        onlyUserIdsByDoc = result.map((eachUser)=>{
+          return eachUser.userId
         });
 
         // Exclude users of this document from meteorUsers[] using filter().
@@ -122,7 +123,7 @@ export class Editor extends Component {
       if(error) {
         console.log("Can't find Document");
       } else {
-        this.setState({title: result.title})
+        this.setState({title: result.title, documentCreatedBy: result.createdBy})
       }
     });
 
@@ -169,9 +170,9 @@ export class Editor extends Component {
 
   // Save all users of the userIdsWithPermission into UserDocuments collection
   givePermission() {
-    const { id, userIdsWithPermission } = this.state;
+    const { id, userIdsWithPermission, documentCreatedBy } = this.state;
     userIdsWithPermission.map((userId) => {
-      Meteor.call('upsertUserDocument', userId, id, (error, result) => {
+      Meteor.call('upsertUserDocument', userId, id, documentCreatedBy, (error, result) => {
         if(error) {
           console.log("Fail to upsert the user", error.reason);
         } else {

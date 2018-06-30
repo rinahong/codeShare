@@ -11,12 +11,20 @@ Meteor.startup(() => {
         return Meteor.users.find({}).fetch();
       },
 
-      getUserDocuments: function(docId) {
+      getAllUsersByDocument: function(docId) {
         return UserDocuments.find({ docId: docId }).fetch();
       },
 
-      getDocuments: function(currentUser) {
+      getAllSharedDocumentsByOthers: function(userId) {
+        return UserDocuments.find({ userId: userId, createdBy: { $ne: userId } }).fetch();
+      },
+
+      getDocumentsByUser: function(currentUser) {
         return Documents.find({ createdBy: currentUser }, {sort: {createdAt: -1}}).fetch();
+      },
+
+      getDocumentsByDocIds: function(docIdArray) {
+        return Documents.find({ _id: { "$in": docIdArray } }, {sort: {createdAt: -1}}).fetch();
       },
 
       // Delete the document's dependents (document contents) and itself.
@@ -34,17 +42,19 @@ Meteor.startup(() => {
         Documents.update({ _id: docId }, {$set: {title: docTitle}});
       },
 
-      upsertUserDocument(userId, docId) {
+      upsertUserDocument(userId, docId, documentCreatedBy) {
         UserDocuments.upsert({
             // Selector
             userId: userId,
-            docId: docId
+            docId: docId,
+            createdBy: documentCreatedBy
 
         }, {
             // Modifier
             $set: {
               userId: userId,
-              docId: docId
+              docId: docId,
+              createdBy: documentCreatedBy
             }
         })
       }
