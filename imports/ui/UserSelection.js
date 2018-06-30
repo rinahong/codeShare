@@ -22,7 +22,7 @@ export class UserSelection extends Component {
 		const { allUsers } = this.state;
 		var userArray = [];
 		meteorUsers.map(user => (
-			userArray.push({ 'label': user.profile.username, 'value': user._id })
+			userArray.push({ 'label': user.username, 'value': user._id })
 		))
 		this.setState({allUsers: userArray});
 	}
@@ -43,6 +43,7 @@ export class UserSelection extends Component {
 	render () {
 		const { value, allUsers } = this.state;
 		const options = allUsers;
+    const placeholder = (allUsers.length == 0) ? "There are no more users to add..." : "Select user(s)";
 		return (
 			<div className="section">
 				<Select
@@ -50,8 +51,8 @@ export class UserSelection extends Component {
 					multi
 					onChange={this.handleSelectChange}
 					options={options}
-					placeholder="Select user(s)"
-          			removeSelected={true}
+					placeholder={placeholder}
+          removeSelected={true}
 					simpleValue
 					value={value}
 				/>

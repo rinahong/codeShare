@@ -58,10 +58,8 @@ export class RegisterPage extends Component {
     if(password === password_confirmation) {
       Accounts.createUser({
         email: email,
-        password: password,
-        profile: {
-          username: username
-        }
+        username: username,
+        password: password
       }, function (error) {
         if (error) {
           console.log("Accounts.createUser Failed: ", error.reason);

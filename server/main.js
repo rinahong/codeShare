@@ -6,10 +6,6 @@ import { UserDocuments } from '../imports/api/userDoc';
 
 Meteor.startup(() => {
   return (
-    Meteor.publish('users', function() {
-      return Meteor.users.find({});
-    }),
-
     Meteor.methods({
       getDocuments: function(currentUser) {
         return Documents.find({ createdBy: currentUser }, {sort: {createdAt: -1}}).fetch();
