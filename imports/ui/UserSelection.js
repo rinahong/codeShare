@@ -18,10 +18,10 @@ export class UserSelection extends Component {
   }
 
 	componentDidMount() {
-		const { meteorUsers = [] } = this.props;
+		const { availableUsersForPermission = [] } = this.props;
 		const { allUsers } = this.state;
 		var userArray = [];
-		meteorUsers.map(user => (
+		availableUsersForPermission.map(user => (
 			userArray.push({ 'label': user.username, 'value': user._id })
 		))
 		this.setState({allUsers: userArray});

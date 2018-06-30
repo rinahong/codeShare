@@ -117,6 +117,7 @@ class NavBar extends React.Component {
       username: ""
     };
     this.createDocument = this.createDocument.bind(this);
+    this.signOut = this.signOut.bind(this);
   }
 
   componentDidMount() {
@@ -126,7 +127,8 @@ class NavBar extends React.Component {
         if(user) {
           this.setState({username: user.username})
         }
-      },300)
+      },300);
+      console.log("=========")
     }
   }
 
@@ -165,11 +167,28 @@ class NavBar extends React.Component {
       }
     });
   }
+  
+  signOut() {
+      // event.preventDefault();
+      console.log("--sign out--")
+      Meteor.logout(function(error){
+        if (error) {
+            console.log("why error?", error.reason)
+        } else {
+          // window.location.reload();
+          console.log("Signout successfully, but why not redirect???")
+        }
+      })
+  }
+
+
 
   render() {
     // const {  } = this.props;
-    const { classes, children, theme, onSignOut = () => { } } = this.props;
+    const { classes, children, theme } = this.props;
     const { username } = this.state;
+    console.log("in render username", username)
+
     return (
       <div className={classes.root}>
         <AppBar
@@ -181,26 +200,28 @@ class NavBar extends React.Component {
 
             { (Meteor.userId())? ([  // Should be wrapped in the array
               <IconButton
+                key="0"
                 color="inherit"
                 aria-label="open drawer"
                 onClick={this.handleDrawerOpen}
                 className={classNames(classes.menuButton, this.state.open && classes.hide)}>
                 <MenuIcon />
               </IconButton>,
-              <Typography variant="title" color="inherit" className={classes.flex} key='1' style={{ marginRight: '20px' }}>Welcome to CodeShare, { username }</Typography>,
-              <Button color="inherit">
+              <Typography key="1" variant="title" color="inherit" className={classes.flex} style={{ marginRight: '20px' }}>Welcome to CodeShare, { username }</Typography>,
+              <Button key="2" color="inherit">
                 Share
                 <LinkIcon className={classes.rightIcon} />
               </Button>,
-              <Button color="inherit" key='3' href="/" onClick={onSignOut}>Sign Out </Button>
+              <Button color="inherit" key='3' href="/signin" onClick={() => this.signOut()}>Sign Out </Button>
             ]) : (
-                <Button key='1' color="inherit" component={LoginLink}>Login</Button>)}
+                <Button key='4' color="inherit" component={LoginLink}>Login</Button>)}
 
           </Toolbar>
         </AppBar>
 
         { Meteor.userId() ? ([  // Should be wrapped in the array
           <Drawer
+            key="5"
             variant="permanent"
             classes={{
               paper: classNames(classes.drawerPaper, !this.state.open && classes.drawerPaperClose),
@@ -259,19 +280,16 @@ class NavBar extends React.Component {
               </div>
             </List>
           </Drawer>,
-          <main className={classes.content}>
+          <main key="6" className={classes.content}>
             <div className={classes.toolbar} />
             {children}
           </main>
         ]) : (
-            <main className={classes.content}>
+            <main key="7" className={classes.content}>
               <div className={classes.toolbar} />
               {children}
             </main>
           )}
-
-
-
       </div>
     );
   }

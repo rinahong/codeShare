@@ -67,23 +67,38 @@ export class Editor extends Component {
       id: this.props.match.params.id,
       title: "",
       documentCreatedBy: "",
-      meteorUsers: [],
+      availableUsersForPermission: [],
       userIdsWithPermission: [],
       defaultValue: ""
     }
 
     // I hate this... but need a non-reactive variable
     this.prevValues = [];
-
+    console.log("props", props)
   }
 
   componentDidMount() {
-    const {id, meteorUsers} = this.state;
-    if(!Meteor.userId()) {
+    const {id, availableUsersForPermission} = this.state;
+    const currentUser = Meteor.userId();
+    if(!currentUser) {
       this.props.history.push({
         pathname: "/signin",
         state: { from: this.props.location }
       })
+    } else {
+      Meteor.call('quickUserSearchInUserDoc', currentUser, id, (error, result) => {
+        if(error) {
+          console.log("Can't get users: ", error.reason);
+        } else {
+          console.log("result user :  ", result);
+          if(_.isEmpty(result)) {
+            alert("You are not authorized...")
+            this.props.history.push({
+              pathname: "/me/documents"
+            })
+          }
+        }
+      });
     }
 
     // Get all users so that we can give permission
@@ -91,7 +106,7 @@ export class Editor extends Component {
       if(error) {
         console.log("Can't get users: ", error.reason);
       } else {
-        this.setState({meteorUsers: result})
+        this.setState({availableUsersForPermission: result})
       }
     });
 
@@ -106,12 +121,12 @@ export class Editor extends Component {
           return eachUser.userId
         });
 
-        // Exclude users of this document from meteorUsers[] using filter().
+        // Exclude users who already belongs to this document.
         // As we map through onlyUserIdsByDoc,
-        // filtering meteorUsers by removing a user by userId.
+        // filtering availableUsersForPermission by removing a user by userId.
         onlyUserIdsByDoc.map((userId)=>{
           this.setState({
-            meteorUsers: this.state.meteorUsers //Should include this.state!!
+            availableUsersForPermission: this.state.availableUsersForPermission //Should include this.state!!
               .filter( u => u._id !== userId)
           })
         })
@@ -181,7 +196,7 @@ export class Editor extends Component {
       });
       // TODO: Below setState not working properly
       // this.setState({
-      //   meteorUsers: this.state.meteorUsers
+      //   availableUsersForPermission: this.state.availableUsersForPermission
       //     .filter( u => u._id !== userId)
       // })
       //TODO: Later, write a function to send emails to all permitted users.
@@ -190,8 +205,8 @@ export class Editor extends Component {
 
   // Display viewUserAvaliable on popup modal and pass props to userSelection.js
   viewUserAvaliable(close){
-    const { meteorUsers, userIdsWithPermission } = this.state;
-    console.log("meteorUsers", meteorUsers)
+    const { availableUsersForPermission, userIdsWithPermission } = this.state;
+    console.log("availableUsersForPermission", availableUsersForPermission)
     return(
       <div className="modal">
         <a className="close" onClick={close}>
@@ -199,7 +214,7 @@ export class Editor extends Component {
         </a>
         <div className="header"> Share with others </div>
         <div className="content">
-          <UserSelection meteorUsers={meteorUsers} updateUserPermissionList={this.updateUserPermissionList}/>
+          <UserSelection availableUsersForPermission={availableUsersForPermission} updateUserPermissionList={this.updateUserPermissionList}/>
         </div>
         <div className="actions">
           <button
@@ -295,7 +310,7 @@ export class Editor extends Component {
 
     return (
       [
-        <div>
+        <div key="0">
           <input
             value={title}
             onChange={this.handleTitleChange('title')}
@@ -305,15 +320,15 @@ export class Editor extends Component {
             name='title'
           />
         </div>,
-        <Popup trigger={<button className="button"> Open Modal </button>} modal>
+        <Popup key="1" trigger={<button className="button"> Open Modal </button>} modal>
           {close => (
             this.viewUserAvaliable(close)
           )}
         </Popup>,
-        <Chat key="0" id={this.state.id}/>,
+        <Chat key="2" id={this.state.id}/>,
         <AceEditor
         ref="aceEditor"
-        key="1"
+        key="3"
         mode={this.state.mode}
         theme="monokai"
         name="editor"
@@ -336,10 +351,10 @@ export class Editor extends Component {
           tabSize: 2,
         }}/>,
 
-        <Paper style={statusBarStyle} position='fixed' color="default">
-        <Select name="mode" onChange={this.setMode} value={this.state.mode}>
-                  Mode: {languages.map((lang) => <MenuItem  key={lang} value={lang}>{lang}</MenuItem>)}
-        </Select>
+        <Paper key="4" style={statusBarStyle} position='fixed' color="default">
+          <Select name="mode" onChange={this.setMode} value={this.state.mode}>
+            Mode: {languages.map((lang) => <MenuItem  key={lang} value={lang}>{lang}</MenuItem>)}
+          </Select>
         </Paper>
       ]
     );

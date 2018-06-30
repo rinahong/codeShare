@@ -27,40 +27,24 @@ const theme = createMuiTheme({
 });
 
 Meteor.startup(() => {
-  console.log(Meteor.userId());
+  const currentUser = Meteor.userId();
+  console.log(currentUser);
   render(
     <MuiThemeProvider theme={theme}>
       <BrowserRouter>
         <div class="row">
-          <NavBar theme={theme} onSignOut={() => Meteor.logout(function (error) {
-            console.log("Am I even in logout?")
-            if (!error) {
-              window.location.href = Meteor.absoluteUrl('/signin');
-              console.log("Signout successfully, but why not redirect???")
-            } else {
-              console.log("why error?", error.reason)
-            }
-          })} >
+          <NavBar theme={theme}>
             <Switch>
               <Route path="/signin" component={SignInPage} />
               <Route path="/register" component={RegisterPage} />
               <Route path="/me/documents" component={LandingPage} theme={theme} />
-              <Route path="/documents/:id" component={Editor} />
+              {/* <Route path="/documents/:id" component={Editor} /> */}
+              <Route path="/documents/:id"
+                render={props => {
+                 return <Editor {...props} currentUser={currentUser} />
+                }}
+              />
             </Switch>
-
-
-           {/* If logged in, redirect to document, otherwise to signinpage */}
-
-              { Meteor.userId() ? ([  // Should be wrapped in the array
-                    <main>
-                    </main>
-                  ]) : (
-                      <main>
-                        <Route path="/" render={ () => <Redirect to="/signin" component={SignInPage}/> } />
-                      </main>
-                    )}
-
-
           </NavBar>
         </div>
       </BrowserRouter>

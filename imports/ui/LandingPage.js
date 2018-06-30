@@ -48,19 +48,17 @@ export class LandingPage extends Component {
             if (error) {
               console.log("Can't get documents by current user");
             } else {
-              console.log("result from userDoc", result)
               //Parse userId and store into the array.
               onlySharedDocumentIds = result.map((eachSharedDoc)=>{
                 return eachSharedDoc.docId
               });
 
               if(!(_.isEmpty(onlySharedDocumentIds))) {
-                console.log("am i in only shared doc?", onlySharedDocumentIds)
                 Meteor.call('getDocumentsByDocIds', onlySharedDocumentIds, (error, result) => {
                   if (error) {
                     console.log("Can't get documents with document IDs");
                   } else {
-                    console.log("result from getDocumentsByDocIds", result)
+                    console.log("Shared Documents", result)
                     this.setState({sharedDocuments: result})
                   }
                 });

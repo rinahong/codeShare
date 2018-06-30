@@ -11,6 +11,10 @@ Meteor.startup(() => {
         return Meteor.users.find({}).fetch();
       },
 
+      quickUserSearchInUserDoc: function(currentUser, docId) {
+        return UserDocuments.find({ userId: currentUser, docId: docId }).fetch();
+      },
+
       getAllUsersByDocument: function(docId) {
         return UserDocuments.find({ docId: docId }).fetch();
       },
