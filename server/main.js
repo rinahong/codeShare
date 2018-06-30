@@ -7,9 +7,18 @@ import { UserDocuments } from '../imports/api/userDoc';
 Meteor.startup(() => {
   return (
     Meteor.methods({
+      getAllUsers: function() {
+        return Meteor.users.find({}).fetch();
+      },
+
+      getUserDocuments: function(docId) {
+        return UserDocuments.find({ docId: docId }).fetch();
+      },
+
       getDocuments: function(currentUser) {
         return Documents.find({ createdBy: currentUser }, {sort: {createdAt: -1}}).fetch();
       },
+      
       // Delete the document's dependents (document contents) and itself.
       deleteDocument: function(docId) {
         return DocumentContents.remove({docId: docId}, function() {

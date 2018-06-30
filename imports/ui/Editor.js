@@ -66,12 +66,16 @@ export class Editor extends Component {
     this.getWidth = this.getWidth.bind(this);
     this.onChange = this.onChange.bind(this);
     this.onLoad = this.onLoad.bind(this);
+    this.viewUserAvaliable = this.viewUserAvaliable.bind(this);
+    this.givePermission = this.givePermission.bind(this);
+    this.updateUserPermissionList = this.updateUserPermissionList.bind(this);
 
     this.state = {
       id: this.props.match.params.id,
       title: "",
       meteorUsers: [],
-      userIdsWithPermission: []
+      userIdsWithPermission: [],
+      defaultValue: ""
     }
 
     // I hate this... but need a non-reactive variable
@@ -89,7 +93,120 @@ export class Editor extends Component {
         state: { from: this.props.location }
       })
     }
+
+    // Get all users so that we can give permission
+    Meteor.call('getAllUsers', (error, result) => {
+      if(error) {
+        console.log("Can't get users: ", error.reason);
+      } else {
+        this.setState({meteorUsers: result})
+      }
+    });
+
+    //Fetch all userDocuments by Document id
+    Meteor.call('getUserDocuments', id, (error, result) => {
+      if(error) {
+        console.log("Can't get UserDocuments: ", error.reason);
+      } else {
+        var onlyUserIdsByDoc = []
+        //Parse userId and store into the array.
+        result.map((eachUser)=>{
+          onlyUserIdsByDoc.push(eachUser.userId);
+        });
+
+        // Exclude users of this document from meteorUsers using filter().
+        // As we map through onlyUserIdsByDoc,
+        // filtering meteorUsers by removing a user by userId.
+        onlyUserIdsByDoc.map((userId)=>{
+          console.log(userId)
+          this.setState({
+            meteorUsers: this.state.meteorUsers //Should include this.state!!
+              .filter( u => u._id !== userId)
+          })
+        })
+
+        console.log("final users to display in dropdown",this.state.meteorUsers);
+      }
+    });
+
+    // Find the document on this editor page for updating title
+    Meteor.call('findDocument', id, (error, result) => {
+      if(error) {
+        console.log("There was an error to retreive Document");
+      } else {
+        console.log("CALLING DOUCMENT SUCCESS");
+      }
+    });
+
+
 	}
+
+  //==================================
+  updateUserPermissionList(listOfIds) {
+    const { id, userIdsWithPermission } = this.state;
+    this.setState({
+      userIdsWithPermission: listOfIds.split(',')
+    })
+  }
+
+  givePermission() {
+    const { id, userIdsWithPermission } = this.state;
+    userIdsWithPermission.map((userId) => {
+      Meteor.call('upsertUserDocument', userId, id, (error, result) => {
+        if(error) {
+          console.log("There was an error to upsert");
+        } else {
+          console.log("Yay upserted successfull");
+        }
+      });
+      // TODO: Below setState not working properly
+      // this.setState({
+      //   meteorUsers: this.state.meteorUsers
+      //     .filter( u => u._id !== userId)
+      // })
+      //TODO: Later, write a function to send emails to all permitted users.
+    })
+  }
+
+  viewUserAvaliable(close){
+    const { meteorUsers, userIdsWithPermission } = this.state;
+    console.log("meteorUsers", meteorUsers)
+    return(
+      <div className="modal">
+        <a className="close" onClick={close}>
+          &times;
+        </a>
+        <div className="header"> Share with others </div>
+        <div className="content">
+          <UserSelection meteorUsers={meteorUsers} updateUserPermissionList={this.updateUserPermissionList}/>
+        </div>
+        <div className="actions">
+          <button
+            className="button"
+            onClick={() => {
+              console.log('Permission Sent')
+              this.givePermission()
+            }}
+          >
+            SEND
+          </button>
+          <button
+            className="button"
+            onClick={() => {
+              console.log('modal closed ')
+              close()
+            }}
+          >
+            close modal
+          </button>
+        </div>
+      </div>
+    )
+  }
+
+  //==================================
+
+
 
   getHeight() {
     return (3 * window.innerHeight) + "px";
@@ -152,6 +269,7 @@ export class Editor extends Component {
         this.prevValues = values;
 
         text = values.join('\n');
+        this.setState({defaultValue: text});
         if (text == prevValue) return;
 
         editor.setValue(text, 1);
@@ -166,6 +284,11 @@ export class Editor extends Component {
 
     return (
       [
+        <Popup trigger={<button className="button"> Open Modal </button>} modal>
+          {close => (
+            this.viewUserAvaliable(close)
+          )}
+        </Popup>,
         <Chat key="0" id={this.state.id}/>,
         <AceEditor
         ref="aceEditor"
@@ -173,6 +296,7 @@ export class Editor extends Component {
         mode={this.state.mode}
         theme="monokai"
         name="editor"
+        value={this.state.defaultValue}
         onLoad={this.onLoad}
         onChange={this.onChange}
         fontSize={14}
