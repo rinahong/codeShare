@@ -295,7 +295,7 @@ export class Editor extends Component {
 
     return (
       [
-        <div>
+        <div key="0">
           <input
             value={title}
             onChange={this.handleTitleChange('title')}
@@ -305,15 +305,15 @@ export class Editor extends Component {
             name='title'
           />
         </div>,
-        <Popup trigger={<button className="button"> Open Modal </button>} modal>
+        <Popup key="1" trigger={<button className="button"> Open Modal </button>} modal>
           {close => (
             this.viewUserAvaliable(close)
           )}
         </Popup>,
-        <Chat key="0" id={this.state.id}/>,
+        <Chat key="2" id={this.state.id}/>,
         <AceEditor
         ref="aceEditor"
-        key="1"
+        key="3"
         mode={this.state.mode}
         theme="monokai"
         name="editor"
@@ -336,10 +336,10 @@ export class Editor extends Component {
           tabSize: 2,
         }}/>,
 
-        <Paper style={statusBarStyle} position='fixed' color="default">
-        <Select name="mode" onChange={this.setMode} value={this.state.mode}>
-                  Mode: {languages.map((lang) => <MenuItem  key={lang} value={lang}>{lang}</MenuItem>)}
-        </Select>
+        <Paper key="4" style={statusBarStyle} position='fixed' color="default">
+          <Select name="mode" onChange={this.setMode} value={this.state.mode}>
+            Mode: {languages.map((lang) => <MenuItem  key={lang} value={lang}>{lang}</MenuItem>)}
+          </Select>
         </Paper>
       ]
     );
