@@ -275,11 +275,13 @@ export class Editor extends Component {
         })
 
         this.prevValues = values;
-
         text = values.join('\n');
-        this.setState({defaultValue: text});
-        if (text == prevValue) return;
 
+        //==========!!This resolve setState issue!!=======
+        this.setState({defaultValue: text});
+        //================================================
+
+        if (text == prevValue) return;
         editor.setValue(text, 1);
       }
     });
