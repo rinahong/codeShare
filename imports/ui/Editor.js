@@ -67,7 +67,7 @@ export class Editor extends Component {
       id: this.props.match.params.id,
       title: "",
       documentCreatedBy: "",
-      meteorUsers: [],
+      availableUsersForPermission: [],
       userIdsWithPermission: [],
       defaultValue: ""
     }
@@ -78,7 +78,7 @@ export class Editor extends Component {
   }
 
   componentDidMount() {
-    const {id, meteorUsers} = this.state;
+    const {id, availableUsersForPermission} = this.state;
     if(!Meteor.userId()) {
       this.props.history.push({
         pathname: "/signin",
@@ -91,7 +91,7 @@ export class Editor extends Component {
       if(error) {
         console.log("Can't get users: ", error.reason);
       } else {
-        this.setState({meteorUsers: result})
+        this.setState({availableUsersForPermission: result})
       }
     });
 
@@ -106,12 +106,12 @@ export class Editor extends Component {
           return eachUser.userId
         });
 
-        // Exclude users of this document from meteorUsers[] using filter().
+        // Exclude users who already belongs to this document.
         // As we map through onlyUserIdsByDoc,
-        // filtering meteorUsers by removing a user by userId.
+        // filtering availableUsersForPermission by removing a user by userId.
         onlyUserIdsByDoc.map((userId)=>{
           this.setState({
-            meteorUsers: this.state.meteorUsers //Should include this.state!!
+            availableUsersForPermission: this.state.availableUsersForPermission //Should include this.state!!
               .filter( u => u._id !== userId)
           })
         })
@@ -181,7 +181,7 @@ export class Editor extends Component {
       });
       // TODO: Below setState not working properly
       // this.setState({
-      //   meteorUsers: this.state.meteorUsers
+      //   availableUsersForPermission: this.state.availableUsersForPermission
       //     .filter( u => u._id !== userId)
       // })
       //TODO: Later, write a function to send emails to all permitted users.
@@ -190,8 +190,8 @@ export class Editor extends Component {
 
   // Display viewUserAvaliable on popup modal and pass props to userSelection.js
   viewUserAvaliable(close){
-    const { meteorUsers, userIdsWithPermission } = this.state;
-    console.log("meteorUsers", meteorUsers)
+    const { availableUsersForPermission, userIdsWithPermission } = this.state;
+    console.log("availableUsersForPermission", availableUsersForPermission)
     return(
       <div className="modal">
         <a className="close" onClick={close}>
@@ -199,7 +199,7 @@ export class Editor extends Component {
         </a>
         <div className="header"> Share with others </div>
         <div className="content">
-          <UserSelection meteorUsers={meteorUsers} updateUserPermissionList={this.updateUserPermissionList}/>
+          <UserSelection availableUsersForPermission={availableUsersForPermission} updateUserPermissionList={this.updateUserPermissionList}/>
         </div>
         <div className="actions">
           <button
