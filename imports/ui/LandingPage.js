@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Link, Redirect } from 'react-router-dom';
-import { UserDocuments } from '../api/userDoc';
-import { Documents } from '../api/documents.js';
+import _ from 'lodash';
 
 import Avatar from '@material-ui/core/Avatar';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
@@ -11,7 +10,6 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import CommentIcon from '@material-ui/icons/Comment';
 import IconButton from '@material-ui/core/IconButton';
-
 import ListItemText from '@material-ui/core/ListItemText';
 import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
 import ListSubheader from '@material-ui/core/ListSubheader';
@@ -19,6 +17,8 @@ import { Button } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import DeleteIcon from '@material-ui/icons/Delete';
 
+import { UserDocuments } from '../api/userDoc';
+import { Documents } from '../api/documents.js';
 
 export class LandingPage extends Component {
   constructor(props) {
@@ -26,7 +26,8 @@ export class LandingPage extends Component {
 
     this.state = {
       loading: true,
-      documents: []
+      documents: [],
+      sharedDocuments: []
     };
 
     this.createDocument = this.createDocument.bind(this);
@@ -34,14 +35,41 @@ export class LandingPage extends Component {
 
   componentDidMount() {
     const currentUser = Meteor.userId();
+    var onlySharedDocumentIds = [];
     if (currentUser) {
-      Meteor.call('getDocuments', currentUser, (error, result) => {
+      Meteor.call('getDocumentsByUser', currentUser, (error, result) => {
         if (error) {
           console.log("There was an error to retreive Document list");
         } else {
           this.setState({ documents: result, loading: false });
+          console.log("documents by me", this.state.documents)
+
+          Meteor.call('getAllSharedDocumentsByOthers', currentUser, (error, result) => {
+            if (error) {
+              console.log("Can't get documents by current user");
+            } else {
+              console.log("result from userDoc", result)
+              //Parse userId and store into the array.
+              onlySharedDocumentIds = result.map((eachSharedDoc)=>{
+                return eachSharedDoc.docId
+              });
+
+              if(!(_.isEmpty(onlySharedDocumentIds))) {
+                console.log("am i in only shared doc?", onlySharedDocumentIds)
+                Meteor.call('getDocumentsByDocIds', onlySharedDocumentIds, (error, result) => {
+                  if (error) {
+                    console.log("Can't get documents with document IDs");
+                  } else {
+                    console.log("result from getDocumentsByDocIds", result)
+                    this.setState({sharedDocuments: result})
+                  }
+                });
+              }
+            }
+          });
         }
       });
+
     } else {
       this.props.history.push({
         pathname: "/signin",
@@ -63,7 +91,8 @@ export class LandingPage extends Component {
       } else {
         UserDocuments.insert({
           userId: currentUser,
-          docId: results
+          docId: results,
+          createdBy: currentUser // This can be redundant but helpful to track documents shared by others
         }, function (error, results) {
           if (error) {
             console.log("UserDocuments Insert Failed: ", error.reason);
@@ -150,7 +179,7 @@ export class LandingPage extends Component {
 
                   <Link to={`/documents/${doc._id}`}>
                       <ListItemText inset primary={JSON.stringify(doc.title) + "---" + JSON.stringify(doc._id)}  secondary={"Created: "+(doc.createdAt.toLocaleDateString('en-US', DATE_OPTIONS))} />
-                  </Link>                  
+                  </Link>
                 <ListItemSecondaryAction onClick={this.deleteDocument(doc._id)}>
 
                   <IconButton aria-label="Delete">
@@ -162,6 +191,21 @@ export class LandingPage extends Component {
           }
         </List>
 
+
+        <hr/>
+
+        <h2>Shared Documents</h2>
+        <ul style={{paddingLeft: '10px'}}>
+          {
+            this.state.sharedDocuments.map(sharedDoc => (
+              <li key={sharedDoc._id}>
+                <Link to={`/documents/${sharedDoc._id}`}>
+                  {sharedDoc.title}
+                </Link>
+              </li>
+            ))
+          }
+        </ul>
 
       </div>
 

@@ -6,24 +6,20 @@ import { Redirect } from 'react-router-dom';
 import { Tracker } from 'meteor/tracker';
 import _ from 'lodash';
 import Popup from "reactjs-popup";
-
 import Chat from './Chat.js';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+import { Paper, Toolbar, Typography } from '@material-ui/core';
+import 'brace/snippets/javascript';
+import 'brace/theme/monokai';
+import 'brace/mode/jsx';
+
 import { Documents } from '../api/documents.js';
 import { DocumentContents } from '../api/documentContents.js';
 import { UserDocuments } from '../api/userDoc';
 import CustomOpenEdgeMode from '../customModes/openEdge.js';
 import {UserSelection} from './UserSelection.js';
-
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
-
-import { Paper, Toolbar, Typography } from '@material-ui/core';
-
-
 import '../api/aceModes.js'
-import 'brace/snippets/javascript';
-import 'brace/theme/monokai';
-import 'brace/mode/jsx';
 
 const languages = [
   'openedge',
@@ -53,11 +49,8 @@ const statusBarStyle = {
 
 const customMode = new CustomOpenEdgeMode();
 
-
 // Render editor
 export class Editor extends Component {
-
-
   constructor(props) {
     super(props);
 
@@ -66,12 +59,17 @@ export class Editor extends Component {
     this.getWidth = this.getWidth.bind(this);
     this.onChange = this.onChange.bind(this);
     this.onLoad = this.onLoad.bind(this);
+    this.viewUserAvaliable = this.viewUserAvaliable.bind(this);
+    this.givePermission = this.givePermission.bind(this);
+    this.updateUserPermissionList = this.updateUserPermissionList.bind(this);
 
     this.state = {
       id: this.props.match.params.id,
       title: "",
+      documentCreatedBy: "",
       meteorUsers: [],
-      userIdsWithPermission: []
+      userIdsWithPermission: [],
+      defaultValue: ""
     }
 
     // I hate this... but need a non-reactive variable
@@ -81,14 +79,54 @@ export class Editor extends Component {
 
   componentDidMount() {
     const {id, meteorUsers} = this.state;
-    if(Meteor.userId()) {
-      // this.refs.aceEditor.editor.getSession().setMode({this.state.mode});
-    } else {
+    if(!Meteor.userId()) {
       this.props.history.push({
         pathname: "/signin",
         state: { from: this.props.location }
       })
     }
+
+    // Get all users so that we can give permission
+    Meteor.call('getAllUsers', (error, result) => {
+      if(error) {
+        console.log("Can't get users: ", error.reason);
+      } else {
+        this.setState({meteorUsers: result})
+      }
+    });
+
+    //Fetch all userDocuments by Document id
+    Meteor.call('getAllUsersByDocument', id, (error, result) => {
+      if(error) {
+        console.log("Can't get UserDocuments: ", error.reason);
+      } else {
+        var onlyUserIdsByDoc = []
+        //Parse userId and store into the array.
+        onlyUserIdsByDoc = result.map((eachUser)=>{
+          return eachUser.userId
+        });
+
+        // Exclude users of this document from meteorUsers[] using filter().
+        // As we map through onlyUserIdsByDoc,
+        // filtering meteorUsers by removing a user by userId.
+        onlyUserIdsByDoc.map((userId)=>{
+          this.setState({
+            meteorUsers: this.state.meteorUsers //Should include this.state!!
+              .filter( u => u._id !== userId)
+          })
+        })
+      }
+    });
+
+    // Find the document on this editor page for updating title
+    Meteor.call('findDocument', id, (error, result) => {
+      if(error) {
+        console.log("Can't find Document");
+      } else {
+        this.setState({title: result.title, documentCreatedBy: result.createdBy})
+      }
+    });
+
 	}
 
   getHeight() {
@@ -97,6 +135,94 @@ export class Editor extends Component {
 
   getWidth() {
     return window.innerWidth + "px";
+  }
+
+  // onChange Event of input, setState of title
+  handleTitleChange (name) {
+    return event => {
+      const {currentTarget} = event;
+      this.setState({[name]: currentTarget.value});
+    };
+  }
+
+  //Update title of the document when onBlur.
+  updateDocument() {
+    const {id, title} = this.state;
+    return () => {
+      Meteor.call('updateTitle', id, title, (error) => {
+        if(error) {
+          console.log("Fail to update the document title", error.reason);
+        } else {
+          console.log("new title saved successfully");
+        }
+      });
+    }
+  }
+
+  // Grab a list of user IDs from UserSelection.js
+  // and store the list into state of userIdsWithPermission
+  updateUserPermissionList(listOfIds) {
+    const { id, userIdsWithPermission } = this.state;
+    this.setState({
+      userIdsWithPermission: listOfIds.split(',')
+    })
+  }
+
+  // Save all users of the userIdsWithPermission into UserDocuments collection
+  givePermission() {
+    const { id, userIdsWithPermission, documentCreatedBy } = this.state;
+    userIdsWithPermission.map((userId) => {
+      Meteor.call('upsertUserDocument', userId, id, documentCreatedBy, (error, result) => {
+        if(error) {
+          console.log("Fail to upsert the user", error.reason);
+        } else {
+          console.log("Yay upserted successfully");
+        }
+      });
+      // TODO: Below setState not working properly
+      // this.setState({
+      //   meteorUsers: this.state.meteorUsers
+      //     .filter( u => u._id !== userId)
+      // })
+      //TODO: Later, write a function to send emails to all permitted users.
+    })
+  }
+
+  // Display viewUserAvaliable on popup modal and pass props to userSelection.js
+  viewUserAvaliable(close){
+    const { meteorUsers, userIdsWithPermission } = this.state;
+    console.log("meteorUsers", meteorUsers)
+    return(
+      <div className="modal">
+        <a className="close" onClick={close}>
+          &times;
+        </a>
+        <div className="header"> Share with others </div>
+        <div className="content">
+          <UserSelection meteorUsers={meteorUsers} updateUserPermissionList={this.updateUserPermissionList}/>
+        </div>
+        <div className="actions">
+          <button
+            className="button"
+            onClick={() => {
+              console.log('Permission Sent')
+              this.givePermission()
+            }}
+          >
+            SEND
+          </button>
+          <button
+            className="button"
+            onClick={() => {
+              console.log('modal closed ')
+              close()
+            }}
+          >
+            close modal
+          </button>
+        </div>
+      </div>
+    )
   }
 
   onChange(value, event) {
@@ -150,10 +276,13 @@ export class Editor extends Component {
         })
 
         this.prevValues = values;
-
         text = values.join('\n');
-        if (text == prevValue) return;
 
+        //==========!!This resolve setState issue!!=======
+        this.setState({defaultValue: text});
+        //================================================
+
+        if (text == prevValue) return;
         editor.setValue(text, 1);
       }
     });
@@ -166,6 +295,21 @@ export class Editor extends Component {
 
     return (
       [
+        <div>
+          <input
+            value={title}
+            onChange={this.handleTitleChange('title')}
+            onBlur={this.updateDocument()}
+            type='title'
+            id='title'
+            name='title'
+          />
+        </div>,
+        <Popup trigger={<button className="button"> Open Modal </button>} modal>
+          {close => (
+            this.viewUserAvaliable(close)
+          )}
+        </Popup>,
         <Chat key="0" id={this.state.id}/>,
         <AceEditor
         ref="aceEditor"
@@ -173,6 +317,7 @@ export class Editor extends Component {
         mode={this.state.mode}
         theme="monokai"
         name="editor"
+        value={this.state.defaultValue}
         onLoad={this.onLoad}
         onChange={this.onChange}
         fontSize={14}
