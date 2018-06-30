@@ -181,26 +181,28 @@ class NavBar extends React.Component {
 
             { (Meteor.userId())? ([  // Should be wrapped in the array
               <IconButton
+                key="0"
                 color="inherit"
                 aria-label="open drawer"
                 onClick={this.handleDrawerOpen}
                 className={classNames(classes.menuButton, this.state.open && classes.hide)}>
                 <MenuIcon />
               </IconButton>,
-              <Typography variant="title" color="inherit" className={classes.flex} key='1' style={{ marginRight: '20px' }}>Welcome to CodeShare, { username }</Typography>,
-              <Button color="inherit">
+              <Typography key="1" variant="title" color="inherit" className={classes.flex} style={{ marginRight: '20px' }}>Welcome to CodeShare, { username }</Typography>,
+              <Button key="2" color="inherit">
                 Share
                 <LinkIcon className={classes.rightIcon} />
               </Button>,
               <Button color="inherit" key='3' href="/" onClick={onSignOut}>Sign Out </Button>
             ]) : (
-                <Button key='1' color="inherit" component={LoginLink}>Login</Button>)}
+                <Button key='4' color="inherit" component={LoginLink}>Login</Button>)}
 
           </Toolbar>
         </AppBar>
 
         { Meteor.userId() ? ([  // Should be wrapped in the array
           <Drawer
+            key="5"
             variant="permanent"
             classes={{
               paper: classNames(classes.drawerPaper, !this.state.open && classes.drawerPaperClose),
@@ -259,19 +261,16 @@ class NavBar extends React.Component {
               </div>
             </List>
           </Drawer>,
-          <main className={classes.content}>
+          <main key="6" className={classes.content}>
             <div className={classes.toolbar} />
             {children}
           </main>
         ]) : (
-            <main className={classes.content}>
+            <main key="7" className={classes.content}>
               <div className={classes.toolbar} />
               {children}
             </main>
           )}
-
-
-
       </div>
     );
   }
