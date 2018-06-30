@@ -6,24 +6,20 @@ import { Redirect } from 'react-router-dom';
 import { Tracker } from 'meteor/tracker';
 import _ from 'lodash';
 import Popup from "reactjs-popup";
-
 import Chat from './Chat.js';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+import { Paper, Toolbar, Typography } from '@material-ui/core';
+import 'brace/snippets/javascript';
+import 'brace/theme/monokai';
+import 'brace/mode/jsx';
+
 import { Documents } from '../api/documents.js';
 import { DocumentContents } from '../api/documentContents.js';
 import { UserDocuments } from '../api/userDoc';
 import CustomOpenEdgeMode from '../customModes/openEdge.js';
 import {UserSelection} from './UserSelection.js';
-
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
-
-import { Paper, Toolbar, Typography } from '@material-ui/core';
-
-
 import '../api/aceModes.js'
-import 'brace/snippets/javascript';
-import 'brace/theme/monokai';
-import 'brace/mode/jsx';
 
 const languages = [
   'openedge',
@@ -53,11 +49,8 @@ const statusBarStyle = {
 
 const customMode = new CustomOpenEdgeMode();
 
-
 // Render editor
 export class Editor extends Component {
-
-
   constructor(props) {
     super(props);
 
@@ -85,9 +78,7 @@ export class Editor extends Component {
 
   componentDidMount() {
     const {id, meteorUsers} = this.state;
-    if(Meteor.userId()) {
-      // this.refs.aceEditor.editor.getSession().setMode({this.state.mode});
-    } else {
+    if(!Meteor.userId()) {
       this.props.history.push({
         pathname: "/signin",
         state: { from: this.props.location }
@@ -114,34 +105,61 @@ export class Editor extends Component {
           onlyUserIdsByDoc.push(eachUser.userId);
         });
 
-        // Exclude users of this document from meteorUsers using filter().
+        // Exclude users of this document from meteorUsers[] using filter().
         // As we map through onlyUserIdsByDoc,
         // filtering meteorUsers by removing a user by userId.
         onlyUserIdsByDoc.map((userId)=>{
-          console.log(userId)
           this.setState({
             meteorUsers: this.state.meteorUsers //Should include this.state!!
               .filter( u => u._id !== userId)
           })
         })
-
-        console.log("final users to display in dropdown",this.state.meteorUsers);
       }
     });
 
     // Find the document on this editor page for updating title
     Meteor.call('findDocument', id, (error, result) => {
       if(error) {
-        console.log("There was an error to retreive Document");
+        console.log("Can't find Document");
       } else {
-        console.log("CALLING DOUCMENT SUCCESS");
+        this.setState({title: result.title})
       }
     });
 
-
 	}
 
-  //==================================
+  getHeight() {
+    return (3 * window.innerHeight) + "px";
+  }
+
+  getWidth() {
+    return window.innerWidth + "px";
+  }
+
+  // onChange Event of input, setState of title
+  handleTitleChange (name) {
+    return event => {
+      const {currentTarget} = event;
+      this.setState({[name]: currentTarget.value});
+    };
+  }
+
+  //Update title of the document when onBlur.
+  updateDocument() {
+    const {id, title} = this.state;
+    return () => {
+      Meteor.call('updateTitle', id, title, (error) => {
+        if(error) {
+          console.log("Fail to update the document title", error.reason);
+        } else {
+          console.log("new title saved successfully");
+        }
+      });
+    }
+  }
+
+  // Grab a list of user IDs from UserSelection.js
+  // and store the list into state of userIdsWithPermission
   updateUserPermissionList(listOfIds) {
     const { id, userIdsWithPermission } = this.state;
     this.setState({
@@ -149,14 +167,15 @@ export class Editor extends Component {
     })
   }
 
+  // Save all users of the userIdsWithPermission into UserDocuments collection
   givePermission() {
     const { id, userIdsWithPermission } = this.state;
     userIdsWithPermission.map((userId) => {
       Meteor.call('upsertUserDocument', userId, id, (error, result) => {
         if(error) {
-          console.log("There was an error to upsert");
+          console.log("Fail to upsert the user", error.reason);
         } else {
-          console.log("Yay upserted successfull");
+          console.log("Yay upserted successfully");
         }
       });
       // TODO: Below setState not working properly
@@ -168,6 +187,7 @@ export class Editor extends Component {
     })
   }
 
+  // Display viewUserAvaliable on popup modal and pass props to userSelection.js
   viewUserAvaliable(close){
     const { meteorUsers, userIdsWithPermission } = this.state;
     console.log("meteorUsers", meteorUsers)
@@ -202,18 +222,6 @@ export class Editor extends Component {
         </div>
       </div>
     )
-  }
-
-  //==================================
-
-
-
-  getHeight() {
-    return (3 * window.innerHeight) + "px";
-  }
-
-  getWidth() {
-    return window.innerWidth + "px";
   }
 
   onChange(value, event) {
@@ -284,6 +292,16 @@ export class Editor extends Component {
 
     return (
       [
+        <div>
+          <input
+            value={title}
+            onChange={this.handleTitleChange('title')}
+            onBlur={this.updateDocument()}
+            type='title'
+            id='title'
+            name='title'
+          />
+        </div>,
         <Popup trigger={<button className="button"> Open Modal </button>} modal>
           {close => (
             this.viewUserAvaliable(close)
