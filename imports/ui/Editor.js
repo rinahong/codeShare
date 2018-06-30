@@ -66,9 +66,6 @@ export class Editor extends Component {
     this.getWidth = this.getWidth.bind(this);
     this.onChange = this.onChange.bind(this);
     this.onLoad = this.onLoad.bind(this);
-    this.viewUserAvaliable = this.viewUserAvaliable.bind(this);
-    this.givePermission = this.givePermission.bind(this);
-    this.updateUserPermissionList = this.updateUserPermissionList.bind(this);
 
     this.state = {
       id: this.props.match.params.id,
@@ -79,44 +76,19 @@ export class Editor extends Component {
 
     // I hate this... but need a non-reactive variable
     this.prevValues = [];
-    
+
   }
 
   componentDidMount() {
     const {id, meteorUsers} = this.state;
     if(Meteor.userId()) {
-      
       // this.refs.aceEditor.editor.getSession().setMode({this.state.mode});
-
-      
     } else {
       this.props.history.push({
         pathname: "/signin",
         state: { from: this.props.location }
       })
     }
-
-    if (Meteor.isClient) {
-      Meteor.subscribe("users", {
-        onReady: function () {
-          this.setState({meteorUsers: Meteor.users.find({}).fetch()})
-        }.bind(this),
-
-        onStop: function () {
-         // called when data publication is stopped
-         console.log("users in onStop", meteorUsers)
-        }
-      });
-    }
-
-    // Find the document on this editor page.
-    Meteor.call('findDocument', id, (error, result) => {
-      if(error) {
-        console.log("There was an error to retreive Document");
-      } else {
-        this.setState({ title: result.title });
-      }
-    });
 	}
 
   getHeight() {
@@ -187,82 +159,6 @@ export class Editor extends Component {
     });
   }
 
-  handleTitleChange (name) {
-    const {title} = this.state;
-    return event => {
-      const {currentTarget} = event;
-      this.setState({[name]: currentTarget.value});
-    };
-  }
-
-  //Update title of the document when onBlur.
-  updateDocument() {
-    const {id, title} = this.state;
-    return () => {
-      Meteor.call('updateTitle', id, title, (error) => {
-        if(error) {
-          console.log("There was an error to retreive Document list");
-        }
-      });
-    }
-  }
-
-  updateUserPermissionList(listOfIds) {
-    this.setState({
-      userIdsWithPermission: listOfIds.split(',')
-    })
-  }
-
-  givePermission() {
-    const { id, userIdsWithPermission } = this.state;
-    console.log("In givePermission",userIdsWithPermission)
-    userIdsWithPermission.map((userId) => {
-      Meteor.call('upsertUserDocument', userId, id, (error, result) => {
-        if(error) {
-          console.log("There was an error to upsert");
-        } else {
-          console.log("Yay upserted successfull")
-        }
-      });
-      //TODO: Later, write a function to send emails to all permitted users.
-    })
-  }
-
-  viewUserAvaliable(close){
-    const { meteorUsers, userIdsWithPermission } = this.state;
-    return(
-      <div className="modal">
-        <a className="close" onClick={close}>
-          &times;
-        </a>
-        <div className="header"> Share with others </div>
-        <div className="content">
-          <UserSelection meteorUsers={meteorUsers} updateUserPermissionList={this.updateUserPermissionList}/>
-        </div>
-        <div className="actions">
-          <button
-            className="button"
-            onClick={() => {
-              console.log('Permission Sent')
-              this.givePermission()
-            }}
-          >
-            SEND
-          </button>
-          <button
-            className="button"
-            onClick={() => {
-              console.log('modal closed ')
-              close()
-            }}
-          >
-            close modal
-          </button>
-        </div>
-      </div>
-    )
-  }
-
   render() {
     const {title} = this.state;
     const height = this.getHeight(); //window height
@@ -270,21 +166,6 @@ export class Editor extends Component {
 
     return (
       [
-        <div>
-          <input
-            value={title}
-            onChange={this.handleTitleChange('title')}
-            onBlur={this.updateDocument()}
-            type='title'
-            id='title'
-            name='title'
-          />
-        </div>,
-        <Popup trigger={<button className="button"> Open Modal </button>} modal>
-          {close => (
-            this.viewUserAvaliable(close)
-          )}
-        </Popup>,
         <Chat key="0" id={this.state.id}/>,
         <AceEditor
         ref="aceEditor"
@@ -309,7 +190,7 @@ export class Editor extends Component {
           showLineNumbers: true,
           tabSize: 2,
         }}/>,
-        
+
         <Paper style={statusBarStyle} position='fixed' color="default">
         <Select name="mode" onChange={this.setMode} value={this.state.mode}>
                   Mode: {languages.map((lang) => <MenuItem  key={lang} value={lang}>{lang}</MenuItem>)}
@@ -319,10 +200,3 @@ export class Editor extends Component {
     );
   }
 }
-
-
-export default () => (
-  <Popup trigger={<button> Trigger</button>} position="right center">
-    <div>Popup content here !!</div>
-  </Popup>
-);
