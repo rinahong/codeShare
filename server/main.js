@@ -46,6 +46,10 @@ Meteor.startup(() => {
         Documents.update({ _id: docId }, {$set: {title: docTitle}});
       },
 
+      updateMode(docId, docMode) {
+        Documents.update({ _id: docId }, {$set: {mode: docMode}});
+      },
+
       upsertUserDocument(userId, docId, documentCreatedBy) {
         UserDocuments.upsert({
             // Selector

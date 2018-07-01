@@ -82,7 +82,8 @@ export class LandingPage extends Component {
     Documents.insert({
       title: "Untitled Document",
       createdAt: new Date(), // current time
-      createdBy: currentUser
+      createdBy: currentUser,
+      mode: ""
     }, function (error, results) {
       if (error) {
         console.log("Documents Insert Failed: ", error.reason);
