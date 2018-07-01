@@ -10,6 +10,7 @@ import Chat from './Chat.js';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import { Paper, Toolbar, Typography } from '@material-ui/core';
+import NavBar from '../ui/NavBar';
 
 import 'brace/snippets/javascript';
 import 'brace/theme/monokai';
@@ -38,7 +39,7 @@ export class Editor extends Component {
     this.updateUserPermissionList = this.updateUserPermissionList.bind(this);
 
     const today = new Date();
-    const yearAgo = new Date().setDate(today.getDate()-365);
+    const yearAgo = new Date().setDate(today.getDate() - 365);
 
     this.state = {
       id: this.props.match.params.id,
@@ -57,20 +58,20 @@ export class Editor extends Component {
   }
 
   componentDidMount() {
-    const {id, availableUsersForPermission} = this.state;
+    const { id, availableUsersForPermission } = this.state;
     const currentUser = Meteor.userId();
-    if(!currentUser) {
+    if (!currentUser) {
       this.props.history.push({
         pathname: "/signin",
         state: { from: this.props.location }
       })
     } else {
       Meteor.call('quickUserSearchInUserDoc', currentUser, id, (error, result) => {
-        if(error) {
+        if (error) {
           console.log("Can't get users: ", error.reason);
         } else {
           console.log("result user :  ", result);
-          if(_.isEmpty(result)) {
+          if (_.isEmpty(result)) {
             alert("You are not authorized...")
             this.props.history.push({
               pathname: "/me/documents"
@@ -82,7 +83,7 @@ export class Editor extends Component {
 
     // Find the document on this editor page for updating title
     Meteor.call('findDocument', id, (error, result) => {
-      if(error) {
+      if (error) {
         console.log("Can't find Document");
       } else {
         console.log("result.mode", result.mode)
@@ -97,52 +98,52 @@ export class Editor extends Component {
 
     // Get all users so that we can give permission
     Meteor.call('getAllUsers', (error, result) => {
-      if(error) {
+      if (error) {
         console.log("Can't get users: ", error.reason);
       } else {
-        this.setState({availableUsersForPermission: result})
+        this.setState({ availableUsersForPermission: result })
       }
     });
 
     //Fetch all userDocuments by Document id
     Meteor.call('getAllUsersByDocument', id, (error, result) => {
-      if(error) {
+      if (error) {
         console.log("Can't get UserDocuments: ", error.reason);
       } else {
         var onlyUserIdsByDoc = []
         //Parse userId and store into the array.
-        onlyUserIdsByDoc = result.map((eachUser)=>{
+        onlyUserIdsByDoc = result.map((eachUser) => {
           return eachUser.userId
         });
 
         // Exclude users who already belongs to this document.
         // As we map through onlyUserIdsByDoc,
         // filtering availableUsersForPermission by removing a user by userId.
-        onlyUserIdsByDoc.map((userId)=>{
+        onlyUserIdsByDoc.map((userId) => {
           this.setState({
             availableUsersForPermission: this.state.availableUsersForPermission //Should include this.state!!
-              .filter( u => u._id !== userId)
+              .filter(u => u._id !== userId)
           })
         })
       }
     });
 
-	}
+  }
 
   // onChange Event of input, setState of title
-  handleTitleChange (name) {
+  handleTitleChange(name) {
     return event => {
-      const {currentTarget} = event;
-      this.setState({[name]: currentTarget.value});
+      const { currentTarget } = event;
+      this.setState({ [name]: currentTarget.value });
     };
   }
 
   //Update title of the document when onBlur.
   updateDocument() {
-    const {id, title} = this.state;
+    const { id, title } = this.state;
     return () => {
       Meteor.call('updateTitle', id, title, (error) => {
-        if(error) {
+        if (error) {
           console.log("Fail to update the document title", error.reason);
         } else {
           console.log("new title saved successfully");
@@ -165,7 +166,7 @@ export class Editor extends Component {
     const { id, userIdsWithPermission, documentCreatedBy } = this.state;
     userIdsWithPermission.map((userId) => {
       Meteor.call('upsertUserDocument', userId, id, documentCreatedBy, (error, result) => {
-        if(error) {
+        if (error) {
           console.log("Fail to upsert the user", error.reason);
         } else {
           console.log("Yay upserted successfully");
@@ -181,17 +182,18 @@ export class Editor extends Component {
   }
 
   // Display viewUserAvaliable on popup modal and pass props to userSelection.js
-  viewUserAvaliable(close){
+  viewUserAvaliable(close) {
     const { availableUsersForPermission, userIdsWithPermission } = this.state;
     console.log("availableUsersForPermission", availableUsersForPermission)
-    return(
+    return (
+
       <div className="modal">
         <a className="close" onClick={close}>
           &times;
         </a>
         <div className="header"> Share with others </div>
         <div className="content">
-          <UserSelection availableUsersForPermission={availableUsersForPermission} updateUserPermissionList={this.updateUserPermissionList}/>
+          <UserSelection availableUsersForPermission={availableUsersForPermission} updateUserPermissionList={this.updateUserPermissionList} />
         </div>
         <div className="actions">
           <button
@@ -244,8 +246,8 @@ export class Editor extends Component {
   }
 
   setMode(e) {
-    const {id, mode} = this.state;
-    if(this.state.mode = 'openedge') {
+    const { id, mode } = this.state;
+    if (this.state.mode = 'openedge') {
       this.refs.aceEditor.editor.getSession().setMode(customMode);
     }
 
@@ -254,7 +256,7 @@ export class Editor extends Component {
     })
 
     Meteor.call('updateMode', id, e.target.value, (error) => {
-      if(error) {
+      if (error) {
         console.log("Fail to update the document mode", error.reason);
       } else {
         console.log("Mode updated successfully");
@@ -264,7 +266,7 @@ export class Editor extends Component {
 
   onLoad(editor) {
     const currentUser = Meteor.userId();
-    let {id} = this.state;
+    let { id } = this.state;
     let numRowsStored = 0;
     let numRowsCurrent = 0;
 
@@ -276,22 +278,22 @@ export class Editor extends Component {
 
       if (this.state.firstTimeLoad) {
         data = DocumentContents.find({ docId: id }, { sort: { createdAt: 1 } }).fetch();
-        if(!(_.isEmpty(data))) {
-            _.map(data, function (row_data) {
-              values[row_data.row] = row_data.value;
-            })
+        if (!(_.isEmpty(data))) {
+          _.map(data, function (row_data) {
+            values[row_data.row] = row_data.value;
+          })
 
-            this.prevValues = values;
-            this.lastTimeInsert = DocumentContents.findOne({ docId: id }, { sort: { createdAt: -1, limit: 1 } }).createdAt;
+          this.prevValues = values;
+          this.lastTimeInsert = DocumentContents.findOne({ docId: id }, { sort: { createdAt: -1, limit: 1 } }).createdAt;
 
-            text = values.join('\n');
-            if (text == prevValue) return;
+          text = values.join('\n');
+          if (text == prevValue) return;
 
-            editor.setValue(text, 1);
-            this.setState({firstTimeLoad: false, defaultValue: text});
+          editor.setValue(text, 1);
+          this.setState({ firstTimeLoad: false, defaultValue: text });
         }
       } else {
-        data = DocumentContents.find({docId: id, writtenBy: { $not: currentUser }, createdAt: { $gt : new Date(this.lastTimeInsert)}}, { sort: { createdAt: 1 } }).fetch();
+        data = DocumentContents.find({ docId: id, writtenBy: { $not: currentUser }, createdAt: { $gt: new Date(this.lastTimeInsert) } }, { sort: { createdAt: 1 } }).fetch();
 
         if (data) {
           numRowsStored = DocumentContents.findOne({ docId: id }, { sort: { row: -1, limit: 1 } }).row + 1;
@@ -304,8 +306,8 @@ export class Editor extends Component {
           _.map(data, function (row_data) {
 
             editor.session.replace({
-                start: {row: row_data.row, column: 0},
-                end: {row: row_data.row, column: Number.MAX_VALUE}
+              start: { row: row_data.row, column: 0 },
+              end: { row: row_data.row, column: Number.MAX_VALUE }
             }, row_data.value)
 
           })
@@ -313,19 +315,20 @@ export class Editor extends Component {
           this.lastTimeInsert = DocumentContents.findOne({ docId: id }, { sort: { createdAt: -1, limit: 1 } }).createdAt;
           this.prevValues = editor.getValue().split('\n');
 
-          this.setState({defaultValue: editor.getValue()})
+          this.setState({ defaultValue: editor.getValue() })
         }
       }
     });
   }
 
   render() {
-    const {title} = this.state;
+    const { title } = this.state;
     const height = editorFunctions.getHeight(); //window height
     const width = editorFunctions.getWidth(); //window width
 
     return (
-      [
+
+      <NavBar>
         <div key="0">
           <input
             value={title}
@@ -335,44 +338,45 @@ export class Editor extends Component {
             id='title'
             name='title'
           />
-        </div>,
+        </div>
         <Popup key="1" trigger={<button className="button"> Open Modal </button>} modal>
           {close => (
             this.viewUserAvaliable(close)
           )}
-        </Popup>,
-        <Chat key="2" id={this.state.id}/>,
+        </Popup>
+        <Chat key="2" id={this.state.id} />
         <AceEditor
-        ref="aceEditor"
-        key="3"
-        mode={this.state.mode}
-        theme="monokai"
-        name="editor"
-        value={this.state.defaultValue}
-        onLoad={this.onLoad}
-        onChange={this.onChange}
-        fontSize={14}
-        showPrintMargin={false}
-        showGutter={true}
-        highlightActiveLine={true}
-        height={height}
-        width={width}
-        debounceChangePeriod={1000}
-        editorProps={{ $blockScrolling: Infinity }}
-        setOptions={{
-          enableBasicAutocompletion: true,
-          enableLiveAutocompletion: true,
-          enableSnippets: false,
-          showLineNumbers: true,
-          tabSize: 2,
-        }}/>,
+          ref="aceEditor"
+          key="3"
+          mode={this.state.mode}
+          theme="monokai"
+          name="editor"
+          value={this.state.defaultValue}
+          onLoad={this.onLoad}
+          onChange={this.onChange}
+          fontSize={14}
+          showPrintMargin={false}
+          showGutter={true}
+          highlightActiveLine={true}
+          height={height}
+          width="100%"
+          debounceChangePeriod={1000}
+          editorProps={{ $blockScrolling: Infinity }}
+          setOptions={{
+            enableBasicAutocompletion: true,
+            enableLiveAutocompletion: true,
+            enableSnippets: false,
+            showLineNumbers: true,
+            tabSize: 2,
+          }} />
 
         <Paper key="4" style={editorVariables.statusBarStyle} position='fixed' color="default">
           <Select name="mode" onChange={this.setMode} value={this.state.mode}>
-            Mode: {editorVariables.languages.map((lang) => <MenuItem  key={lang} value={lang}>{lang}</MenuItem>)}
+            Mode: {editorVariables.languages.map((lang) => <MenuItem key={lang} value={lang}>{lang}</MenuItem>)}
           </Select>
         </Paper>
-      ]
+      </NavBar>
+
     );
   }
 }

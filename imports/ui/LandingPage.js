@@ -141,11 +141,12 @@ export class LandingPage extends Component {
     }
 
     return (
+      <NavBar >
       <div
         className="LandingPage"
         style={{ padding: '0  20px', textAlign: 'center' }}
       >
-    {/* <NavBar theme={props.theme}> */}
+    
 
         <img src="/codeShareLogo.png" alt="logo" style={{ width: '30%', height: '30%', paddingTop: '30px', textAlign: 'center' }} />
 
@@ -205,9 +206,9 @@ export class LandingPage extends Component {
             ))
           }
         </List>
-      {/* </NavBar> */}
+      
       </div>
-
+      </NavBar>
     );
   }
 }
