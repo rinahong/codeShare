@@ -298,6 +298,8 @@ export class Editor extends Component {
 
           this.lastTimeInsert = DocumentContents.findOne({ docId: id }, { sort: { createdAt: -1, limit: 1 } }).createdAt;
           this.prevValues = editor.getValue().split('\n');
+          
+          this.setState({defaultValue: editor.getValue()})
         }
       }
     });
