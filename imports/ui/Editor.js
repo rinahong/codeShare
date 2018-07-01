@@ -10,7 +10,7 @@ import Chat from './Chat.js';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import { Paper, Toolbar, Typography } from '@material-ui/core';
-import NavBar from '../ui/NavBar';
+import NavBarEditor from '../ui/NavBarEditor';
 
 import 'brace/snippets/javascript';
 import 'brace/theme/monokai';
@@ -328,7 +328,7 @@ export class Editor extends Component {
 
     return (
 
-      <NavBar>
+      <NavBarEditor>
         <div key="0">
           <input
             value={title}
@@ -375,7 +375,7 @@ export class Editor extends Component {
             Mode: {editorVariables.languages.map((lang) => <MenuItem key={lang} value={lang}>{lang}</MenuItem>)}
           </Select>
         </Paper>
-      </NavBar>
+      </NavBarEditor>
 
     );
   }

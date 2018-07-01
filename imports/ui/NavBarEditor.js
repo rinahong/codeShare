@@ -209,6 +209,10 @@ class NavBar extends React.Component {
                 <MenuIcon />
               </IconButton>,
               <Typography key="1" variant="title" color="inherit" className={classes.flex} style={{ marginRight: '20px' }}>Welcome to CodeShare, { username }</Typography>,
+              <Button key="2" color="inherit">
+                Share
+                <LinkIcon className={classes.rightIcon} />
+              </Button>,
               <Button color="inherit" key='3' href="/signin" onClick={() => this.signOut()}>Sign Out </Button>
             ]) : (
                 <Button key='4' color="inherit" component={LoginLink}>Login</Button>)}
@@ -250,7 +254,7 @@ class NavBar extends React.Component {
                 </ListItem>
 
 
-                {/* <ListItem button>
+                <ListItem button>
                   <ListItemIcon>
                     <GetAppIcon />
                   </ListItemIcon>
@@ -261,11 +265,11 @@ class NavBar extends React.Component {
                     <HistoryIcon />
                   </ListItemIcon>
                   <ListItemText primary="History" />
-                </ListItem> */}
+                </ListItem>
               </div>
             </List>
             <Divider />
-            {/* <List>
+            <List>
 
               <div>
                 <ListItem button>
@@ -275,7 +279,7 @@ class NavBar extends React.Component {
                   <ListItemText primary="Delete" />
                 </ListItem>
               </div>
-            </List> */}
+            </List>
           </Drawer>,
           <main key="6" className={classes.content}>
             <div className={classes.toolbar} />
