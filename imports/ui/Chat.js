@@ -24,7 +24,7 @@ export default class Chat extends Component {
       if (this.state) {
         // load all messages at first
         if (this.state.getAll) {
-          let messages = Messages.find({ id: this.state.id }, { sort: { createdAt: -1 } }).fetch();
+          let messages = Messages.find({ id: this.state.id }, { sort: { createdAt: 1 } }).fetch();
           if (!messages.length) return;
 
           _.map(messages, function (message) {
