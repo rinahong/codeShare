@@ -47,7 +47,7 @@ export class Editor extends Component {
       availableUsersForPermission: [],
       userIdsWithPermission: [],
       firstTimeLoad: true,
-      mode: "javascript",
+      mode: "",
       defaultValue: ""
     }
 
@@ -80,6 +80,21 @@ export class Editor extends Component {
       });
     }
 
+    // Find the document on this editor page for updating title
+    Meteor.call('findDocument', id, (error, result) => {
+      if(error) {
+        console.log("Can't find Document");
+      } else {
+        console.log("result.mode", result.mode)
+        this.setState({
+          title: result.title,
+          documentCreatedBy: result.createdBy,
+          mode: (result.mode != "") ? result.mode : "javascript" //default mode is JS
+        })
+        console.log("current mode", this.state.mode)
+      }
+    });
+
     // Get all users so that we can give permission
     Meteor.call('getAllUsers', (error, result) => {
       if(error) {
@@ -109,15 +124,6 @@ export class Editor extends Component {
               .filter( u => u._id !== userId)
           })
         })
-      }
-    });
-
-    // Find the document on this editor page for updating title
-    Meteor.call('findDocument', id, (error, result) => {
-      if(error) {
-        console.log("Can't find Document");
-      } else {
-        this.setState({title: result.title, documentCreatedBy: result.createdBy})
       }
     });
 
@@ -238,7 +244,7 @@ export class Editor extends Component {
   }
 
   setMode(e) {
-
+    const {id, mode} = this.state;
     if(this.state.mode = 'openedge') {
       this.refs.aceEditor.editor.getSession().setMode(customMode);
     }
@@ -246,6 +252,14 @@ export class Editor extends Component {
     this.setState({
       mode: e.target.value
     })
+
+    Meteor.call('updateMode', id, e.target.value, (error) => {
+      if(error) {
+        console.log("Fail to update the document mode", error.reason);
+      } else {
+        console.log("Mode updated successfully");
+      }
+    });
   }
 
   onLoad(editor) {
@@ -298,7 +312,7 @@ export class Editor extends Component {
 
           this.lastTimeInsert = DocumentContents.findOne({ docId: id }, { sort: { createdAt: -1, limit: 1 } }).createdAt;
           this.prevValues = editor.getValue().split('\n');
-          
+
           this.setState({defaultValue: editor.getValue()})
         }
       }
