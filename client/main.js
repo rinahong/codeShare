@@ -34,12 +34,12 @@ const PrivateRoute = ({ component, redirectTo, ...rest }) => {
       return Meteor.userId() ? (
         renderMergedProps(component, routeProps, rest)
       ) : (
-        <Redirect to={{
-          pathname: redirectTo,
-          state: { from: routeProps.location }
-        }}/>
-      );
-    }}/>
+          <Redirect to={{
+            pathname: redirectTo,
+            state: { from: routeProps.location }
+          }} />
+        );
+    }} />
   );
 };
 
@@ -66,12 +66,13 @@ Meteor.startup(() => {
     <MuiThemeProvider theme={theme}>
       <BrowserRouter>
         <div className="row">
-            <Switch>
-              <Route path="/signin" component={SignInPage} />
-              <Route path="/register" component={RegisterPage} />
+          <Switch>
+            <Route path="/signin" component={SignInPage} />
+            <Route path="/register" component={RegisterPage} />
               <PrivateRoute path="/documents/:id" component={Editor} redirectTo="/signin" />
               <PrivateRoute path="/me/documents" component={LandingPage} redirectTo="/signin" />
-            </Switch>
+              <PrivateRoute path="*" redirectTo="/signin" />
+          </Switch>
         </div>
       </BrowserRouter>
     </MuiThemeProvider>
