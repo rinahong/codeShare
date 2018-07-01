@@ -33,19 +33,22 @@ Meteor.startup(() => {
     <MuiThemeProvider theme={theme}>
       <BrowserRouter>
         <div className="row">
-          <NavBar theme={theme}>
             <Switch>
               <Route path="/signin" component={SignInPage} />
               <Route path="/register" component={RegisterPage} />
-              <Route path="/me/documents" component={LandingPage} theme={theme} />
+              {/* <Route path="/me/documents" component={LandingPage} theme={theme} /> */}
               <Route path="/documents/:id"
                 render={props => {
                  return <Editor {...props} currentUser={currentUser} />
                 }}
               />
-              <Route path="/" component={LandingPage} theme={theme} />
+              <Route path='/me/documents' render={routeProps => 
+              <NavBar {...routeProps}>
+                  <LandingPage />
+               </NavBar>} />
+
+              {/* <Route path="/" component={LandingPage} theme={theme} /> */}
             </Switch>
-          </NavBar>
         </div>
       </BrowserRouter>
     </MuiThemeProvider>

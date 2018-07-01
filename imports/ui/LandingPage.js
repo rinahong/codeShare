@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Link, Redirect } from 'react-router-dom';
 import _ from 'lodash';
+import NavBar from '../ui/NavBar';
 
 import Avatar from '@material-ui/core/Avatar';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
@@ -144,6 +145,8 @@ export class LandingPage extends Component {
         className="LandingPage"
         style={{ padding: '0  20px', textAlign: 'center' }}
       >
+    {/* <NavBar theme={props.theme}> */}
+
         <img src="/codeShareLogo.png" alt="logo" style={{ width: '30%', height: '30%', paddingTop: '30px', textAlign: 'center' }} />
 
         <div className="widget-container" style={{ width: '10%', paddingLeft: '20px', paddingBottom: '20px' }}>
@@ -202,7 +205,7 @@ export class LandingPage extends Component {
             ))
           }
         </List>
-
+      {/* </NavBar> */}
       </div>
 
     );
