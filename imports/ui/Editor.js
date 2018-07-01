@@ -10,6 +10,7 @@ import Chat from './Chat.js';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import { Paper, Toolbar, Typography } from '@material-ui/core';
+
 import 'brace/snippets/javascript';
 import 'brace/theme/monokai';
 import 'brace/mode/jsx';
@@ -18,34 +19,9 @@ import { Documents } from '../api/documents.js';
 import { DocumentContents } from '../api/documentContents.js';
 import { UserDocuments } from '../api/userDoc';
 import CustomOpenEdgeMode from '../customModes/openEdge.js';
-import {UserSelection} from './UserSelection.js';
+import { UserSelection } from './UserSelection.js';
+import { editorFunctions, editorVariables } from '../api/editorFunctions.js';
 import '../api/aceModes.js'
-
-const languages = [
-  'openedge',
-  'javascript',
-  'java',
-  'python',
-  'xml',
-  'ruby',
-  'sass',
-  'markdown',
-  'mysql',
-  'json',
-  'html',
-  'handlebars',
-  'golang',
-  'csharp',
-  'elixir',
-  'typescript',
-  'css',
-]
-
-const statusBarStyle = {
-  zIndex: '9999',
-  bottom: '0',
-  position: 'fixed'
-};
 
 const customMode = new CustomOpenEdgeMode();
 
@@ -55,13 +31,14 @@ export class Editor extends Component {
     super(props);
 
     this.setMode = this.setMode.bind(this);
-    this.getHeight = this.getHeight.bind(this);
-    this.getWidth = this.getWidth.bind(this);
     this.onChange = this.onChange.bind(this);
     this.onLoad = this.onLoad.bind(this);
     this.viewUserAvaliable = this.viewUserAvaliable.bind(this);
     this.givePermission = this.givePermission.bind(this);
     this.updateUserPermissionList = this.updateUserPermissionList.bind(this);
+
+    const today = new Date();
+    const yearAgo = new Date().setDate(today.getDate()-365);
 
     this.state = {
       id: this.props.match.params.id,
@@ -69,12 +46,14 @@ export class Editor extends Component {
       documentCreatedBy: "",
       availableUsersForPermission: [],
       userIdsWithPermission: [],
+      firstTimeLoad: true,
+      mode: "javascript",
       defaultValue: ""
     }
 
-    // I hate this... but need a non-reactive variable
+    // I hate this... but need non-reactive variables
     this.prevValues = [];
-    console.log("props", props)
+    this.lastTimeInsert = yearAgo;
   }
 
   componentDidMount() {
@@ -143,14 +122,6 @@ export class Editor extends Component {
     });
 
 	}
-
-  getHeight() {
-    return (3 * window.innerHeight) + "px";
-  }
-
-  getWidth() {
-    return window.innerWidth + "px";
-  }
 
   // onChange Event of input, setState of title
   handleTitleChange (name) {
@@ -278,35 +249,64 @@ export class Editor extends Component {
   }
 
   onLoad(editor) {
+    const currentUser = Meteor.userId();
+    let {id} = this.state;
+    let numRowsStored = 0;
+    let numRowsCurrent = 0;
 
     Tracker.autorun(() => {
       let values = [];
       let text = '';
       let prevValue = editor.getValue();
-      let data = DocumentContents.find({ docId: this.state.id }, { sort: { createdAt: 1 } }).fetch();
+      let data = [];
 
-      if (data) {
-        _.map(data, function (row_data) {
-          values[row_data.row] = row_data.value;
-        })
+      if (this.state.firstTimeLoad) {
+        data = DocumentContents.find({ docId: id }, { sort: { createdAt: 1 } }).fetch();
+        if(!(_.isEmpty(data))) {
+            _.map(data, function (row_data) {
+              values[row_data.row] = row_data.value;
+            })
 
-        this.prevValues = values;
-        text = values.join('\n');
+            this.prevValues = values;
+            this.lastTimeInsert = DocumentContents.findOne({ docId: id }, { sort: { createdAt: -1, limit: 1 } }).createdAt;
 
-        //==========!!This resolve setState issue!!=======
-        this.setState({defaultValue: text});
-        //================================================
+            text = values.join('\n');
+            if (text == prevValue) return;
 
-        if (text == prevValue) return;
-        editor.setValue(text, 1);
+            editor.setValue(text, 1);
+            this.setState({firstTimeLoad: false, defaultValue: text});
+        }
+      } else {
+        data = DocumentContents.find({docId: id, writtenBy: { $not: currentUser }, createdAt: { $gt : new Date(this.lastTimeInsert)}}, { sort: { createdAt: 1 } }).fetch();
+
+        if (data) {
+          numRowsStored = DocumentContents.findOne({ docId: id }, { sort: { row: -1, limit: 1 } }).row + 1;
+          numRowsCurrent = editor.session.getLength();
+
+          if (numRowsStored > numRowsCurrent) {
+            editorFunctions.padDocument(editor, numRowsCurrent, numRowsStored);
+          }
+
+          _.map(data, function (row_data) {
+
+            editor.session.replace({
+                start: {row: row_data.row, column: 0},
+                end: {row: row_data.row, column: Number.MAX_VALUE}
+            }, row_data.value)
+
+          })
+
+          this.lastTimeInsert = DocumentContents.findOne({ docId: id }, { sort: { createdAt: -1, limit: 1 } }).createdAt;
+          this.prevValues = editor.getValue().split('\n');
+        }
       }
     });
   }
 
   render() {
     const {title} = this.state;
-    const height = this.getHeight(); //window height
-    const width = this.getWidth(); //window width
+    const height = editorFunctions.getHeight(); //window height
+    const width = editorFunctions.getWidth(); //window width
 
     return (
       [
@@ -351,9 +351,9 @@ export class Editor extends Component {
           tabSize: 2,
         }}/>,
 
-        <Paper key="4" style={statusBarStyle} position='fixed' color="default">
+        <Paper key="4" style={editorVariables.statusBarStyle} position='fixed' color="default">
           <Select name="mode" onChange={this.setMode} value={this.state.mode}>
-            Mode: {languages.map((lang) => <MenuItem  key={lang} value={lang}>{lang}</MenuItem>)}
+            Mode: {editorVariables.languages.map((lang) => <MenuItem  key={lang} value={lang}>{lang}</MenuItem>)}
           </Select>
         </Paper>
       ]

@@ -53,7 +53,7 @@ export class CustomHighlightRules extends window.ace.acequire("ace/mode/text_hig
                 caseInsensitive: true
             }, {
                 token: "keyword.statement.source.abl",
-                regex: /\b(?:enable|disable|display|delete|create|update|assign|import(?: unformatted)?|input\s+(?:from|close)|with|skip)\b/,
+                regex: /\b(?:enable|disable|disp(?:lay)*|delete|create|update|assign|import(?: unformatted)?|input\s+(?:from|close)|with|skip)\b/,
                 caseInsensitive: true
             }, {
                 token: "keyword.type.source.abl",
@@ -136,7 +136,7 @@ export class CustomHighlightRules extends window.ace.acequire("ace/mode/text_hig
                 caseInsensitive: true
             }, {
                 token: "keyword.statement.source.abl",
-                regex: /\b(?:enable|disable|display|delete|create|update|assign|import(?: unformatted)?|input\s+(?:from|close)|with|skip)\b/,
+                regex: /\b(?:enable|disable|disp(?:lay)*|delete|create|update|assign|import(?: unformatted)?|input\s+(?:from|close)|with|skip)\b/,
                 caseInsensitive: true
             }, {
                 token: "keyword.type.source.abl",
