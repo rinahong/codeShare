@@ -48,9 +48,7 @@ export class Editor extends Component {
       userIdsWithPermission: [],
       firstTimeLoad: true,
       mode: "",
-      defaultValue: "",
-      onLoadStatus: false,
-      onChangeStatus: false
+      defaultValue: ""
     }
 
     // I hate this... but need non-reactive variables
@@ -71,6 +69,7 @@ export class Editor extends Component {
         if(error) {
           console.log("Can't get users: ", error.reason);
         } else {
+          console.log("result user :  ", result);
           if(_.isEmpty(result)) {
             alert("You are not authorized...")
             this.props.history.push({
@@ -86,11 +85,13 @@ export class Editor extends Component {
       if(error) {
         console.log("Can't find Document");
       } else {
+        console.log("result.mode", result.mode)
         this.setState({
           title: result.title,
           documentCreatedBy: result.createdBy,
           mode: (result.mode != "") ? result.mode : "javascript" //default mode is JS
         })
+        console.log("current mode", this.state.mode)
       }
     });
 
@@ -144,7 +145,7 @@ export class Editor extends Component {
         if(error) {
           console.log("Fail to update the document title", error.reason);
         } else {
-          console.log("New title saved successfully");
+          console.log("new title saved successfully");
         }
       });
     }
@@ -182,6 +183,7 @@ export class Editor extends Component {
   // Display viewUserAvaliable on popup modal and pass props to userSelection.js
   viewUserAvaliable(close){
     const { availableUsersForPermission, userIdsWithPermission } = this.state;
+    console.log("availableUsersForPermission", availableUsersForPermission)
     return(
       <div className="modal">
         <a className="close" onClick={close}>
@@ -215,6 +217,32 @@ export class Editor extends Component {
     )
   }
 
+  onChange(value, event) {
+
+    const val_arr = value.split('\n');
+    const currentUser = Meteor.userId();
+
+    for (var i = 0; i < val_arr.length; i++) {
+
+      if (val_arr[i] == this.prevValues[i]) continue;
+
+      const delta = val_arr[i];
+
+      DocumentContents.insert({
+        docId: this.state.id,
+        row: i,
+        value: delta,
+        createdAt: new Date(), // current time
+        writtenBy: currentUser
+      }, function (error) {
+        if (error) {
+          console.log("Document save Failed: ", error.reason);
+        }
+      });
+    }
+
+  }
+
   setMode(e) {
     const {id, mode} = this.state;
     if(this.state.mode = 'openedge') {
@@ -234,40 +262,6 @@ export class Editor extends Component {
     });
   }
 
-  onChange(value, event) {
-    this.setState({ defaultValue: value })
-
-    //If onLoad() not yet called, we can set onChange: true
-    if (this.state.onLoadStatus == false ) {
-      this.setState({ onChangeStatus: true })
-    } else if (this.state.onLoadStatus == true ) {
-      this.setState({ onLoadStatus: false })
-    }
-
-    const val_arr = value.split('\n');
-    const currentUser = Meteor.userId();
-
-    for (var i = 0; i < val_arr.length; i++) {
-      if (val_arr[i] == this.prevValues[i]) continue;
-
-      const delta = val_arr[i];
-      DocumentContents.insert({
-        docId: this.state.id,
-        row: i,
-        value: delta,
-        createdAt: new Date(), // current time
-        writtenBy: currentUser
-      }, function (error) {
-        if (error) {
-          console.log("Document save Failed: ", error.reason);
-        } else{
-          console.log("Inserted successfully")
-        }
-      });
-    }
-
-  }
-
   onLoad(editor) {
     const currentUser = Meteor.userId();
     let {id} = this.state;
@@ -281,7 +275,6 @@ export class Editor extends Component {
       let data = [];
 
       if (this.state.firstTimeLoad) {
-        this.setState({ onLoadStatus: true });
         data = DocumentContents.find({ docId: id }, { sort: { createdAt: 1 } }).fetch();
         if(!(_.isEmpty(data))) {
             _.map(data, function (row_data) {
@@ -318,14 +311,9 @@ export class Editor extends Component {
           })
 
           this.lastTimeInsert = DocumentContents.findOne({ docId: id }, { sort: { createdAt: -1, limit: 1 } }).createdAt;
+          this.prevValues = editor.getValue().split('\n');
 
-          //If onChange was called before onLoad,
-          //Then we can update prevValues, and onChangeStatus = false
-          if(this.state.onChangeStatus == true) {
-            this.prevValues = editor.getValue().split('\n');
-            this.setState({ onChangeStatus: false })
-          }
-          this.setState({ defaultValue: editor.getValue() })
+          this.setState({defaultValue: editor.getValue()})
         }
       }
     });
