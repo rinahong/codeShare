@@ -162,6 +162,8 @@ export class Editor extends Component {
   // Save all users of the userIdsWithPermission into UserDocuments collection
   givePermission() {
     const { id, userIdsWithPermission, documentCreatedBy } = this.state;
+    var tempAvailableUsersForPermission = this.state.availableUsersForPermission;
+
     userIdsWithPermission.map((userId) => {
       Meteor.call('upsertUserDocument', userId, id, documentCreatedBy, (error, result) => {
         if(error) {
@@ -170,18 +172,25 @@ export class Editor extends Component {
           console.log("Yay upserted successfully");
         }
       });
-      // TODO: Below setState not working properly
-      // this.setState({
-      //   availableUsersForPermission: this.state.availableUsersForPermission
-      //     .filter( u => u._id !== userId)
-      // })
+
+      // Exclude user(s) who just permitted to this document.
+      tempAvailableUsersForPermission = tempAvailableUsersForPermission
+        .filter( user => user._id !== userId)
+
       //TODO: Later, write a function to send emails to all permitted users.
+    });
+
+    // Update availableUsersForPermission with tempAvailableUsersForPermission
+    this.setState({
+      availableUsersForPermission: tempAvailableUsersForPermission
     })
+
   }
 
   // Display viewUserAvaliable on popup modal and pass props to userSelection.js
   viewUserAvaliable(close){
-    const { availableUsersForPermission, userIdsWithPermission } = this.state;
+    const { availableUsersForPermission } = this.state;
+
     return(
       <div className="modal">
         <a className="close" onClick={close}>
