@@ -38,7 +38,6 @@ export class Editor extends Component {
     this.setMode = this.setMode.bind(this);
     this.onChange = this.onChange.bind(this);
     this.onLoad = this.onLoad.bind(this);
-    this.viewUserAvaliable = this.viewUserAvaliable.bind(this);
     this.givePermission = this.givePermission.bind(this);
     this.updateUserPermissionList = this.updateUserPermissionList.bind(this);
 
@@ -188,44 +187,6 @@ export class Editor extends Component {
     })
   }
 
-  // Display viewUserAvaliable on popup modal and pass props to userSelection.js
-  viewUserAvaliable(close) {
-    const { availableUsersForPermission, userIdsWithPermission } = this.state;
-    console.log("availableUsersForPermission", availableUsersForPermission)
-    return (
-
-      <div className="modal">
-        <a className="close" onClick={close}>
-          &times;
-        </a>
-        <div className="header"> Share with others </div>
-        <div className="content">
-          <UserSelection availableUsersForPermission={availableUsersForPermission} updateUserPermissionList={this.updateUserPermissionList} />
-        </div>
-        <div className="actions">
-          <button
-            className="button"
-            onClick={() => {
-              console.log('Permission Sent')
-              this.givePermission()
-            }}
-          >
-            SEND
-          </button>
-          <button
-            className="button"
-            onClick={() => {
-              console.log('modal closed ')
-              close()
-            }}
-          >
-            close modal
-          </button>
-        </div>
-      </div>
-    )
-  }
-
   onChange(value, event) {
 
     const val_arr = value.split('\n');
@@ -346,12 +307,6 @@ export class Editor extends Component {
       <NavBarEditor title={title} titleonChange={this.handleTitleChange('title')} titleonBlur={this.updateDocument()} handleModalOpen={this.handleModalOpen} handleModalClose={this.handleModalClose}>
         <div key="0">
         </div>
-        <Popup key="1" trigger={<button className="button"> Open Modal </button>} modal>
-          {close => (
-            this.viewUserAvaliable(close)
-          )}
-        </Popup>
-        <Button onClick={this.handleModalOpen}>Open Material Modal</Button>
         <Modal
           aria-labelledby="simple-modal-title"
           aria-describedby="simple-modal-description"
@@ -379,15 +334,11 @@ export class Editor extends Component {
                   onClick={() => {
                     console.log('Permission Sent')
                     this.givePermission()
+                    this.handleModalClose()
+
                   }}
                 >
-                  SEND
-                </Button>
-                <Button
-                  className="button"
-                  onClick={this.handleModalClose}
-                >
-                  close modal
+                  Done
                 </Button>
             </div>
           </Paper>
