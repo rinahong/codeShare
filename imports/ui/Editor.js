@@ -45,7 +45,7 @@ export class Editor extends Component {
     const today = new Date();
     const yearAgo = new Date().setDate(today.getDate() - 365);
 
-    
+
 
     this.state = {
       id: this.props.match.params.id,
@@ -343,7 +343,7 @@ export class Editor extends Component {
     const { classes } = this.props;
 
     return (
-      <NavBarEditor title={title} titleonChange={this.handleTitleChange('title')} titleonBlur={this.updateDocument()} handleModalOpen={this.handleModalOpen}>
+      <NavBarEditor title={title} titleonChange={this.handleTitleChange('title')} titleonBlur={this.updateDocument()} handleModalOpen={this.handleModalOpen} handleModalClose={this.handleModalClose}>
         <div key="0">
         </div>
         <Popup key="1" trigger={<button className="button"> Open Modal </button>} modal>
@@ -363,39 +363,32 @@ export class Editor extends Component {
             // height: '50%',
             backgroundColor: 'paper',
             // boxShadow: theme.shadows[5],
-            padding: '30px',
-            top: '50%',
+            // padding: '30px',
+            top: '40%',
             left: '25%',
           }}
         >
-          <Paper>
-            <a className="close" onClick={close}>
-              &times;
-               </a>
+          <Paper style={{padding: '30px'}}>
             <div className="header"> Share with others </div>
             <div className="content">
               <UserSelection availableUsersForPermission={availableUsersForPermission} updateUserPermissionList={this.updateUserPermissionList} />
             </div>
-            <div className="actions">
-              <Button
-                className="button"
-                onClick={() => {
-                  console.log('Permission Sent')
-                  this.givePermission()
-                  handleModalClose()
-                }}
-              >
-                SEND
-          </Button>
-              <Button
-                className="button"
-                onClick={() => {
-                  console.log('modal closed ')
-                  handleModalClose()
-                }}
-              >
-                close modal
-          </Button>
+            <div className="actions" >
+                <Button
+                  className="button"
+                  onClick={() => {
+                    console.log('Permission Sent')
+                    this.givePermission()
+                  }}
+                >
+                  SEND
+                </Button>
+                <Button
+                  className="button"
+                  onClick={this.handleModalClose}
+                >
+                  close modal
+                </Button>
             </div>
           </Paper>
         </Modal>
