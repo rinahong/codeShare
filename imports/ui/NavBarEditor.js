@@ -224,7 +224,7 @@ class NavBar extends React.Component {
                   style= {{ width: (this.props.title.length + 5) * 8}}
                   name='title'
                   id="title"
-                  disableUnderline='true'
+                  disableUnderline={true}
                 />,
               <Button key="2" color="inherit" onClick={this.props.handleModalOpen}>
                 Share
@@ -289,8 +289,8 @@ class NavBar extends React.Component {
             <List>
 
               <div>
-                <ListItem button>
-                  <ListItemIcon>
+                <ListItem button onClick={this.props.handleDialogOpen}>
+                  <ListItemIcon >
                     <DeleteIcon />
                   </ListItemIcon>
                   <ListItemText primary="Delete" />

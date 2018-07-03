@@ -29,6 +29,9 @@ import Button from '@material-ui/core/Button';
 
 const customMode = new CustomOpenEdgeMode();
 
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
 // Render editor
 export class Editor extends Component {
@@ -289,13 +292,42 @@ export class Editor extends Component {
     });
   }
 
-  handleModalClose = () => {
-    this.setState({ modalOpen: false });
-  };
+  deleteDocument(documentId) {
+    return () => {
+      const { documents } = this.state;
+      // Meteor.method "deleteDocument" will remove Document from mongoDB.
+      Meteor.call('deleteDocument', documentId, (error, result) => {
+        if (error) {
+          console.log("There was an error to retreive Document list");
+        } else {
+          // Remove the document from the state, so that, remove the document from the LandingPage.
+          this.setState({
+            documents: documents.filter(doc => doc._id !== documentId)
+          });
+        }
+      });
+
+
+    }
+  }
 
   handleModalOpen = () => {
     this.setState({ modalOpen: true });
   };
+
+  handleModalClose = () => {
+    this.setState({ modalOpen: false });
+  };
+
+  handleDialogOpen = () => {
+    this.setState({ dialogOpen: true });
+  };
+
+  handleDialogClose = () => {
+    this.setState({ dialogOpen: false });
+  };
+
+  
 
   render() {
     const { availableUsersForPermission, userIdsWithPermission, title } = this.state;
@@ -304,9 +336,29 @@ export class Editor extends Component {
     const { classes } = this.props;
 
     return (
-      <NavBarEditor title={title} titleonChange={this.handleTitleChange('title')} titleonBlur={this.updateDocument()} handleModalOpen={this.handleModalOpen} handleModalClose={this.handleModalClose}>
+      <NavBarEditor title={title} 
+      titleonChange={this.handleTitleChange('title')} 
+      titleonBlur={this.updateDocument()} handleModalOpen={this.handleModalOpen} 
+      handleModalClose={this.handleModalClose}
+      handleDialogOpen={this.handleDialogOpen}>
         <div key="0">
         </div>
+        <Dialog
+          open={this.state.dialogOpen}
+          onClose={this.handleDialogClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">{"Delete this document?"}</DialogTitle>
+          <DialogActions>
+            <Button onClick={this.handleDialogClose} color="primary">
+              Yes
+            </Button>
+            <Button onClick={this.handleDialogClose} color="primary" autoFocus>
+              No
+            </Button>
+          </DialogActions>
+        </Dialog>
         <Modal
           aria-labelledby="simple-modal-title"
           aria-describedby="simple-modal-description"

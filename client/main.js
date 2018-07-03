@@ -71,7 +71,7 @@ Meteor.startup(() => {
             <Route path="/register" component={RegisterPage} />
               <PrivateRoute path="/documents/:id" component={Editor} redirectTo="/signin" />
               <PrivateRoute path="/me/documents" component={LandingPage} redirectTo="/signin" />
-              <PrivateRoute path="*" redirectTo="/signin" />
+              <PrivateRoute path="*" component={SignInPage} redirectTo="/signin" />
           </Switch>
         </div>
       </BrowserRouter>
