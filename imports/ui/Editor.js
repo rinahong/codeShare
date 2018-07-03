@@ -59,6 +59,8 @@ export class Editor extends Component {
       mode: "",
       defaultValue: "",
       modalOpen: false,
+      onLoadStatus: false,
+      onChangeStatus: false
     }
 
     // I hate this... but need non-reactive variables
@@ -79,8 +81,7 @@ export class Editor extends Component {
         if (error) {
           console.log("Can't get users: ", error.reason);
         } else {
-          console.log("result user :  ", result);
-          if (_.isEmpty(result)) {
+          if(_.isEmpty(result)) {
             alert("You are not authorized...")
             this.props.history.push({
               pathname: "/me/documents"
@@ -95,13 +96,11 @@ export class Editor extends Component {
       if (error) {
         console.log("Can't find Document");
       } else {
-        console.log("result.mode", result.mode)
         this.setState({
           title: result.title,
           documentCreatedBy: result.createdBy,
           mode: (result.mode != "") ? result.mode : "javascript" //default mode is JS
         })
-        console.log("current mode", this.state.mode)
       }
     });
 
@@ -155,7 +154,7 @@ export class Editor extends Component {
         if (error) {
           console.log("Fail to update the document title", error.reason);
         } else {
-          console.log("new title saved successfully");
+          console.log("New title saved successfully");
         }
       });
     }
@@ -173,6 +172,8 @@ export class Editor extends Component {
   // Save all users of the userIdsWithPermission into UserDocuments collection
   givePermission() {
     const { id, userIdsWithPermission, documentCreatedBy } = this.state;
+    var tempAvailableUsersForPermission = this.state.availableUsersForPermission;
+
     userIdsWithPermission.map((userId) => {
       Meteor.call('upsertUserDocument', userId, id, documentCreatedBy, (error, result) => {
         if (error) {
@@ -181,26 +182,57 @@ export class Editor extends Component {
           console.log("Yay upserted successfully");
         }
       });
-      // TODO: Below setState not working properly
-      // this.setState({
-      //   availableUsersForPermission: this.state.availableUsersForPermission
-      //     .filter( u => u._id !== userId)
-      // })
+
+      // Exclude user(s) who just permitted to this document.
+      tempAvailableUsersForPermission = tempAvailableUsersForPermission
+        .filter( user => user._id !== userId)
+
       //TODO: Later, write a function to send emails to all permitted users.
+    });
+
+    // Update availableUsersForPermission with tempAvailableUsersForPermission
+    this.setState({
+      availableUsersForPermission: tempAvailableUsersForPermission
     })
+
+  }
+
+  setMode(e) {
+    const {id, mode} = this.state;
+    if(this.state.mode = 'openedge') {
+      this.refs.aceEditor.editor.getSession().setMode(customMode);
+    }
+
+    this.setState({
+      mode: e.target.value
+    })
+
+    Meteor.call('updateMode', id, e.target.value, (error) => {
+      if(error) {
+        console.log("Fail to update the document mode", error.reason);
+      } else {
+        console.log("Mode updated successfully");
+      }
+    });
   }
 
   onChange(value, event) {
+    this.setState({ defaultValue: value })
+
+    //If onLoad() not yet called, we can set onChange: true
+    if (this.state.onLoadStatus == false ) {
+      this.setState({ onChangeStatus: true })
+    } else if (this.state.onLoadStatus == true ) {
+      this.setState({ onLoadStatus: false })
+    }
 
     const val_arr = value.split('\n');
     const currentUser = Meteor.userId();
 
     for (var i = 0; i < val_arr.length; i++) {
-
       if (val_arr[i] == this.prevValues[i]) continue;
 
       const delta = val_arr[i];
-
       DocumentContents.insert({
         docId: this.state.id,
         row: i,
@@ -210,29 +242,12 @@ export class Editor extends Component {
       }, function (error) {
         if (error) {
           console.log("Document save Failed: ", error.reason);
+        } else{
+          console.log("Inserted successfully")
         }
       });
     }
 
-  }
-
-  setMode(e) {
-    const { id, mode } = this.state;
-    if (this.state.mode = 'openedge') {
-      this.refs.aceEditor.editor.getSession().setMode(customMode);
-    }
-
-    this.setState({
-      mode: e.target.value
-    })
-
-    Meteor.call('updateMode', id, e.target.value, (error) => {
-      if (error) {
-        console.log("Fail to update the document mode", error.reason);
-      } else {
-        console.log("Mode updated successfully");
-      }
-    });
   }
 
   onLoad(editor) {
@@ -248,6 +263,7 @@ export class Editor extends Component {
       let data = [];
 
       if (this.state.firstTimeLoad) {
+        this.setState({ onLoadStatus: true });
         data = DocumentContents.find({ docId: id }, { sort: { createdAt: 1 } }).fetch();
         if (!(_.isEmpty(data))) {
           _.map(data, function (row_data) {
@@ -284,8 +300,13 @@ export class Editor extends Component {
           })
 
           this.lastTimeInsert = DocumentContents.findOne({ docId: id }, { sort: { createdAt: -1, limit: 1 } }).createdAt;
-          this.prevValues = editor.getValue().split('\n');
 
+          //If onChange was called before onLoad,
+          //Then we can update prevValues, and onChangeStatus = false
+          if(this.state.onChangeStatus == true) {
+            this.prevValues = editor.getValue().split('\n');
+            this.setState({ onChangeStatus: false })
+          }
           this.setState({ defaultValue: editor.getValue() })
         }
       }

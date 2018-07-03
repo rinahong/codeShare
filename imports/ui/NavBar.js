@@ -128,7 +128,6 @@ class NavBar extends React.Component {
           this.setState({username: user.username})
         }
       },300);
-      console.log("=========")
     }
   }
 
@@ -188,8 +187,7 @@ class NavBar extends React.Component {
     // const {  } = this.props;
     const { classes, children, theme } = this.props;
     const { username } = this.state;
-    console.log("in render username", username)
-
+    
     return (
       <div className={classes.root}>
         <AppBar

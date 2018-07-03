@@ -43,7 +43,6 @@ export class LandingPage extends Component {
           console.log("There was an error to retreive Document list");
         } else {
           this.setState({ documents: result, loading: false });
-          console.log("documents by me", this.state.documents)
 
           Meteor.call('getAllSharedDocumentsByOthers', currentUser, (error, result) => {
             if (error) {
