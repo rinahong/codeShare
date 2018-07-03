@@ -293,7 +293,6 @@ export class Editor extends Component {
   }
 
   deleteDocument(documentId) {
-    return () => {
       const { documents } = this.state;
       // Meteor.method "deleteDocument" will remove Document from mongoDB.
       Meteor.call('deleteDocument', documentId, (error, result) => {
@@ -301,14 +300,21 @@ export class Editor extends Component {
           console.log("There was an error to retreive Document list");
         } else {
           // Remove the document from the state, so that, remove the document from the LandingPage.
-          this.setState({
-            documents: documents.filter(doc => doc._id !== documentId)
-          });
+          console.log("got deleted bro")
+          // this.setState({
+          //   documents: documents.filter(doc => doc._id !== documentId)
+          // }); WHAT DOES THIS DO?
+          this.props.history.push("/me/documents")
+          
         }
       });
 
 
-    }
+    
+  }
+
+  redirectToLanding() {
+
   }
 
   handleModalOpen = () => {
@@ -351,7 +357,12 @@ export class Editor extends Component {
         >
           <DialogTitle id="alert-dialog-title">{"Delete this document?"}</DialogTitle>
           <DialogActions>
-            <Button onClick={this.handleDialogClose} color="primary">
+            <Button onClick={() => {
+              console.log('Just got deleted ' + this.state.id)
+              this.deleteDocument(this.state.id)
+              console.log('Just got deleted 2 ' + this.state.id)
+              this.handleDialogClose()}}
+            color="primary">
               Yes
             </Button>
             <Button onClick={this.handleDialogClose} color="primary" autoFocus>
