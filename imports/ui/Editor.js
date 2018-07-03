@@ -29,6 +29,7 @@ import Button from '@material-ui/core/Button';
 
 const customMode = new CustomOpenEdgeMode();
 
+
 // Render editor
 export class Editor extends Component {
   constructor(props) {
@@ -43,6 +44,8 @@ export class Editor extends Component {
 
     const today = new Date();
     const yearAgo = new Date().setDate(today.getDate() - 365);
+
+    
 
     this.state = {
       id: this.props.match.params.id,
@@ -337,6 +340,7 @@ export class Editor extends Component {
     const { availableUsersForPermission, userIdsWithPermission, title } = this.state;
     const height = editorFunctions.getHeight(); //window height
     const width = editorFunctions.getWidth(); //window width
+    const { classes } = this.props;
 
     return (
       <NavBarEditor title={title} titleonChange={this.handleTitleChange('title')} titleonBlur={this.updateDocument()} handleModalOpen={this.handleModalOpen}>
@@ -353,36 +357,47 @@ export class Editor extends Component {
           aria-describedby="simple-modal-description"
           open={this.state.modalOpen}
           onClose={this.handleModalClose}
+          style={{
+            position: 'absolute',
+            width: '50%',
+            // height: '50%',
+            backgroundColor: 'paper',
+            // boxShadow: theme.shadows[5],
+            padding: '30px',
+            top: '50%',
+            left: '25%',
+          }}
         >
-                <div className="modal">
-        <a className="close" onClick={close}>
-          &times;
-        </a>
-        <div className="header"> Share with others </div>
-        <div className="content">
-          <UserSelection availableUsersForPermission={availableUsersForPermission} updateUserPermissionList={this.updateUserPermissionList} />
-        </div>
-        <div className="actions">
-          <button
-            className="button"
-            onClick={() => {
-              console.log('Permission Sent')
-              this.givePermission()
-            }}
-          >
-            SEND
-          </button>
-          <button
-            className="button"
-            onClick={() => {
-              console.log('modal closed ')
-              close()
-            }}
-          >
-            close modal
-          </button>
-        </div>
-      </div>
+          <Paper>
+            <a className="close" onClick={close}>
+              &times;
+               </a>
+            <div className="header"> Share with others </div>
+            <div className="content">
+              <UserSelection availableUsersForPermission={availableUsersForPermission} updateUserPermissionList={this.updateUserPermissionList} />
+            </div>
+            <div className="actions">
+              <Button
+                className="button"
+                onClick={() => {
+                  console.log('Permission Sent')
+                  this.givePermission()
+                  handleModalClose()
+                }}
+              >
+                SEND
+          </Button>
+              <Button
+                className="button"
+                onClick={() => {
+                  console.log('modal closed ')
+                  handleModalClose()
+                }}
+              >
+                close modal
+          </Button>
+            </div>
+          </Paper>
         </Modal>
         <Chat key="2" id={this.state.id} />
         <AceEditor
