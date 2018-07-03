@@ -323,13 +323,18 @@ export class Editor extends Component {
             left: '25%',
           }}
         >
-          <Paper style={{padding: '30px'}}>
-            <div className="header"> Share with others </div>
-            <div className="content">
-              <UserSelection availableUsersForPermission={availableUsersForPermission} updateUserPermissionList={this.updateUserPermissionList} />
+          <Paper style={{padding: '15px 30px 30px 30px'}}>
+            <div className="content" style={{ fontFamily: 'Roboto' }}>
+              <h3> Share with others </h3>
+
+              <UserSelection availableUsersForPermission={availableUsersForPermission} 
+              updateUserPermissionList={this.updateUserPermissionList} 
+              />
             </div>
             <div className="actions" >
                 <Button
+                  variant="contained" 
+                  color="primary"
                   className="button"
                   onClick={() => {
                     console.log('Permission Sent')
@@ -337,6 +342,7 @@ export class Editor extends Component {
                     this.handleModalClose()
 
                   }}
+                  style={{ color: "white", marginTop: '4%'}}
                 >
                   Done
                 </Button>
