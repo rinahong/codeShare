@@ -328,16 +328,8 @@ export class Editor extends Component {
 
     return (
 
-      <NavBarEditor>
+      <NavBarEditor title={title} titleonChange={this.handleTitleChange('title')} titleonBlur={this.updateDocument()}>
         <div key="0">
-          <input
-            value={title}
-            onChange={this.handleTitleChange('title')}
-            onBlur={this.updateDocument()}
-            type='title'
-            id='title'
-            name='title'
-          />
         </div>
         <Popup key="1" trigger={<button className="button"> Open Modal </button>} modal>
           {close => (

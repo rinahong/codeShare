@@ -25,6 +25,7 @@ import { Documents } from '../api/documents.js';
 import { DocumentContents } from '../api/documentContents';
 import { UserDocuments } from '../api/userDoc';
 
+import Input from '@material-ui/core/Input';
 
 const drawerWidth = 240;
 const styles = theme => ({
@@ -98,6 +99,12 @@ const styles = theme => ({
   },
   rightIcon: {
     marginLeft: theme.spacing.unit,
+  },
+  titleInput: {
+    color: 'white',
+    border: '1px solid transparent',
+    fontSize: 18,
+    marginRight: '20px',
   },
 });
 
@@ -208,7 +215,17 @@ class NavBar extends React.Component {
                 className={classNames(classes.menuButton, this.state.open && classes.hide)}>
                 <MenuIcon />
               </IconButton>,
-              <Typography key="1" variant="title" color="inherit" className={classes.flex} style={{ marginRight: '20px' }}>Welcome to CodeShare, { username }</Typography>,
+                <Input 
+                  variant="title"
+                  value={this.props.title}
+                  onChange={this.props.titleonChange}
+                  onBlur={this.props.titleonBlur}
+                  className={classes.titleInput}
+                  style= {{ width: (this.props.title.length + 5) * 8}}
+                  name='title'
+                  id="title"
+                  disableUnderline='true'
+                />,
               <Button key="2" color="inherit">
                 Share
                 <LinkIcon className={classes.rightIcon} />
