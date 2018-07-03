@@ -164,8 +164,8 @@ export class LandingPage extends Component {
                   </Avatar>
                 </ListItemAvatar>
 
-                  <Link to={`/documents/${doc._id}`}>
-                      <ListItemText inset primary={JSON.stringify(doc.title) + "---" + JSON.stringify(doc._id)}  secondary={"Created: "+(doc.createdAt.toLocaleDateString('en-US', DATE_OPTIONS))} />
+                  <Link to={`/documents/${doc._id}`} style={{textDecoration: 'none' }}>
+                      <ListItemText inset primary={doc.title}  secondary={"Created: "+(doc.createdAt.toLocaleDateString('en-US', DATE_OPTIONS))} />
                   </Link>
                 <ListItemSecondaryAction onClick={this.deleteDocument(doc._id)}>
 
