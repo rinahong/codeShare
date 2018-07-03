@@ -26,6 +26,39 @@ const theme = createMuiTheme({
   },
 });
 
+
+
+const PrivateRoute = ({ component, redirectTo, ...rest }) => {
+  return (
+    <Route {...rest} render={routeProps => {
+      return Meteor.userId() ? (
+        renderMergedProps(component, routeProps, rest)
+      ) : (
+          <Redirect to={{
+            pathname: redirectTo,
+            state: { from: routeProps.location }
+          }} />
+        );
+    }} />
+  );
+};
+
+const renderMergedProps = (component, ...rest) => {
+  const finalProps = Object.assign({}, ...rest);
+  return (
+    React.createElement(component, finalProps)
+  );
+}
+// { Meteor.userId() ? ([  // Should be wrapped in the array
+//   <main>
+//   </main>
+// ]) : (
+//     <main>
+//       <Route path="/" render={ () => <Redirect to="/signin" component={SignInPage}/> } />
+//     </main>
+//   )}
+
+
 Meteor.startup(() => {
   const currentUser = Meteor.userId();
   console.log(currentUser);
@@ -33,19 +66,13 @@ Meteor.startup(() => {
     <MuiThemeProvider theme={theme}>
       <BrowserRouter>
         <div className="row">
-          <NavBar theme={theme}>
-            <Switch>
-              <Route path="/signin" component={SignInPage} />
-              <Route path="/register" component={RegisterPage} />
-              <Route path="/me/documents" component={LandingPage} theme={theme} />
-              <Route path="/documents/:id"
-                render={props => {
-                 return <Editor {...props} currentUser={currentUser} />
-                }}
-              />
-              <Route path="/" component={LandingPage} theme={theme} />
-            </Switch>
-          </NavBar>
+          <Switch>
+            <Route path="/signin" component={SignInPage} />
+            <Route path="/register" component={RegisterPage} />
+              <PrivateRoute path="/documents/:id" component={Editor} redirectTo="/signin" />
+              <PrivateRoute path="/me/documents" component={LandingPage} redirectTo="/signin" />
+              <PrivateRoute path="*" component={SignInPage} redirectTo="/signin" />
+          </Switch>
         </div>
       </BrowserRouter>
     </MuiThemeProvider>

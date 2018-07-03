@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Link, Redirect } from 'react-router-dom';
 import _ from 'lodash';
+import NavBar from '../ui/NavBar';
 
 import Avatar from '@material-ui/core/Avatar';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
@@ -139,10 +140,13 @@ export class LandingPage extends Component {
     }
 
     return (
+      <NavBar >
       <div
         className="LandingPage"
         style={{ padding: '0  20px', textAlign: 'center' }}
       >
+    
+
         <img src="/codeShareLogo.png" alt="logo" style={{ width: '30%', height: '30%', paddingTop: '30px', textAlign: 'center' }} />
 
         <div className="widget-container" style={{ width: '10%', paddingLeft: '20px', paddingBottom: '20px' }}>
@@ -150,24 +154,9 @@ export class LandingPage extends Component {
             <AddIcon />
           </Button>
         </div>
-
         <List style={{ width: '85%', backgroundColor: 'paper', textAlign: 'center' }} subheader={<ListSubheader style={{ textAlign: 'left' }}component="div">Documents</ListSubheader>}>
           {
             this.state.documents.map(doc => (
-              // <ListItem button key={doc._id}>
-              //   <ListItemIcon>
-              //   </ListItemIcon>
-              //   <Link to={`/documents/${doc._id}`}>
-              //     <ListItemText inset primary={JSON.stringify(doc.title) + "---" + JSON.stringify(doc._id)} />
-
-              //   </Link>
-              //   <ListItemSecondaryAction onClick={this.deleteDocument(doc._id)}>
-              //     <IconButton aria-label="Comments">
-              //       <CommentIcon />
-              //     </IconButton>
-              //   </ListItemSecondaryAction>
-              // </ListItem>
-
               <ListItem key={doc._id}>
                 <ListItemAvatar>
                   <Avatar>
@@ -192,21 +181,33 @@ export class LandingPage extends Component {
 
         <hr/>
 
-        <h2>Shared Documents</h2>
-        <ul style={{paddingLeft: '10px'}}>
+
+          <List style={{ width: '85%', backgroundColor: 'paper', textAlign: 'center' }} subheader={<ListSubheader style={{ textAlign: 'left' }}component="div">Shared Documents</ListSubheader>}>
           {
             this.state.sharedDocuments.map(sharedDoc => (
-              <li key={sharedDoc._id}>
-                <Link to={`/documents/${sharedDoc._id}`}>
-                  {sharedDoc.title}
-                </Link>
-              </li>
+              <ListItem key={sharedDoc._id}>
+                <ListItemAvatar>
+                  <Avatar>
+                    <InsertDriveFileIcon />
+                  </Avatar>
+                </ListItemAvatar>
+
+                  <Link to={`/documents/${sharedDoc._id}`}>
+                      <ListItemText inset primary={JSON.stringify(sharedDoc.title) + "---" + JSON.stringify(sharedDoc._id)}  secondary={"Created: "+(sharedDoc.createdAt.toLocaleDateString('en-US', DATE_OPTIONS))} />
+                  </Link>
+                <ListItemSecondaryAction onClick={this.deleteDocument(sharedDoc._id)}>
+
+                  <IconButton aria-label="Delete">
+                    <DeleteIcon />
+                  </IconButton>
+                </ListItemSecondaryAction>
+              </ListItem>
             ))
           }
-        </ul>
-
+        </List>
+      
       </div>
-
+      </NavBar>
     );
   }
 }

@@ -25,6 +25,7 @@ import { Documents } from '../api/documents.js';
 import { DocumentContents } from '../api/documentContents';
 import { UserDocuments } from '../api/userDoc';
 
+import Input from '@material-ui/core/Input';
 
 const drawerWidth = 240;
 const styles = theme => ({
@@ -99,6 +100,12 @@ const styles = theme => ({
   rightIcon: {
     marginLeft: theme.spacing.unit,
   },
+  titleInput: {
+    color: 'white',
+    border: '1px solid transparent',
+    fontSize: 18,
+    marginRight: '20px',
+  },
 });
 
 const LoginLink = props => <Link to="/signin" {...props} />;
@@ -128,6 +135,7 @@ class NavBar extends React.Component {
           this.setState({username: user.username})
         }
       },300);
+      console.log("=========")
     }
   }
 
@@ -187,7 +195,8 @@ class NavBar extends React.Component {
     // const {  } = this.props;
     const { classes, children, theme } = this.props;
     const { username } = this.state;
-    
+    console.log("in render username", username)
+
     return (
       <div className={classes.root}>
         <AppBar
@@ -206,7 +215,21 @@ class NavBar extends React.Component {
                 className={classNames(classes.menuButton, this.state.open && classes.hide)}>
                 <MenuIcon />
               </IconButton>,
-              <Typography key="1" variant="title" color="inherit" className={classes.flex} style={{ marginRight: '20px' }}>Welcome to CodeShare, { username }</Typography>,
+                <Input 
+                  variant="title"
+                  value={this.props.title}
+                  onChange={this.props.titleonChange}
+                  onBlur={this.props.titleonBlur}
+                  className={classes.titleInput}
+                  style= {{ width: (this.props.title.length + 5) * 8}}
+                  name='title'
+                  id="title"
+                  disableUnderline={true}
+                />,
+              <Button key="2" color="inherit" onClick={this.props.handleModalOpen}>
+                Share
+                <LinkIcon className={classes.rightIcon} />
+              </Button>,
               <Button color="inherit" key='3' href="/signin" onClick={() => this.signOut()}>Sign Out </Button>
             ]) : (
                 <Button key='4' color="inherit" component={LoginLink}>Login</Button>)}
@@ -248,7 +271,7 @@ class NavBar extends React.Component {
                 </ListItem>
 
 
-                {/* <ListItem button>
+                <ListItem button>
                   <ListItemIcon>
                     <GetAppIcon />
                   </ListItemIcon>
@@ -259,21 +282,21 @@ class NavBar extends React.Component {
                     <HistoryIcon />
                   </ListItemIcon>
                   <ListItemText primary="History" />
-                </ListItem> */}
+                </ListItem>
               </div>
             </List>
             <Divider />
-            {/* <List>
+            <List>
 
               <div>
-                <ListItem button>
-                  <ListItemIcon>
+                <ListItem button onClick={this.props.handleDialogOpen}>
+                  <ListItemIcon >
                     <DeleteIcon />
                   </ListItemIcon>
                   <ListItemText primary="Delete" />
                 </ListItem>
               </div>
-            </List> */}
+            </List>
           </Drawer>,
           <main key="6" className={classes.content}>
             <div className={classes.toolbar} />

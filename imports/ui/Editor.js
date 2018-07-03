@@ -10,6 +10,7 @@ import Chat from './Chat.js';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import { Paper, Toolbar, Typography } from '@material-ui/core';
+import NavBarEditor from '../ui/NavBarEditor';
 
 import 'brace/snippets/javascript';
 import 'brace/theme/monokai';
@@ -23,7 +24,14 @@ import { UserSelection } from './UserSelection.js';
 import { editorFunctions, editorVariables } from '../api/editorFunctions.js';
 import '../api/aceModes.js'
 
+import Modal from '@material-ui/core/Modal';
+import Button from '@material-ui/core/Button';
+
 const customMode = new CustomOpenEdgeMode();
+
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
 // Render editor
 export class Editor extends Component {
@@ -33,12 +41,13 @@ export class Editor extends Component {
     this.setMode = this.setMode.bind(this);
     this.onChange = this.onChange.bind(this);
     this.onLoad = this.onLoad.bind(this);
-    this.viewUserAvaliable = this.viewUserAvaliable.bind(this);
     this.givePermission = this.givePermission.bind(this);
     this.updateUserPermissionList = this.updateUserPermissionList.bind(this);
 
     const today = new Date();
-    const yearAgo = new Date().setDate(today.getDate()-365);
+    const yearAgo = new Date().setDate(today.getDate() - 365);
+
+
 
     this.state = {
       id: this.props.match.params.id,
@@ -49,6 +58,7 @@ export class Editor extends Component {
       firstTimeLoad: true,
       mode: "",
       defaultValue: "",
+      modalOpen: false,
       onLoadStatus: false,
       onChangeStatus: false
     }
@@ -59,16 +69,16 @@ export class Editor extends Component {
   }
 
   componentDidMount() {
-    const {id, availableUsersForPermission} = this.state;
+    const { id, availableUsersForPermission } = this.state;
     const currentUser = Meteor.userId();
-    if(!currentUser) {
+    if (!currentUser) {
       this.props.history.push({
         pathname: "/signin",
         state: { from: this.props.location }
       })
     } else {
       Meteor.call('quickUserSearchInUserDoc', currentUser, id, (error, result) => {
-        if(error) {
+        if (error) {
           console.log("Can't get users: ", error.reason);
         } else {
           if(_.isEmpty(result)) {
@@ -83,7 +93,7 @@ export class Editor extends Component {
 
     // Find the document on this editor page for updating title
     Meteor.call('findDocument', id, (error, result) => {
-      if(error) {
+      if (error) {
         console.log("Can't find Document");
       } else {
         this.setState({
@@ -96,52 +106,52 @@ export class Editor extends Component {
 
     // Get all users so that we can give permission
     Meteor.call('getAllUsers', (error, result) => {
-      if(error) {
+      if (error) {
         console.log("Can't get users: ", error.reason);
       } else {
-        this.setState({availableUsersForPermission: result})
+        this.setState({ availableUsersForPermission: result })
       }
     });
 
     //Fetch all userDocuments by Document id
     Meteor.call('getAllUsersByDocument', id, (error, result) => {
-      if(error) {
+      if (error) {
         console.log("Can't get UserDocuments: ", error.reason);
       } else {
         var onlyUserIdsByDoc = []
         //Parse userId and store into the array.
-        onlyUserIdsByDoc = result.map((eachUser)=>{
+        onlyUserIdsByDoc = result.map((eachUser) => {
           return eachUser.userId
         });
 
         // Exclude users who already belongs to this document.
         // As we map through onlyUserIdsByDoc,
         // filtering availableUsersForPermission by removing a user by userId.
-        onlyUserIdsByDoc.map((userId)=>{
+        onlyUserIdsByDoc.map((userId) => {
           this.setState({
             availableUsersForPermission: this.state.availableUsersForPermission //Should include this.state!!
-              .filter( u => u._id !== userId)
+              .filter(u => u._id !== userId)
           })
         })
       }
     });
 
-	}
+  }
 
   // onChange Event of input, setState of title
-  handleTitleChange (name) {
+  handleTitleChange(name) {
     return event => {
-      const {currentTarget} = event;
-      this.setState({[name]: currentTarget.value});
+      const { currentTarget } = event;
+      this.setState({ [name]: currentTarget.value });
     };
   }
 
   //Update title of the document when onBlur.
   updateDocument() {
-    const {id, title} = this.state;
+    const { id, title } = this.state;
     return () => {
       Meteor.call('updateTitle', id, title, (error) => {
-        if(error) {
+        if (error) {
           console.log("Fail to update the document title", error.reason);
         } else {
           console.log("New title saved successfully");
@@ -166,7 +176,7 @@ export class Editor extends Component {
 
     userIdsWithPermission.map((userId) => {
       Meteor.call('upsertUserDocument', userId, id, documentCreatedBy, (error, result) => {
-        if(error) {
+        if (error) {
           console.log("Fail to upsert the user", error.reason);
         } else {
           console.log("Yay upserted successfully");
@@ -185,43 +195,6 @@ export class Editor extends Component {
       availableUsersForPermission: tempAvailableUsersForPermission
     })
 
-  }
-
-  // Display viewUserAvaliable on popup modal and pass props to userSelection.js
-  viewUserAvaliable(close){
-    const { availableUsersForPermission } = this.state;
-
-    return(
-      <div className="modal">
-        <a className="close" onClick={close}>
-          &times;
-        </a>
-        <div className="header"> Share with others </div>
-        <div className="content">
-          <UserSelection availableUsersForPermission={availableUsersForPermission} updateUserPermissionList={this.updateUserPermissionList}/>
-        </div>
-        <div className="actions">
-          <button
-            className="button"
-            onClick={() => {
-              console.log('Permission Sent')
-              this.givePermission()
-            }}
-          >
-            SEND
-          </button>
-          <button
-            className="button"
-            onClick={() => {
-              console.log('modal closed ')
-              close()
-            }}
-          >
-            close modal
-          </button>
-        </div>
-      </div>
-    )
   }
 
   setMode(e) {
@@ -279,7 +252,7 @@ export class Editor extends Component {
 
   onLoad(editor) {
     const currentUser = Meteor.userId();
-    let {id} = this.state;
+    let { id } = this.state;
     let numRowsStored = 0;
     let numRowsCurrent = 0;
 
@@ -292,22 +265,22 @@ export class Editor extends Component {
       if (this.state.firstTimeLoad) {
         this.setState({ onLoadStatus: true });
         data = DocumentContents.find({ docId: id }, { sort: { createdAt: 1 } }).fetch();
-        if(!(_.isEmpty(data))) {
-            _.map(data, function (row_data) {
-              values[row_data.row] = row_data.value;
-            })
+        if (!(_.isEmpty(data))) {
+          _.map(data, function (row_data) {
+            values[row_data.row] = row_data.value;
+          })
 
-            this.prevValues = values;
-            this.lastTimeInsert = DocumentContents.findOne({ docId: id }, { sort: { createdAt: -1, limit: 1 } }).createdAt;
+          this.prevValues = values;
+          this.lastTimeInsert = DocumentContents.findOne({ docId: id }, { sort: { createdAt: -1, limit: 1 } }).createdAt;
 
-            text = values.join('\n');
-            if (text == prevValue) return;
+          text = values.join('\n');
+          if (text == prevValue) return;
 
-            editor.setValue(text, 1);
-            this.setState({firstTimeLoad: false, defaultValue: text});
+          editor.setValue(text, 1);
+          this.setState({ firstTimeLoad: false, defaultValue: text });
         }
       } else {
-        data = DocumentContents.find({docId: id, writtenBy: { $not: currentUser }, createdAt: { $gt : new Date(this.lastTimeInsert)}}, { sort: { createdAt: 1 } }).fetch();
+        data = DocumentContents.find({ docId: id, writtenBy: { $not: currentUser }, createdAt: { $gt: new Date(this.lastTimeInsert) } }, { sort: { createdAt: 1 } }).fetch();
 
         if (data) {
           numRowsStored = DocumentContents.findOne({ docId: id }, { sort: { row: -1, limit: 1 } }).row + 1;
@@ -320,8 +293,8 @@ export class Editor extends Component {
           _.map(data, function (row_data) {
 
             editor.session.replace({
-                start: {row: row_data.row, column: 0},
-                end: {row: row_data.row, column: Number.MAX_VALUE}
+              start: { row: row_data.row, column: 0 },
+              end: { row: row_data.row, column: Number.MAX_VALUE }
             }, row_data.value)
 
           })
@@ -340,60 +313,159 @@ export class Editor extends Component {
     });
   }
 
+  deleteDocument(documentId) {
+      const { documents } = this.state;
+      // Meteor.method "deleteDocument" will remove Document from mongoDB.
+      Meteor.call('deleteDocument', documentId, (error, result) => {
+        if (error) {
+          console.log("There was an error to retreive Document list");
+        } else {
+          // Remove the document from the state, so that, remove the document from the LandingPage.
+          console.log("got deleted bro")
+          // this.setState({
+          //   documents: documents.filter(doc => doc._id !== documentId)
+          // }); WHAT DOES THIS DO?
+          this.props.history.push("/me/documents")
+          
+        }
+      });
+
+
+    
+  }
+
+  redirectToLanding() {
+
+  }
+
+  handleModalOpen = () => {
+    this.setState({ modalOpen: true });
+  };
+
+  handleModalClose = () => {
+    this.setState({ modalOpen: false });
+  };
+
+  handleDialogOpen = () => {
+    this.setState({ dialogOpen: true });
+  };
+
+  handleDialogClose = () => {
+    this.setState({ dialogOpen: false });
+  };
+
+  
+
   render() {
-    const {title} = this.state;
+    const { availableUsersForPermission, userIdsWithPermission, title } = this.state;
     const height = editorFunctions.getHeight(); //window height
     const width = editorFunctions.getWidth(); //window width
+    const { classes } = this.props;
 
     return (
-      [
+      <NavBarEditor title={title} 
+      titleonChange={this.handleTitleChange('title')} 
+      titleonBlur={this.updateDocument()} handleModalOpen={this.handleModalOpen} 
+      handleModalClose={this.handleModalClose}
+      handleDialogOpen={this.handleDialogOpen}>
         <div key="0">
-          <input
-            value={title}
-            onChange={this.handleTitleChange('title')}
-            onBlur={this.updateDocument()}
-            type='title'
-            id='title'
-            name='title'
-          />
-        </div>,
-        <Popup key="1" trigger={<button className="button"> Open Modal </button>} modal>
-          {close => (
-            this.viewUserAvaliable(close)
-          )}
-        </Popup>,
-        <Chat key="2" id={this.state.id}/>,
+        </div>
+        <Dialog
+          open={this.state.dialogOpen}
+          onClose={this.handleDialogClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">{"Delete this document?"}</DialogTitle>
+          <DialogActions>
+            <Button onClick={() => {
+              console.log('Just got deleted ' + this.state.id)
+              this.deleteDocument(this.state.id)
+              console.log('Just got deleted 2 ' + this.state.id)
+              this.handleDialogClose()}}
+            color="primary">
+              Yes
+            </Button>
+            <Button onClick={this.handleDialogClose} color="primary" autoFocus>
+              No
+            </Button>
+          </DialogActions>
+        </Dialog>
+        <Modal
+          aria-labelledby="simple-modal-title"
+          aria-describedby="simple-modal-description"
+          open={this.state.modalOpen}
+          onClose={this.handleModalClose}
+          style={{
+            position: 'absolute',
+            width: '50%',
+            // height: '50%',
+            backgroundColor: 'paper',
+            // boxShadow: theme.shadows[5],
+            // padding: '30px',
+            top: '40%',
+            left: '25%',
+          }}
+        >
+          <Paper style={{padding: '15px 30px 30px 30px'}}>
+            <div className="content" style={{ fontFamily: 'Roboto' }}>
+              <h3> Share with others </h3>
+
+              <UserSelection availableUsersForPermission={availableUsersForPermission} 
+              updateUserPermissionList={this.updateUserPermissionList} 
+              />
+            </div>
+            <div className="actions" >
+                <Button
+                  variant="contained" 
+                  color="primary"
+                  className="button"
+                  onClick={() => {
+                    console.log('Permission Sent')
+                    this.givePermission()
+                    this.handleModalClose()
+
+                  }}
+                  style={{ color: "white", marginTop: '4%'}}
+                >
+                  Done
+                </Button>
+            </div>
+          </Paper>
+        </Modal>
+        <Chat key="2" id={this.state.id} />
         <AceEditor
-        ref="aceEditor"
-        key="3"
-        mode={this.state.mode}
-        theme="monokai"
-        name="editor"
-        value={this.state.defaultValue}
-        onLoad={this.onLoad}
-        onChange={this.onChange}
-        fontSize={14}
-        showPrintMargin={false}
-        showGutter={true}
-        highlightActiveLine={true}
-        height={height}
-        width={width}
-        debounceChangePeriod={1000}
-        editorProps={{ $blockScrolling: Infinity }}
-        setOptions={{
-          enableBasicAutocompletion: true,
-          enableLiveAutocompletion: true,
-          enableSnippets: false,
-          showLineNumbers: true,
-          tabSize: 2,
-        }}/>,
+          ref="aceEditor"
+          key="3"
+          mode={this.state.mode}
+          theme="monokai"
+          name="editor"
+          value={this.state.defaultValue}
+          onLoad={this.onLoad}
+          onChange={this.onChange}
+          fontSize={14}
+          showPrintMargin={false}
+          showGutter={true}
+          highlightActiveLine={true}
+          height={height}
+          width="100%"
+          debounceChangePeriod={1000}
+          editorProps={{ $blockScrolling: Infinity }}
+          setOptions={{
+            enableBasicAutocompletion: true,
+            enableLiveAutocompletion: true,
+            enableSnippets: false,
+            showLineNumbers: true,
+            tabSize: 2,
+          }} />
 
         <Paper key="4" style={editorVariables.statusBarStyle} position='fixed' color="default">
           <Select name="mode" onChange={this.setMode} value={this.state.mode}>
-            Mode: {editorVariables.languages.map((lang) => <MenuItem  key={lang} value={lang}>{lang}</MenuItem>)}
+            Mode: {editorVariables.languages.map((lang) => <MenuItem key={lang} value={lang}>{lang}</MenuItem>)}
           </Select>
         </Paper>
-      ]
+      </NavBarEditor>
+
     );
   }
 }

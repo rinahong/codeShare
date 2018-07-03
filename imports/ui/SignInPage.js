@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import Paper from '@material-ui/core/Paper';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
+import NavBar from '../ui/NavBar';
 
 
 const style = {
@@ -86,54 +87,56 @@ export class SignInPage extends Component {
 
 
     return (
-      <main
-        className="SignInPage"
-        style={{
-          padding: '0 20px',
-        }}
-      >
-        <Paper style={style.paper}>
-          <h2 style={style.title}>Sign In</h2>
-          <form onSubmit={this.createToken}>
+      <NavBar>
+        <main
+          className="SignInPage"
+          style={{
+            padding: '0 20px',
+          }}
+        >
+          <Paper style={style.paper}>
+            <h2 style={style.title}>Sign In</h2>
+            <form onSubmit={this.createToken}>
 
 
-            <div>
-              <TextField
-                id="email"
-                label="Email"
-                className="textField"
-                value={email}
-                onChange={this.handleChange('email')}
-                margin="normal"
-              />
-            </div>
+              <div>
+                <TextField
+                  id="email"
+                  label="Email"
+                  className="textField"
+                  value={email}
+                  onChange={this.handleChange('email')}
+                  margin="normal"
+                />
+              </div>
 
-            <div>
-              <TextField
-                id="password"
-                label="Password"
-                className="textField"
-                value={password}
-                onChange={this.handleChange('password')}
-                margin="normal"
-                type="password"
-              />
+              <div>
+                <TextField
+                  id="password"
+                  label="Password"
+                  className="textField"
+                  value={password}
+                  onChange={this.handleChange('password')}
+                  margin="normal"
+                  type="password"
+                />
 
 
-            </div>
+              </div>
 
-            <div>
-              {/* <input type='submit' value='Sign In' /> */}
-              <Button size="large" style={style.button} type='submit'>
-                LOGIN
+              <div>
+                {/* <input type='submit' value='Sign In' /> */}
+                <Button size="large" style={style.button} type='submit'>
+                  LOGIN
               </Button>
-            </div>
-          </form>
-          <p style={style.registerText}> Don't have an account?
+              </div>
+            </form>
+            <p style={style.registerText}> Don't have an account?
             <Link to={`/register`}> Register </Link>
-          </p>
-        </Paper>
-      </main>
+            </p>
+          </Paper>
+        </main>
+      </NavBar>
     )
   }
 }
