@@ -24,6 +24,9 @@ import { UserSelection } from './UserSelection.js';
 import { editorFunctions, editorVariables } from '../api/editorFunctions.js';
 import '../api/aceModes.js'
 
+import Modal from '@material-ui/core/Modal';
+import Button from '@material-ui/core/Button';
+
 const customMode = new CustomOpenEdgeMode();
 
 // Render editor
@@ -49,7 +52,8 @@ export class Editor extends Component {
       userIdsWithPermission: [],
       firstTimeLoad: true,
       mode: "",
-      defaultValue: ""
+      defaultValue: "",
+      modalOpen: false,
     }
 
     // I hate this... but need non-reactive variables
@@ -321,14 +325,21 @@ export class Editor extends Component {
     });
   }
 
+  handleModalClose = () => {
+    this.setState({ modalOpen: false });
+  };
+
+  handleModalOpen = () => {
+    this.setState({ modalOpen: true });
+  };
+
   render() {
-    const { title } = this.state;
+    const { availableUsersForPermission, userIdsWithPermission, title } = this.state;
     const height = editorFunctions.getHeight(); //window height
     const width = editorFunctions.getWidth(); //window width
 
     return (
-
-      <NavBarEditor title={title} titleonChange={this.handleTitleChange('title')} titleonBlur={this.updateDocument()}>
+      <NavBarEditor title={title} titleonChange={this.handleTitleChange('title')} titleonBlur={this.updateDocument()} handleModalOpen={this.handleModalOpen}>
         <div key="0">
         </div>
         <Popup key="1" trigger={<button className="button"> Open Modal </button>} modal>
@@ -336,6 +347,43 @@ export class Editor extends Component {
             this.viewUserAvaliable(close)
           )}
         </Popup>
+        <Button onClick={this.handleModalOpen}>Open Material Modal</Button>
+        <Modal
+          aria-labelledby="simple-modal-title"
+          aria-describedby="simple-modal-description"
+          open={this.state.modalOpen}
+          onClose={this.handleModalClose}
+        >
+                <div className="modal">
+        <a className="close" onClick={close}>
+          &times;
+        </a>
+        <div className="header"> Share with others </div>
+        <div className="content">
+          <UserSelection availableUsersForPermission={availableUsersForPermission} updateUserPermissionList={this.updateUserPermissionList} />
+        </div>
+        <div className="actions">
+          <button
+            className="button"
+            onClick={() => {
+              console.log('Permission Sent')
+              this.givePermission()
+            }}
+          >
+            SEND
+          </button>
+          <button
+            className="button"
+            onClick={() => {
+              console.log('modal closed ')
+              close()
+            }}
+          >
+            close modal
+          </button>
+        </div>
+      </div>
+        </Modal>
         <Chat key="2" id={this.state.id} />
         <AceEditor
           ref="aceEditor"

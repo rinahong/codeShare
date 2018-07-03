@@ -226,7 +226,7 @@ class NavBar extends React.Component {
                   id="title"
                   disableUnderline='true'
                 />,
-              <Button key="2" color="inherit">
+              <Button key="2" color="inherit" onClick={this.props.handleModalOpen}>
                 Share
                 <LinkIcon className={classes.rightIcon} />
               </Button>,
