@@ -7,7 +7,6 @@ import { Tracker } from 'meteor/tracker';
 import _ from 'lodash';
 import Popup from "reactjs-popup";
 import Chat from './Chat.js';
-import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import { Paper, Toolbar, Typography } from '@material-ui/core';
 import NavBarEditor from '../ui/NavBarEditor';
@@ -367,7 +366,8 @@ export class Editor extends Component {
       titleonChange={this.handleTitleChange('title')} 
       titleonBlur={this.updateDocument()} handleModalOpen={this.handleModalOpen} 
       handleModalClose={this.handleModalClose}
-      handleDialogOpen={this.handleDialogOpen}>
+      handleDialogOpen={this.handleDialogOpen}
+      setMode={this.setMode} selectValue={this.state.mode}>
         <div key="0">
         </div>
         <Dialog
@@ -459,11 +459,6 @@ export class Editor extends Component {
             tabSize: 2,
           }} />
 
-        <Paper key="4" style={editorVariables.statusBarStyle} position='fixed' color="default">
-          <Select name="mode" onChange={this.setMode} value={this.state.mode}>
-            Mode: {editorVariables.languages.map((lang) => <MenuItem key={lang} value={lang}>{lang}</MenuItem>)}
-          </Select>
-        </Paper>
       </NavBarEditor>
 
     );

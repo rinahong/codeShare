@@ -193,7 +193,7 @@ export class LandingPage extends Component {
                 </ListItemAvatar>
 
                   <Link to={`/documents/${sharedDoc._id}`} style={{textDecoration: 'none' }}>
-                      <ListItemText inset primary={JSON.stringify(sharedDoc.title) + "---" + JSON.stringify(sharedDoc._id)}  secondary={"Created: "+(sharedDoc.createdAt.toLocaleDateString('en-US', DATE_OPTIONS))} />
+                      <ListItemText inset primary={sharedDoc.title}  secondary={"Created: "+(sharedDoc.createdAt.toLocaleDateString('en-US', DATE_OPTIONS))} />
                   </Link>
                 <ListItemSecondaryAction onClick={this.deleteDocument(sharedDoc._id)}>
 

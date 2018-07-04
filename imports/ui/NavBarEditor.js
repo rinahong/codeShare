@@ -27,6 +27,11 @@ import { UserDocuments } from '../api/userDoc';
 
 import Input from '@material-ui/core/Input';
 
+import { editorFunctions, editorVariables } from '../api/editorFunctions.js';
+import '../api/aceModes.js'
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+
 const drawerWidth = 240;
 const styles = theme => ({
   root: {
@@ -128,13 +133,13 @@ class NavBar extends React.Component {
   }
 
   componentDidMount() {
-    if(Meteor.userId()) {
+    if (Meteor.userId()) {
       setTimeout(() => {
         let user = Meteor.user();
-        if(user) {
-          this.setState({username: user.username})
+        if (user) {
+          this.setState({ username: user.username })
         }
-      },300);
+      }, 300);
       console.log("=========")
     }
   }
@@ -168,7 +173,7 @@ class NavBar extends React.Component {
             console.log("UserDocuments Insert Failed: ", error.reason);
           } else {
             console.log("No error!")
-             window.location.reload()
+            window.location.reload()
           }
         })
 
@@ -177,16 +182,16 @@ class NavBar extends React.Component {
   }
 
   signOut() {
-      // event.preventDefault();
-      console.log("--sign out--")
-      Meteor.logout(function(error){
-        if (error) {
-            console.log("why error?", error.reason)
-        } else {
-          // window.location.reload();
-          console.log("Signout successfully, but why not redirect???")
-        }
-      })
+    // event.preventDefault();
+    console.log("--sign out--")
+    Meteor.logout(function (error) {
+      if (error) {
+        console.log("why error?", error.reason)
+      } else {
+        // window.location.reload();
+        console.log("Signout successfully, but why not redirect???")
+      }
+    })
   }
 
 
@@ -206,7 +211,7 @@ class NavBar extends React.Component {
 
           <Toolbar disableGutters={!this.state.open}>
 
-            { (Meteor.userId())? ([  // Should be wrapped in the array
+            {(Meteor.userId()) ? ([  // Should be wrapped in the array
               <IconButton
                 key="0"
                 color="inherit"
@@ -215,17 +220,20 @@ class NavBar extends React.Component {
                 className={classNames(classes.menuButton, this.state.open && classes.hide)}>
                 <MenuIcon />
               </IconButton>,
-                <Input 
-                  variant="title"
-                  value={this.props.title}
-                  onChange={this.props.titleonChange}
-                  onBlur={this.props.titleonBlur}
-                  className={classes.titleInput}
-                  style= {{ width: (this.props.title.length + 5) * 8}}
-                  name='title'
-                  id="title"
-                  disableUnderline={true}
-                />,
+              <Input
+                variant="title"
+                value={this.props.title}
+                onChange={this.props.titleonChange}
+                onBlur={this.props.titleonBlur}
+                className={classes.titleInput}
+                style={{ width: (this.props.title.length + 5) * 8 }}
+                name='title'
+                id="title"
+                disableUnderline={true}
+              />,
+              <Select key='5' style={{ color: 'white' }} name="mode" onChange={this.props.setMode} value={this.props.selectValue}>
+                Mode: {editorVariables.languages.map((lang) => <MenuItem key={lang} value={lang}>{lang}</MenuItem>)}
+              </Select>,
               <Button key="2" color="inherit" onClick={this.props.handleModalOpen}>
                 Share
                 <LinkIcon className={classes.rightIcon} />
@@ -233,11 +241,10 @@ class NavBar extends React.Component {
               <Button color="inherit" key='3' href="/signin" onClick={() => this.signOut()}>Sign Out </Button>
             ]) : (
                 <Button key='4' color="inherit" component={LoginLink}>Login</Button>)}
-
           </Toolbar>
         </AppBar>
 
-        { Meteor.userId() ? ([  // Should be wrapped in the array
+        {Meteor.userId() ? ([  // Should be wrapped in the array
           <Drawer
             key="5"
             variant="permanent"
