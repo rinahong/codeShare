@@ -231,14 +231,17 @@ class NavBar extends React.Component {
                 id="title"
                 disableUnderline={true}
               />,
+              <div style={{ marginLeft: 'auto', marginRight: '26px' }}>
               <Select key='5' style={{ color: 'white' }} name="mode" onChange={this.props.setMode} value={this.props.selectValue}>
                 Mode: {editorVariables.languages.map((lang) => <MenuItem key={lang} value={lang}>{lang}</MenuItem>)}
-              </Select>,
+              </Select>
               <Button key="2" color="inherit" onClick={this.props.handleModalOpen}>
                 Share
                 <LinkIcon className={classes.rightIcon} />
-              </Button>,
+              </Button>
+              
               <Button color="inherit" key='3' href="/signin" onClick={() => this.signOut()}>Sign Out </Button>
+              </div>
             ]) : (
                 <Button key='4' color="inherit" component={LoginLink}>Login</Button>)}
           </Toolbar>
