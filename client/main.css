@@ -164,3 +164,6 @@ header .hide-completed {
 .body {
   margin: 0px !important;
 }
+.close-button {
+  background-color: #00578e !important;
+}
