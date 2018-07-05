@@ -106,7 +106,7 @@ const styles = theme => ({
     marginLeft: theme.spacing.unit,
   },
   titleInput: {
-    color: 'white',
+    color: 'inherit',
     border: '1px solid transparent',
     fontSize: 18,
     marginRight: '20px',
@@ -232,7 +232,7 @@ class NavBar extends React.Component {
                 disableUnderline={true}
               />,
               <div style={{ marginLeft: 'auto', marginRight: '26px' }}>
-              <Select key='5' style={{ color: 'white' }} name="mode" onChange={this.props.setMode} value={this.props.selectValue}>
+              <Select key='5' style={{ color: 'inherit' }} name="mode" onChange={this.props.setMode} value={this.props.selectValue}>
                 Mode: {editorVariables.languages.map((lang) => <MenuItem key={lang} value={lang}>{lang}</MenuItem>)}
               </Select>
               <Button key="2" color="inherit" onClick={this.props.handleModalOpen}>

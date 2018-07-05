@@ -206,7 +206,7 @@ class NavBar extends React.Component {
                 className={classNames(classes.menuButton, this.state.open && classes.hide)}>
                 <MenuIcon />
               </IconButton>,
-              <Typography key="1" variant="title" color="inherit" className={classes.flex} style={{ marginRight: '20px' }}>Welcome to CodeShare, { username }</Typography>,
+              <Typography key="1" variant="title" color="inherit" className={classes.flex} style={{ marginRight: '20px' }}>Welcome, { username }</Typography>,
               <Button color="inherit" key='3' href="/signin" onClick={() => this.signOut()}>Sign Out </Button>
             ]) : (
                 <Button key='4' color="inherit" component={LoginLink}>Login</Button>)}
