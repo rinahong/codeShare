@@ -433,7 +433,7 @@ export class Editor extends Component {
             </div>
           </Paper>
         </Modal>
-        <Chat key="2" id={this.state.id} />
+        <Chat key="2" id={this.state.title} />
         <AceEditor
           ref="aceEditor"
           key="3"
