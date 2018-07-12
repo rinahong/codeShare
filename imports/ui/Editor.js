@@ -319,18 +319,14 @@ export class Editor extends Component {
         if (error) {
           console.log("There was an error to retreive Document list");
         } else {
-          // Remove the document from the state, so that, remove the document from the LandingPage.
-          console.log("got deleted bro")
-          // this.setState({
-          //   documents: documents.filter(doc => doc._id !== documentId)
-          // }); WHAT DOES THIS DO?
+          // Delete the document successfully and redirect to the LandingPage.
           this.props.history.push("/me/documents")
-          
+
         }
       });
 
 
-    
+
   }
 
   redirectToLanding() {
@@ -353,7 +349,7 @@ export class Editor extends Component {
     this.setState({ dialogOpen: false });
   };
 
-  
+
 
   render() {
     const { availableUsersForPermission, userIdsWithPermission, title } = this.state;
@@ -362,9 +358,9 @@ export class Editor extends Component {
     const { classes } = this.props;
 
     return (
-      <NavBarEditor title={title} 
-      titleonChange={this.handleTitleChange('title')} 
-      titleonBlur={this.updateDocument()} handleModalOpen={this.handleModalOpen} 
+      <NavBarEditor title={title}
+      titleonChange={this.handleTitleChange('title')}
+      titleonBlur={this.updateDocument()} handleModalOpen={this.handleModalOpen}
       handleModalClose={this.handleModalClose}
       handleDialogOpen={this.handleDialogOpen}
       setMode={this.setMode} selectValue={this.state.mode}>
@@ -411,13 +407,13 @@ export class Editor extends Component {
             <div className="content" style={{ fontFamily: 'Roboto' }}>
               <h3> Share with others </h3>
 
-              <UserSelection availableUsersForPermission={availableUsersForPermission} 
-              updateUserPermissionList={this.updateUserPermissionList} 
+              <UserSelection availableUsersForPermission={availableUsersForPermission}
+              updateUserPermissionList={this.updateUserPermissionList}
               />
             </div>
             <div className="actions" >
                 <Button
-                  variant="contained" 
+                  variant="contained"
                   color="primary"
                   className="button"
                   onClick={() => {
@@ -433,7 +429,7 @@ export class Editor extends Component {
             </div>
           </Paper>
         </Modal>
-        <Chat key="2" id={this.state.id} />
+        <Chat key="2" id={this.state.title} />
         <AceEditor
           ref="aceEditor"
           key="3"
