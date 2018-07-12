@@ -325,12 +325,12 @@ export class Editor extends Component {
           //   documents: documents.filter(doc => doc._id !== documentId)
           // }); WHAT DOES THIS DO?
           this.props.history.push("/me/documents")
-          
+
         }
       });
 
 
-    
+
   }
 
   redirectToLanding() {
@@ -353,7 +353,7 @@ export class Editor extends Component {
     this.setState({ dialogOpen: false });
   };
 
-  
+
 
   render() {
     const { availableUsersForPermission, userIdsWithPermission, title } = this.state;
@@ -362,9 +362,9 @@ export class Editor extends Component {
     const { classes } = this.props;
 
     return (
-      <NavBarEditor title={title} 
-      titleonChange={this.handleTitleChange('title')} 
-      titleonBlur={this.updateDocument()} handleModalOpen={this.handleModalOpen} 
+      <NavBarEditor title={title}
+      titleonChange={this.handleTitleChange('title')}
+      titleonBlur={this.updateDocument()} handleModalOpen={this.handleModalOpen}
       handleModalClose={this.handleModalClose}
       handleDialogOpen={this.handleDialogOpen}
       setMode={this.setMode} selectValue={this.state.mode}>
@@ -411,13 +411,13 @@ export class Editor extends Component {
             <div className="content" style={{ fontFamily: 'Roboto' }}>
               <h3> Share with others </h3>
 
-              <UserSelection availableUsersForPermission={availableUsersForPermission} 
-              updateUserPermissionList={this.updateUserPermissionList} 
+              <UserSelection availableUsersForPermission={availableUsersForPermission}
+              updateUserPermissionList={this.updateUserPermissionList}
               />
             </div>
             <div className="actions" >
                 <Button
-                  variant="contained" 
+                  variant="contained"
                   color="primary"
                   className="button"
                   onClick={() => {
