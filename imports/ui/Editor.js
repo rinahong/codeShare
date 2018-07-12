@@ -319,11 +319,7 @@ export class Editor extends Component {
         if (error) {
           console.log("There was an error to retreive Document list");
         } else {
-          // Remove the document from the state, so that, remove the document from the LandingPage.
-          console.log("got deleted bro")
-          // this.setState({
-          //   documents: documents.filter(doc => doc._id !== documentId)
-          // }); WHAT DOES THIS DO?
+          // Delete the document successfully and redirect to the LandingPage.
           this.props.history.push("/me/documents")
 
         }
