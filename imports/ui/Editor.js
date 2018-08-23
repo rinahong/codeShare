@@ -159,6 +159,7 @@ export class Editor extends Component {
     }
   }
 
+
   // Grab a list of user IDs from UserSelection.js
   // and store the list into state of userIdsWithPermission
   updateUserPermissionList(listOfIds) {
@@ -350,6 +351,15 @@ export class Editor extends Component {
   };
 
 
+  downloadDocument = () => {
+    var element = document.createElement("a");
+    var file = new Blob([editor.getValue()], {type: 'text/plain'});
+    element.href = URL.createObjectURL(file);
+    element.download = "myFile.txt";
+    element.click();
+
+  };
+
 
   render() {
     const { availableUsersForPermission, userIdsWithPermission, title } = this.state;
@@ -363,7 +373,8 @@ export class Editor extends Component {
       titleonBlur={this.updateDocument()} handleModalOpen={this.handleModalOpen}
       handleModalClose={this.handleModalClose}
       handleDialogOpen={this.handleDialogOpen}
-      setMode={this.setMode} selectValue={this.state.mode}>
+      setMode={this.setMode} selectValue={this.state.mode}
+      download={this.downloadDocument}>
         <div key="0">
         </div>
         <Dialog

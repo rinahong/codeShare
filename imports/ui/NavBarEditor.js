@@ -132,6 +132,8 @@ class NavBar extends React.Component {
     this.signOut = this.signOut.bind(this);
   }
 
+
+
   componentDidMount() {
     if (Meteor.userId()) {
       setTimeout(() => {
@@ -152,6 +154,15 @@ class NavBar extends React.Component {
   handleDrawerClose = () => {
     this.setState({ open: false });
   };
+
+  downloadDocument() {
+      var element = document.createElement("a");
+      var file = new Blob([document.getElementById('myInput').value], {type: 'text/plain'});
+      element.href = URL.createObjectURL(file);
+      element.download = "myFile.txt";
+      element.click();
+
+  }
 
   createDocument() {
     var currentUser = Meteor.userId();
@@ -281,7 +292,7 @@ class NavBar extends React.Component {
                 </ListItem>
 
 
-                <ListItem button>
+                <ListItem button onClick={this.props.download}>
                   <ListItemIcon>
                     <GetAppIcon />
                   </ListItemIcon>
